@@ -27,8 +27,8 @@
       </Frame>
       <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right"
         Height="40" DockPanel.Dock="Bottom" Orientation="Horizontal" >
-        <Button x:Name="ApplyButton" Padding="10" Margin="5,0,5,0" Click="ApplyButton_Click">Apply</Button>
-        <Button x:Name="OkButton" Padding="10" Margin="5,0,5,0" Click="OkButton_Click">Ok</Button>
+        <!-- Add other buttons here if needed -->
+        <Button x:Name="OkButton" Padding="10" Margin="5,0,5,5" Click="OkButton_Click">Ok</Button>
       </StackPanel>
     </DockPanel>
     

@@ -22,14 +22,11 @@ namespace NewsMonitor.WPF
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        IEnumerable<ISettingsGroup> SettingsGroups;
-
         public SettingsWindow(IEnumerable<ISettingsGroup> settingsGroups)
         {
             InitializeComponent();
-            this.SettingsGroups = settingsGroups;
 
-            // generate the GUI based on the SettingsGroup
+            // generate the GUI based on the SettingsGroups
             AddSettingsGroupsToItemControl(SettingsPageSelectorTreeView, settingsGroups);
         }
 
@@ -46,9 +43,7 @@ namespace NewsMonitor.WPF
 
                 tvi.Selected += delegate (object sender, RoutedEventArgs e)
                 {
-
-                    Console.WriteLine("~~~~~~~~~tvi.Selected");
-                    Console.WriteLine(settingsGroup.Name);
+                    Console.WriteLine("Selected " + settingsGroup.Name);
                     SelectedSettingsGroup = settingsGroup;
 
                     e.Handled = true;
@@ -114,9 +109,6 @@ namespace NewsMonitor.WPF
             }
         }
 
-
-
-
         void SaveCurrentPage()
         {
             CurrentSettingsPage?.Save();
@@ -125,18 +117,6 @@ namespace NewsMonitor.WPF
         void RestoreCurrentPage()
         {
             CurrentSettingsPage?.Restore();
-        }
-
-
-        private void GeneralSettingsTreeViewItem_Selected(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("GeneralSettingsTreeViewItem_Selected");
-            CurrentSettingsPage = new GeneralSettingsPage();
-        }
-
-        private void ApplyButton_Click(object sender, RoutedEventArgs e)
-        {
-            SaveCurrentPage();
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)

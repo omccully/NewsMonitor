@@ -34,19 +34,34 @@ namespace NewsMonitor.Extensions.NewsSearchers.Bing
 
         string QueryRestApi(string term)
         {
-            string url = UrlFromTerm(term);
-            HttpWebRequest request =
-                (HttpWebRequest)HttpWebRequest.Create(url);
-            request.Headers.Add("Ocp-Apim-Subscription-Key", AccessKey);
-            request.Method = "GET";
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            try
             {
-                Stream dataStream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(dataStream);
-                string result = reader.ReadToEnd();
-                reader.Close();
-                dataStream.Close();
-                return result;
+                string url = UrlFromTerm(term);
+                HttpWebRequest request =
+                    (HttpWebRequest)HttpWebRequest.Create(url);
+                request.Headers.Add("Ocp-Apim-Subscription-Key", AccessKey);
+                request.Method = "GET";
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    Stream dataStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    string result = reader.ReadToEnd();
+                    reader.Close();
+                    dataStream.Close();
+                    return result;
+                }
+            }
+            catch(WebException e)
+            {
+                Console.WriteLine("webexception " + e.Message);
+                if(e.Message.Contains("Unauthorized"))
+                {
+                    throw new InvalidBingNewsApiKeyException();
+                }
+                else
+                {
+                    throw e;
+                }
             }
         }
 

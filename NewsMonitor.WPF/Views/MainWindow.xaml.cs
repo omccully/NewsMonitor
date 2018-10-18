@@ -98,23 +98,50 @@ namespace NewsMonitor.WPF
                 foreach(INewsSearcher news_searcher in news_searchers)
                 {
                     Console.WriteLine("News Searcher=" + news_searcher.GetType());
-                    var results = news_searcher.Search(search_term)
-                        .Where(article => !existing_article_urls.Contains(article.Url));
-                    foreach (NewsArticle article in results)
+                   
+                    try
                     {
-                        AllNewsArticles.Add(article);
-                        Console.WriteLine(article);
+                        IEnumerable<NewsArticle> results = news_searcher.Search(search_term)
+                            .Where(article => !existing_article_urls.Contains(article.Url));
+                        foreach (NewsArticle article in results)
+                        {
+                            AllNewsArticles.Add(article);
+
+                            dbContext.NewsArticles.Add(article);
+                            dbContext.SaveChanges();
+
+                            Console.WriteLine(article);
+                        }
                     }
+                    catch(Exception err)
+                    {
+                        MessageBox.Show(err.Message);
+                        FindArticlesButton.IsEnabled = true;
+                        return;
+                    }   
                 }
             }
             Console.WriteLine("finished");
             FindArticlesButton.IsEnabled = true;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             SettingsWindow sw = new SettingsWindow(SettingsManager.SettingsGroups);
             sw.ShowDialog();
+            Console.WriteLine("returned to main window");
+        }
+
+        private void DeleteSelectedButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach(object item in NewsArticlesDataGrid.SelectedItems)
+            {
+                NewsArticle article = (NewsArticle)item;
+
+                article.Hidden = true;
+
+                dbContext.SaveChanges();
+            }
         }
     }
 }
