@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,17 +49,42 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NewsFilters\Organization\OrganizationNewsFilterExtension.cs" />
+    <Compile Include="NewsFilters\Organization\OrganizationNewsFilterSettingsPage.xaml.cs">
+      <DependentUpon>OrganizationNewsFilterSettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NewsFilters\RegexTitle\RegexTitleNewsFilterExtension.cs" />
+    <Compile Include="NewsFilters\RegexTitle\RegexTitleNewsFilterSettingsPage.xaml.cs">
+      <DependentUpon>RegexTitleNewsFilterSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NewsSearchers\Bing\BingNewsSearcher.cs" />
     <Compile Include="NewsSearchers\Bing\BingNewsSearcherExtension.cs" />
     <Compile Include="NewsSearchers\Bing\BingNewsSearcherSettingsPage.xaml.cs">
       <DependentUpon>BingNewsSearcherSettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NewsSearchers\Bing\InvalidBingNewsApiKeyException.cs" />
+    <Compile Include="NewsSharers\Reddit\RedditNewsSharerExtension.cs" />
+    <Compile Include="NewsSharers\Reddit\RedditNewsSharerSettingsPage.xaml.cs">
+      <DependentUpon>RedditNewsSharerSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="NewsFilters\Organization\OrganizationNewsFilterSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NewsFilters\RegexTitle\RegexTitleNewsFilterSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="NewsSearchers\Bing\BingNewsSearcherSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="NewsSharers\Reddit\RedditNewsSharerSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -75,9 +101,7 @@
       <Name>NewsMonitor</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="NewsSharers\Reddit\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />

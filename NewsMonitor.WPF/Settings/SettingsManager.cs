@@ -19,24 +19,15 @@ namespace NewsMonitor.WPF.Settings
             {
                 return new List<ISettingsGroup>()
                 {
-                    General, NewsSearchers, NewsSharers
+                    General, NewsSearchers, NewsFilters, NewsSharers
                 };
             }
         }
 
-        /*public IEnumerable<INewsSearcherExtension> NewsSearcherExtensions =
-            new List<INewsSearcherExtension>()
-            {
-                //new BingNewsSearcherExtension()
-            };
-
-        public IEnumerable<INewsSharerExtension> NewsSharerExtensions =
-            new List<INewsSharerExtension>()
-            {
-                
-            };*/
-
         public ExtensionManager<INewsSearcherExtension> SearcherExtensionManager
+            { get; private set; }
+
+        public ExtensionManager<INewsFilterExtension> FilterExtensionManager
             { get; private set; }
 
         public ExtensionManager<INewsSharerExtension> SharerExtensionManager
@@ -53,6 +44,11 @@ namespace NewsMonitor.WPF.Settings
                 GetNewsSearcherExtensionsFromConfig(), "News Searchers");
             NewsSearchers = SearcherExtensionManager.SettingsGroup;
 
+            FilterExtensionManager =
+               new ExtensionManager<INewsFilterExtension>(globalKvs,
+               GetNewsFilterExtensionsFromConfig(), "News Filters");
+            NewsFilters = FilterExtensionManager.SettingsGroup;
+
             SharerExtensionManager =
                 new ExtensionManager<INewsSharerExtension>(globalKvs,
                 GetNewsSharerExtensionsFromConfig(), "News Sharers");
@@ -65,6 +61,12 @@ namespace NewsMonitor.WPF.Settings
                 "newsSearcherExtensions");
         }
 
+        IEnumerable<INewsFilterExtension> GetNewsFilterExtensionsFromConfig()
+        {
+            return GetExtensionsFromNameValueConfig<INewsFilterExtension>(
+                "newsFilterExtensions");
+        }
+        
         IEnumerable<INewsSharerExtension> GetNewsSharerExtensionsFromConfig()
         {
             return GetExtensionsFromNameValueConfig<INewsSharerExtension>(
@@ -102,6 +104,8 @@ namespace NewsMonitor.WPF.Settings
             { get; private set; }
         public ISettingsGroup NewsSearchers
             { get; private set; }
+        public ISettingsGroup NewsFilters
+        { get; private set; }
         public ISettingsGroup NewsSharers
             { get; private set; }
     }

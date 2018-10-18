@@ -42,7 +42,6 @@ namespace NewsMonitor.WPF
                 MessageBox.Show(e.Message);
                 this.Close();
             }
-            
 
             AllNewsArticles = new ObservableCollection<NewsArticle>(dbContext.NewsArticles.ToList());
             NewsArticleFilter = new ObservableCollectionFilter<NewsArticle>(AllNewsArticles);
