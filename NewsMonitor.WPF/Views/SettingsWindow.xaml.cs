@@ -33,6 +33,7 @@ namespace NewsMonitor.WPF
             AddSettingsGroupsToItemControl(SettingsPageSelectorTreeView, settingsGroups);
         }
 
+        bool first = true;
         void AddSettingsGroupsToItemControl(ItemsControl control, IEnumerable<ISettingsGroup> settingsGroups)
         {
             foreach (ISettingsGroup settingsGroup in settingsGroups)
@@ -43,18 +44,29 @@ namespace NewsMonitor.WPF
                     IsExpanded = true
                 };
 
-                tvi.Selected += delegate
+                tvi.Selected += delegate (object sender, RoutedEventArgs e)
                 {
-                    Console.WriteLine("tvi.Selected");
+
+                    Console.WriteLine("~~~~~~~~~tvi.Selected");
                     Console.WriteLine(settingsGroup.Name);
                     SelectedSettingsGroup = settingsGroup;
+
+                    e.Handled = true;
                 };
+
+                if (first)
+                {
+                    // select the first TreeViewItem
+                    // default to general settings
+                    tvi.IsSelected = true;
+                    first = false;
+                }
 
                 if (settingsGroup.Children != null && 
                     settingsGroup.Children.Count() > 0)
                 {
                     AddSettingsGroupsToItemControl(tvi, settingsGroup.Children);
-                }
+                } 
 
                 control.Items.Add(tvi);
             }
