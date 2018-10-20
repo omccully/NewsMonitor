@@ -7,6 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using RedditSharp;
+using RedditSharp.Extensions;
+using RedditSharp.Multi;
+using RedditSharp.Things;
+using NewsMonitor.Data.Models;
 
 namespace NewsMonitor.Extensions.NewsSharers.Reddit
 {
@@ -14,14 +19,54 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
     {
         public string Name => "Reddit";
 
+        public RedditNewsSharerExtension()
+        {
+
+        }
+
         public SettingsPage CreateSettingsPage()
         {
             return new RedditNewsSharerSettingsPage();
         }
 
-        public Window CreateSharerWindow(KeyValueStorage kvs)
+        public NewsSharerWindow CreateSharerWindow(NewsArticle newsArticle, KeyValueStorage kvs)
         {
-            throw new NotImplementedException();
+             BotWebAgent bwa = new BotWebAgent(
+                 kvs.GetString(RedditNewsSharerSettingsPage.RedditUsernameKey),
+                 kvs.GetString(RedditNewsSharerSettingsPage.RedditPasswordKey),
+                 kvs.GetString(RedditNewsSharerSettingsPage.RedditClientIdKey),
+                 kvs.GetString(RedditNewsSharerSettingsPage.RedditClientSecretKey),
+                 "https://localhost/");
+                 
+            RedditSharp.Reddit reddit = new RedditSharp.Reddit(bwa, false);
+             //reddit.GetSubreddit("/r/news").SubmitPostAsync()
+
+
+            RedditNewsSharerWindow sharerWindow = new RedditNewsSharerWindow(newsArticle, kvs, reddit);
+
+            sharerWindow.JobsCreated += delegate (object window, JobsCreatedEventArgs e)
+            {
+                foreach(ISharerJob job in e.Jobs)
+                {
+                    job.Finished += (jobbbbb, ea) =>
+                    {
+                        // TODO: remove job from UnfinishedJobs, update kvs
+                    };
+                }
+
+                // TODO: save unfinished jobs to KeyValueStorage
+
+            };
+
+            return sharerWindow;
+        }
+
+        List<ISharerJob> UnfinishedJobs = new List<ISharerJob>();
+        public IEnumerable<ISharerJob> GetUnfinishedJobs(KeyValueStorage kvs)
+        {
+            // TODO: deserialize value from kvs and set UnfinishedJobs 
+
+            return UnfinishedJobs;
         }
     }
 }

@@ -37,6 +37,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RedditSharp, Version=1.1.14.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RedditSharp.1.1.14\lib\net461\RedditSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -53,6 +56,10 @@
     <Compile Include="NewsFilters\Organization\OrganizationNewsFilterSettingsPage.xaml.cs">
       <DependentUpon>OrganizationNewsFilterSettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NewsFilters\Recency\RecencyNewsFilterExtension.cs" />
+    <Compile Include="NewsFilters\Recency\RecencyNewsFilterSettingsPage.xaml.cs">
+      <DependentUpon>RecencyNewsFilterSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NewsFilters\RegexTitle\RegexTitleNewsFilterExtension.cs" />
     <Compile Include="NewsFilters\RegexTitle\RegexTitleNewsFilterSettingsPage.xaml.cs">
       <DependentUpon>RegexTitleNewsFilterSettingsPage.xaml</DependentUpon>
@@ -67,10 +74,17 @@
     <Compile Include="NewsSharers\Reddit\RedditNewsSharerSettingsPage.xaml.cs">
       <DependentUpon>RedditNewsSharerSettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NewsSharers\Reddit\RedditNewsSharerWindow.xaml.cs">
+      <DependentUpon>RedditNewsSharerWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="NewsFilters\Organization\OrganizationNewsFilterSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NewsFilters\Recency\RecencyNewsFilterSettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -83,6 +97,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="NewsSharers\Reddit\RedditNewsSharerSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NewsSharers\Reddit\RedditNewsSharerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

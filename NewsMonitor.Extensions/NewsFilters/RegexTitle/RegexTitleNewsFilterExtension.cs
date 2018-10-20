@@ -14,9 +14,9 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
     {
         public string Name => "Regex Title Filter";
 
-        public bool AllowArticle(KeyValueStorage storage, string searchTerm, NewsArticle newsArticle)
+        public bool AllowArticle(NewsArticle newsArticle, string searchTerm, KeyValueStorage storage)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public SettingsPage CreateSettingsPage()

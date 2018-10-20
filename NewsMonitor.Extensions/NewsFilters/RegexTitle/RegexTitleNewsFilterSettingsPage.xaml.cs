@@ -25,15 +25,5 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
         {
             InitializeComponent();
         }
-
-        public override void Restore()
-        {
-            
-        }
-
-        public override void Save()
-        {
-            
-        }
     }
 }

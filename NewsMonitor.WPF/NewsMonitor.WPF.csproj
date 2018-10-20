@@ -97,6 +97,9 @@
     </ApplicationDefinition>
     <Compile Include="Extensions\ExtensionFeature.cs" />
     <Compile Include="Extensions\ExtensionManager.cs" />
+    <Compile Include="Extensions\ISharerJob.cs" />
+    <Compile Include="Extensions\JobsCreatedEventArgs.cs" />
+    <Compile Include="Extensions\SharerJobStatusEventArgs.cs" />
     <Compile Include="Extensions\INewsFilterExtension.cs" />
     <Compile Include="Extensions\INewsSearcherExtension.cs" />
     <Compile Include="Extensions\INewsSharerExtension.cs" />
@@ -107,12 +110,15 @@
     <Compile Include="Extensions\ISettingsPageFactory.cs" />
     <Compile Include="Settings\SettingsGroup.cs" />
     <Compile Include="Settings\SettingsManager.cs" />
+    <Compile Include="Settings\SettingsMapping.cs" />
+    <Compile Include="Settings\TextValidator.cs" />
     <Compile Include="Views\EmptySettingsPage.xaml.cs">
       <DependentUpon>EmptySettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GeneralSettingsPage.xaml.cs">
       <DependentUpon>GeneralSettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\NewsSharerWindow.cs" />
     <Compile Include="Views\SettingsPage.cs" />
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>

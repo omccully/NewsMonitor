@@ -1,4 +1,5 @@
-﻿using NewsMonitor.WPF.Views;
+﻿using NewsMonitor.WPF.Settings;
+using NewsMonitor.WPF.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,18 +26,11 @@ namespace NewsMonitor.Extensions.NewsSearchers.Bing
         {
             InitializeComponent();
             Console.WriteLine("BingNewsSearcherSettingsPage");
+
+            SettingsMappings.Add(new SettingsMapping(BingNewsAccessKeyStorageKey, "",
+                    BingNewsAccessKeyTextBox));
         }
 
         public const string BingNewsAccessKeyStorageKey = "BingNewsAccessKey";
-
-        public override void Restore()
-        {
-            BingNewsAccessKeyTextBox.Text = KeyValueStorage.GetString(BingNewsAccessKeyStorageKey, "");
-        }
-
-        public override void Save()
-        {
-            KeyValueStorage.SetValue(BingNewsAccessKeyStorageKey, BingNewsAccessKeyTextBox.Text);
-        }
     }
 }

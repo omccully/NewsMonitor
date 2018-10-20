@@ -26,14 +26,9 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             InitializeComponent();
         }
 
-        public override void Restore()
-        {
-            
-        }
-
-        public override void Save()
-        {
-            
-        }
+        public const string RedditUsernameKey = "RedditUsername";
+        public const string RedditPasswordKey = "RedditPassword";
+        public const string RedditClientIdKey = "RedditClientId";
+        public const string RedditClientSecretKey = "RedditClientSecret";
     }
 }

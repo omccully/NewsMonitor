@@ -10,6 +10,6 @@ namespace NewsMonitor.WPF.Extensions
 {
     public interface INewsFilterExtension : ISettingsGroupExtension
     {
-        bool AllowArticle(KeyValueStorage storage, string searchTerm, NewsArticle newsArticle);
+        bool AllowArticle(NewsArticle newsArticle, string searchTerm, KeyValueStorage storage);
     }
 }

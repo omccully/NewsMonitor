@@ -10,6 +10,6 @@
       Title="RegexTitleNewsFilterSettingsPage">
 
     <Grid>
-    <Label Content="TODO: add regex listbox" />
-  </Grid>
+      <ListBox x:Name="RegexListBox"></ListBox>
+    </Grid>
 </views:SettingsPage>

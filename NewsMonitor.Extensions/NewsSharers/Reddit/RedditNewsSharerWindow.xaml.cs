@@ -1,6 +1,4 @@
-﻿using NewsMonitor.WPF.Settings;
-using NewsMonitor.WPF.Views;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,19 +10,25 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using NewsMonitor.Data.Database;
+using NewsMonitor.Data.Models;
+using NewsMonitor.WPF.Views;
 
-namespace NewsMonitor.Extensions.NewsFilters.Organization
+namespace NewsMonitor.Extensions.NewsSharers.Reddit
 {
     /// <summary>
-    /// Interaction logic for OrganizationNewsFilterSettingsPage.xaml
+    /// Interaction logic for RedditNewsSharerWindow.xaml
     /// </summary>
-    public partial class OrganizationNewsFilterSettingsPage : SettingsPage
+    public partial class RedditNewsSharerWindow : NewsSharerWindow
     {
-        public OrganizationNewsFilterSettingsPage()
+        //NewsArticle newsArticle
+
+        public RedditNewsSharerWindow(NewsArticle newsArticle, KeyValueStorage kvs, RedditSharp.Reddit reddit)
         {
             InitializeComponent();
         }
+
+
     }
 }

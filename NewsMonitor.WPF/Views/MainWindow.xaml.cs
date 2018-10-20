@@ -80,6 +80,12 @@ namespace NewsMonitor.WPF
             }
         }
 
+        bool PassesAllFilters(NewsArticle newsArticle, string searchTerm)
+        {
+            return SettingsManager.FilterExtensionManager.Features.All(
+                f => f.Extension.AllowArticle(newsArticle, searchTerm, f.SettingsGroup.KeyValueStorage));
+        }
+
         private void FindArticlesButton_Click(object sender, RoutedEventArgs e)
         {
             FindArticlesButton.IsEnabled = false;
@@ -101,7 +107,8 @@ namespace NewsMonitor.WPF
                     try
                     {
                         IEnumerable<NewsArticle> results = news_searcher.Search(search_term)
-                            .Where(article => !existing_article_urls.Contains(article.Url));
+                            .Where(article => !existing_article_urls.Contains(article.Url) &&
+                                PassesAllFilters(article, search_term));
                         foreach (NewsArticle article in results)
                         {
                             AllNewsArticles.Add(article);

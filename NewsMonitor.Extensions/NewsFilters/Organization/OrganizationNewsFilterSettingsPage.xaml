@@ -11,6 +11,6 @@
       Title="OrganizationNewsFilterSettingsPage">
 
     <Grid>
-        
+      <ListBox x:Name="OrganizationListBox"></ListBox>
     </Grid>
 </views:SettingsPage>

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using NewsMonitor.Data.Database;
+using NewsMonitor.WPF.Settings;
 
 namespace NewsMonitor.WPF.Views
 {
@@ -24,6 +25,9 @@ namespace NewsMonitor.WPF.Views
         public GeneralSettingsPage()
         {
             InitializeComponent();
+
+            SettingsMappings.Add(
+                new SettingsMapping(SearchTermsKey, SearchTermsDefault, SearchTermsTextBox));
         }
 
         public const string MaxArticleAgeDaysKey = "MaxArticleAgeDays";
@@ -32,8 +36,10 @@ namespace NewsMonitor.WPF.Views
         const string MaxArticleAgeDefault = "31";
         const string SearchTermsDefault = "";
 
-        public override void Restore()
+
+        /*public override void Restore()
         {
+            
             MaxArticleAgeDaysTextBox.Text = KeyValueStorage.GetString(MaxArticleAgeDaysKey, MaxArticleAgeDefault);
             SearchTermsTextBox.Text = KeyValueStorage.GetString(SearchTermsKey, SearchTermsDefault);
         }
@@ -43,6 +49,6 @@ namespace NewsMonitor.WPF.Views
             // TODO: validation
             KeyValueStorage.SetValue(MaxArticleAgeDaysKey, MaxArticleAgeDaysTextBox.Text);
             KeyValueStorage.SetValue(SearchTermsKey, SearchTermsTextBox.Text);
-        }
+        }*/
     }
 }

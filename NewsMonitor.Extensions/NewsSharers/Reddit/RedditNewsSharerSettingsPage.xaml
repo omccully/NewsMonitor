@@ -10,7 +10,21 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="RedditNewsSharerSettingsPage">
 
-    <Grid>
-        
-    </Grid>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="auto"></ColumnDefinition>
+      <ColumnDefinition></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="auto"></RowDefinition>
+      <RowDefinition Height="auto"></RowDefinition>
+      <RowDefinition></RowDefinition>
+    </Grid.RowDefinitions>
+    <Label HorizontalAlignment="Right">Reddit username:</Label>
+    <TextBox x:Name="RedditUsernameTextBox" Grid.Column="1"/>
+    <Label HorizontalAlignment="Right" Grid.Row="1">Reddit password:</Label>
+    <PasswordBox x:Name="RedditPasswordTextBox" Grid.Row="1" Grid.Column="1"/>
+    <Label HorizontalAlignment="Right" Grid.Row="2">Subreddit options:</Label>
+    <TreeView x:Name="SubredditOptionsTreeView" Grid.Row="2" Grid.Column="1"/>
+  </Grid>
 </views:SettingsPage>

@@ -14,9 +14,9 @@ namespace NewsMonitor.Extensions.NewsFilters.Organization
     {
         public string Name => "Organization";
 
-        public bool AllowArticle(KeyValueStorage storage, string searchTerm, NewsArticle newsArticle)
+        public bool AllowArticle(NewsArticle newsArticle, string searchTerm, KeyValueStorage storage)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public SettingsPage CreateSettingsPage()
