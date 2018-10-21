@@ -8,10 +8,12 @@ namespace NewsMonitor.WPF.Extensions
 {
     public class ShareJobStatusEventArgs : EventArgs
     {
+        public IShareJob Job { get; private set; }
         public string Status { get; private set; }
 
-        public ShareJobStatusEventArgs(string status)
+        public ShareJobStatusEventArgs(IShareJob job, string status)
         {
+            this.Job = job;
             this.Status = status;
         }
 

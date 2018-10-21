@@ -9,6 +9,7 @@ namespace NewsMonitor.WPF.Extensions
     public interface IShareJob
     {
         string Description { get; }
+       // event EventHandler Started;
         event EventHandler<ShareJobStatusEventArgs> StatusUpdate;
         event EventHandler Finished;
 

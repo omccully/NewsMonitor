@@ -34,8 +34,10 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
         {
             base.OnJobsCreated(new JobsCreatedEventArgs(new List<IShareJob>()
             {
-                //new 
+                new RedditPostShareJob("test title", "news", "https://google.com"),
+                new RedditPostShareJob("test title2", "programming", "https://bing.com")
             }));
+            this.Close();
         }
     }
 }

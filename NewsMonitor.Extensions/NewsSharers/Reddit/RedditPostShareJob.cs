@@ -18,17 +18,32 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
         string Subreddit;
         string Url;
 
-        public RedditPostShareJob(string title, string subreddit, string url, string description)
+        const int MaxTitleLengthInDescription = 50;
+
+        public RedditPostShareJob(string title, string subreddit, string url, string description = null)
         {
             this.Title = title;
             this.Subreddit = subreddit;
             this.Url = url;
-            this.Description = description;
+
+            // TODO: shorten title with elipses
+            this.Description = description ?? 
+                $"Posting \"{new string(title.Take(MaxTitleLengthInDescription).ToArray())}\" in /r/{subreddit}";
         }
 
-        public Task Execute()
+        public async Task Execute()
         {
-            return null;
+            for(int i = 20; i > 0; i--)
+            {
+                await Task.Delay(1000);
+                StatusUpdate?.Invoke(this, new ShareJobStatusEventArgs(this, $"Waiting {i} more seconds"));
+            }
+            Finished?.Invoke(this, new EventArgs());
+        }
+
+        public override string ToString()
+        {
+            return Description;
         }
     }
 }

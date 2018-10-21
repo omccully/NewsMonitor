@@ -7,17 +7,21 @@
         mc:Ignorable="d"
         Title="News Monitor" Height="450" Width="800">
   <DockPanel>
-    <ToolBar DockPanel.Dock="Top">
+    <ToolBar DockPanel.Dock="Top" x:Name="TopToolBar">
       <Button x:Name="FindArticlesButton" Click="FindArticlesButton_Click">Run</Button>
       <Button Click="SettingsButton_Click" Margin="5,0,0,0">Settings</Button>
       <Button Click="DeleteSelectedButton_Click" Margin="5,0,0,0">Delete selected</Button>
-
+      <Button Click="ShareSelectedButton_Click" Margin="5,0,0,0">Share selected</Button>
     </ToolBar>
+    <StatusBar DockPanel.Dock="Bottom">
+      <StatusBarItem>
+        <TextBlock Name="JobStatusTextBlock" />
+      </StatusBarItem>
+    </StatusBar>
     <DataGrid x:Name="NewsArticlesDataGrid" 
-
       HorizontalAlignment="Stretch"
-       
-              DockPanel.Dock="Bottom"/>
+      DockPanel.Dock="Bottom"/>
+    
   </DockPanel>
 
   <!--<StackPanel>

@@ -57,10 +57,14 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             return sharerWindow;
         }
 
-        List<IShareJob> UnfinishedJobs = new List<IShareJob>();
+        List<IShareJob> UnfinishedJobs = new List<IShareJob>()
+        {
+            new RedditPostShareJob("test initial", "worldnews", "https://twitter.com")
+        };
         public IEnumerable<IShareJob> GetUnfinishedJobs(KeyValueStorage kvs)
         {
             // TODO: deserialize value from kvs and set UnfinishedJobs 
+
 
             return UnfinishedJobs;
         }

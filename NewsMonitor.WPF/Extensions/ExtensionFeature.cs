@@ -1,4 +1,5 @@
-﻿using NewsMonitor.WPF.Settings;
+﻿using NewsMonitor.Data.Database;
+using NewsMonitor.WPF.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,14 @@ namespace NewsMonitor.WPF.Extensions
         {
             this.Extension = extension;
             this.SettingsGroup = settingsGroup;
+        }
+
+        public KeyValueStorage KeyValueStorage
+        {
+            get
+            {
+                return SettingsGroup.KeyValueStorage;
+            }
         }
     }
 }
