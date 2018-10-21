@@ -8,11 +8,11 @@ namespace NewsMonitor.WPF.Extensions
 {
     public class JobsCreatedEventArgs
     {
-        public IEnumerable<ISharerJob> Jobs { get; private set; }
+        public IEnumerable<IShareJob> Jobs { get; private set; }
 
-        public JobsCreatedEventArgs(IEnumerable<ISharerJob> jobs)
+        public JobsCreatedEventArgs(IEnumerable<IShareJob> jobs)
         {
-            this.Jobs = new List<ISharerJob>(jobs);
+            this.Jobs = new List<IShareJob>(jobs);
         }
     }
 }

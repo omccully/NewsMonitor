@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace NewsMonitor.WPF.Extensions
 {
-    public class SharerJobStatusEventArgs : EventArgs
+    public class ShareJobStatusEventArgs : EventArgs
     {
         public string Status { get; private set; }
 
-        public SharerJobStatusEventArgs(string status)
+        public ShareJobStatusEventArgs(string status)
         {
             this.Status = status;
         }

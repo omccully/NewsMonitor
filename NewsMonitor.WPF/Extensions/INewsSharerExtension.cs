@@ -14,6 +14,6 @@ namespace NewsMonitor.WPF.Extensions
     public interface INewsSharerExtension : ISettingsGroupExtension
     {
         NewsSharerWindow CreateSharerWindow(NewsArticle newsArticle, KeyValueStorage kvs);
-        IEnumerable<ISharerJob> GetUnfinishedJobs(KeyValueStorage kvs);
+        IEnumerable<IShareJob> GetUnfinishedJobs(KeyValueStorage kvs);
     }
 }

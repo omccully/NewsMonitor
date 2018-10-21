@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace NewsMonitor.WPF.Extensions
 {
-    public interface ISharerJob
+    public interface IShareJob
     {
         string Description { get; }
-        event EventHandler<SharerJobStatusEventArgs> StatusUpdate;
+        event EventHandler<ShareJobStatusEventArgs> StatusUpdate;
         event EventHandler Finished;
 
         Task Execute();

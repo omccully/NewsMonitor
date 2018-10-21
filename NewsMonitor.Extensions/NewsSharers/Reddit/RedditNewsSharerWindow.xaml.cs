@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using NewsMonitor.Data.Database;
 using NewsMonitor.Data.Models;
 using NewsMonitor.WPF.Views;
+using NewsMonitor.WPF.Extensions;
 
 namespace NewsMonitor.Extensions.NewsSharers.Reddit
 {
@@ -24,11 +25,17 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
     {
         //NewsArticle newsArticle
 
-        public RedditNewsSharerWindow(NewsArticle newsArticle, KeyValueStorage kvs, RedditSharp.Reddit reddit)
+        public RedditNewsSharerWindow(NewsArticle newsArticle, KeyValueStorage kvs /*, RedditSharp.Reddit reddit*/)
         {
             InitializeComponent();
         }
 
-
+        private void PostButton_Click(object sender, RoutedEventArgs e)
+        {
+            base.OnJobsCreated(new JobsCreatedEventArgs(new List<IShareJob>()
+            {
+                //new 
+            }));
+        }
     }
 }

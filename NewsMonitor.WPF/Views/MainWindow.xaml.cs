@@ -12,6 +12,8 @@ using NewsMonitor.WPF.Settings;
 using NewsMonitor.WPF.Views;
 using System.Configuration;
 using System.Collections.Specialized;
+using System.Data;
+using System.Text;
 
 namespace NewsMonitor.WPF
 {
@@ -30,19 +32,43 @@ namespace NewsMonitor.WPF
         {
             InitializeComponent();
 
-            dbContext = new DatabaseContext("NewsMonitorDb");
-
             try
             {
+                InitializeFromDb();
+
                 this.SettingsManager = new SettingsManager(
                     new DatabaseKeyValueStorage(dbContext));
             }
-            catch(InvalidExtensionTypeException e)
+            catch (InvalidConfigurationException e)
             {
                 MessageBox.Show(e.Message);
                 this.Close();
             }
+            catch(DataException e)
+            {
+                MessageBox.Show(
+                    String.Join(Environment.NewLine, ExceptionMessages(e)));
+                this.Close();
+            }
+        }
 
+        List<string> ExceptionMessages(Exception e, List<string> messageList = null)
+        {
+            if (messageList == null) messageList = new List<string>();
+
+            messageList.Add(e.Message);
+
+            if(e.InnerException != null)
+            {
+                ExceptionMessages(e.InnerException, messageList);
+            }
+
+            return messageList;
+        }
+
+        void InitializeFromDb()
+        {
+            dbContext = new DatabaseContext("NewsMonitorDb");
             AllNewsArticles = new ObservableCollection<NewsArticle>(dbContext.NewsArticles.ToList());
             NewsArticleFilter = new ObservableCollectionFilter<NewsArticle>(AllNewsArticles);
 

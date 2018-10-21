@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NewsMonitor.WPF.Settings
 {
-    public class InvalidExtensionTypeException : Exception
+    public class InvalidExtensionTypeException : InvalidConfigurationException
     {
         public InvalidExtensionTypeException(string text) : 
             base(text)

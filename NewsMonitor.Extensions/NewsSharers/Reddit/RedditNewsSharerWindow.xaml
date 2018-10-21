@@ -8,6 +8,7 @@
         mc:Ignorable="d"
         Title="RedditNewsSharerWindow" Height="450" Width="800">
     <StackPanel>
-      <TextBox x:Name="PostTitleTextBox"/>
-    </StackPanel>
+    <TextBox x:Name="PostTitleTextBox"/>
+    <Button x:Name="PostButton" Click="PostButton_Click" />
+  </StackPanel>
 </views:NewsSharerWindow>

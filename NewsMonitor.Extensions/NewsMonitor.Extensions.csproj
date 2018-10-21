@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9FC1E379-66F9-4B3E-8AED-EBF556A5BED1}</ProjectGuid>
+    <ProjectGuid>{B8CAFEA4-CDF1-49B6-89A8-1A72037F35F3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NewsMonitor.Extensions</RootNamespace>
@@ -12,7 +12,6 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,9 +36,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RedditSharp, Version=1.1.14.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RedditSharp.1.1.14\lib\net461\RedditSharp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -77,51 +73,50 @@
     <Compile Include="NewsSharers\Reddit\RedditNewsSharerWindow.xaml.cs">
       <DependentUpon>RedditNewsSharerWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NewsSharers\Reddit\RedditPostShareJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="NewsFilters\Organization\OrganizationNewsFilterSettingsPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="NewsFilters\Recency\RecencyNewsFilterSettingsPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="NewsFilters\RegexTitle\RegexTitleNewsFilterSettingsPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="NewsSearchers\Bing\BingNewsSearcherSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="NewsSharers\Reddit\RedditNewsSharerSettingsPage.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="NewsSharers\Reddit\RedditNewsSharerWindow.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NewsMonitor.Data\NewsMonitor.Data.csproj">
-      <Project>{8cf56567-2be0-4290-8b42-0cf2106a31b2}</Project>
+      <Project>{d3e357d0-bdf6-49de-8b5b-70106552c6b7}</Project>
       <Name>NewsMonitor.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\NewsMonitor.WPF\NewsMonitor.WPF.csproj">
-      <Project>{5498fae9-34c4-4684-b0d5-74cf15247513}</Project>
+      <Project>{7c1a3645-899d-4c07-bf0d-c6d96120747c}</Project>
       <Name>NewsMonitor.WPF</Name>
     </ProjectReference>
     <ProjectReference Include="..\NewsMonitor\NewsMonitor.csproj">
-      <Project>{e310d097-6df7-462a-8f35-c7b4a4e7df63}</Project>
+      <Project>{bac62f3e-7285-435c-a460-75ff6b0ebeae}</Project>
       <Name>NewsMonitor</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

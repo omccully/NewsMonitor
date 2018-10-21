@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8CF56567-2BE0-4290-8B42-0CF2106A31B2}</ProjectGuid>
+    <ProjectGuid>{D3E357D0-BDF6-49DE-8B5B-70106552C6B7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NewsMonitor.Data</RootNamespace>

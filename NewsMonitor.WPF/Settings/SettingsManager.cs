@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
-using System.Data.Entity;
+//using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,6 +77,12 @@ namespace NewsMonitor.WPF.Settings
         {
             var collection = (NameValueCollection)ConfigurationManager
                 .GetSection(sectionName);
+
+            if(collection == null)
+            {
+                throw new InvalidConfigurationException(
+                    $"The app.config file must contain the section \"{sectionName}\"");
+            }
 
             return collection.AllKeys.Select(k =>
             {

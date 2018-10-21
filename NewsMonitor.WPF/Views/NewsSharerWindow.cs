@@ -11,5 +11,10 @@ namespace NewsMonitor.WPF.Views
     public abstract class NewsSharerWindow : Window
     {
         public event EventHandler<JobsCreatedEventArgs> JobsCreated;
+
+        protected void OnJobsCreated(JobsCreatedEventArgs e)
+        {
+            JobsCreated?.Invoke(this, e);
+        }
     }
 }
