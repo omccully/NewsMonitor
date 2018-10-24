@@ -5,6 +5,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:views="clr-namespace:NewsMonitor.WPF.Views;assembly=NewsMonitor.WPF"
+      xmlns:etv="clr-namespace:NewsMonitor.WPF.Views.EditableTreeView;assembly=NewsMonitor.WPF"
       xmlns:local="clr-namespace:NewsMonitor.Extensions.NewsSharers.Reddit"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
@@ -18,13 +19,21 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="auto"></RowDefinition>
       <RowDefinition Height="auto"></RowDefinition>
+      <RowDefinition Height="auto"></RowDefinition>
+      <RowDefinition Height="auto"></RowDefinition>
       <RowDefinition></RowDefinition>
     </Grid.RowDefinitions>
     <Label HorizontalAlignment="Right">Reddit username:</Label>
     <TextBox x:Name="RedditUsernameTextBox" Grid.Column="1"/>
     <Label HorizontalAlignment="Right" Grid.Row="1">Reddit password:</Label>
     <PasswordBox x:Name="RedditPasswordTextBox" Grid.Row="1" Grid.Column="1"/>
-    <Label HorizontalAlignment="Right" Grid.Row="2">Subreddit options:</Label>
-    <TreeView x:Name="SubredditOptionsTreeView" Grid.Row="2" Grid.Column="1"/>
+
+    <Label Grid.Row="2" HorizontalAlignment="Right">Reddit client ID:</Label>
+    <TextBox Grid.Row="2" x:Name="RedditClientIdTextBox" Grid.Column="1"/>
+    <Label Grid.Row="3" HorizontalAlignment="Right">Reddit client secret:</Label>
+    <PasswordBox Grid.Row="3" x:Name="RedditClientSecretTextBox" Grid.Column="1"/>
+
+    <Label HorizontalAlignment="Right" Grid.Row="4">Subreddit options:</Label>
+    <etv:EditableTreeView x:Name="SubredditOptionsTreeView" Grid.Row="4" Grid.Column="1"/>
   </Grid>
 </views:SettingsPage>

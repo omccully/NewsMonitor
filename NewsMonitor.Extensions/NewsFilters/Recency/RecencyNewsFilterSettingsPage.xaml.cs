@@ -27,7 +27,7 @@ namespace NewsMonitor.Extensions.NewsFilters.Recency
             InitializeComponent();
 
             SettingsMappings.Add(
-                new SettingsMapping(MaxArticleAgeDaysKey,
+                new TextBoxSettingsMapping(MaxArticleAgeDaysKey,
                     MaxArticleAgeDefault, MaxArticleAgeDaysTextBox,
                     TextValidator.IntegerValidator));
         }

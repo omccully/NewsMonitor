@@ -7,39 +7,38 @@ using System.Windows.Controls;
 
 namespace NewsMonitor.WPF.Settings
 {
-    public class SettingsMapping
+    public abstract class SettingsMapping
     {
         public string StorageKey { get; private set; }
         public string DefaultValue { get; private set; }
-        public TextBox TextBox { get; private set; }
         public TextValidator TextValidator { get; private set; }
 
-        public SettingsMapping(string storageKey, string defaultValue, TextBox textBox,
-            Func<string, bool> textValidator)
-        {
-            this.StorageKey = storageKey;
-            this.DefaultValue = defaultValue;
-            this.TextBox = textBox;
-
-            this.TextValidator = (textValidator == null ? null :
-                new TextValidator(textValidator));
-        }
-
-        public SettingsMapping(string storageKey, string defaultValue, TextBox textBox,
+        public SettingsMapping(string storageKey, string defaultValue, 
             TextValidator textValidator = null)
         {
             this.StorageKey = storageKey;
             this.DefaultValue = defaultValue;
-            this.TextBox = textBox;
             this.TextValidator = textValidator;
         }
+
+        /// <summary>
+        /// Deserialize val and change the underlying data
+        /// </summary>
+        /// <param name="val"></param>
+        public abstract void Deserialize(string val);
+
+        /// <summary>
+        /// Serialize the underlying data into a string
+        /// </summary>
+        /// <returns></returns>
+        public abstract string Serialize();
 
         public bool IsValid
         {
             get
             {
                 if (TextValidator == null) return true;
-                return TextValidator.Validate(TextBox.Text);
+                return TextValidator.Validate(Serialize());
             }
         }
 
@@ -47,7 +46,7 @@ namespace NewsMonitor.WPF.Settings
         {
             get
             {
-                return $"{TextBox.Name} {TextValidator.RequirementMessage}";
+                return $"{TextValidator.RequirementMessage}";
             }
         }
     }

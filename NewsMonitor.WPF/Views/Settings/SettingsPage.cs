@@ -22,7 +22,7 @@ namespace NewsMonitor.WPF.Views
             foreach(SettingsMapping mapping in SettingsMappings)
             {
                 string savedVal = KeyValueStorage.GetString(mapping.StorageKey, mapping.DefaultValue);
-                mapping.TextBox.Text = savedVal;
+                mapping.Deserialize(savedVal);
                 Console.WriteLine($"{mapping.StorageKey} = {savedVal} (default {mapping.DefaultValue})");
             }
         }
@@ -35,7 +35,7 @@ namespace NewsMonitor.WPF.Views
             { 
                 if(!mapping.IsValid)
                 {
-                    MessageBox.Show($"\"{mapping.TextBox.Text}\" is invalid input for {mapping.TextBox.Name}:" 
+                    MessageBox.Show($"\"{mapping.Serialize()}\" is invalid input:" 
                         + Environment.NewLine + mapping.ErrorMessage);
                     return;
                 }
@@ -43,7 +43,7 @@ namespace NewsMonitor.WPF.Views
 
             foreach (SettingsMapping mapping in SettingsMappings)
             {
-                KeyValueStorage.SetValue(mapping.StorageKey, mapping.TextBox.Text);
+                KeyValueStorage.SetValue(mapping.StorageKey, mapping.Serialize());
             }
         }
     }

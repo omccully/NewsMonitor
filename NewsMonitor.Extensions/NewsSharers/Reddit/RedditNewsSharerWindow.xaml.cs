@@ -24,20 +24,38 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
     public partial class RedditNewsSharerWindow : NewsSharerWindow
     {
         //NewsArticle newsArticle
+        RedditSharp.Reddit RedditApi;
 
-        public RedditNewsSharerWindow(NewsArticle newsArticle, KeyValueStorage kvs /*, RedditSharp.Reddit reddit*/)
+        public RedditNewsSharerWindow(NewsArticle newsArticle, KeyValueStorage kvs, RedditSharp.Reddit reddit)
         {
             InitializeComponent();
+
+            PostTitleTextBox.Text = newsArticle.Title;
+            ArticleUrlTextBox.Text = newsArticle.Url;
+            this.RedditApi = reddit;
         }
 
         private void PostButton_Click(object sender, RoutedEventArgs e)
         {
-            base.OnJobsCreated(new JobsCreatedEventArgs(new List<IShareJob>()
+            List<IShareJob> jobs = new List<IShareJob>();
+            foreach (object item in SelectedSubredditsListView.Items)
             {
-                new RedditPostShareJob("test title", "news", "https://google.com"),
-                new RedditPostShareJob("test title2", "programming", "https://bing.com")
-            }));
+                string subreddit = (string)item;
+                jobs.Add(new RedditPostShareJob(PostTitleTextBox.Text, subreddit, ArticleUrlTextBox.Text, RedditApi));
+            }
+
+            base.OnJobsCreated(new JobsCreatedEventArgs(jobs));
             this.Close();
+        }
+
+        private void AddSelectedSubredditsButton_Click(object sender, RoutedEventArgs e)
+        {
+            //DefaultSubredditsTreeView.Selected
+        }
+
+        private void AddSubredditButton_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedSubredditsListView.Items.Add(SubredditInputTextBox.Text);
         }
     }
 }

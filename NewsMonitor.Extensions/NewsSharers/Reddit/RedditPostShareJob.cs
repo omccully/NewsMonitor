@@ -1,43 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using NewsMonitor.WPF.Extensions;
+using NewsMonitor.WPF.Settings;
+using RedditSharp.Things;
 
 namespace NewsMonitor.Extensions.NewsSharers.Reddit
 {
+    [Serializable]
     public class RedditPostShareJob : IShareJob
     {
-        public string Description { get; private set; }
+        public string Description
+        {
+            get
+            {
+                // TODO: shorten title with elipses
+                return $"Posting \"{new string(Title.Take(MaxTitleLengthInDescription).ToArray())}\" in /r/{Subreddit}";
+            }
+        }
 
         public event EventHandler<ShareJobStatusEventArgs> StatusUpdate;
         public event EventHandler Finished;
 
-        string Title;
-        string Subreddit;
-        string Url;
+        public string Title;
+        public string Subreddit;
+        public string Url;
 
         const int MaxTitleLengthInDescription = 50;
+    
+        [XmlIgnore]
+        public RedditSharp.Reddit RedditApi { get; set; }
 
-        public RedditPostShareJob(string title, string subreddit, string url, string description = null)
+        public RedditPostShareJob()
+        {
+
+        }
+
+        public RedditPostShareJob(string title, string subreddit, string url, RedditSharp.Reddit reddit)
         {
             this.Title = title;
             this.Subreddit = subreddit;
             this.Url = url;
-
-            // TODO: shorten title with elipses
-            this.Description = description ?? 
-                $"Posting \"{new string(title.Take(MaxTitleLengthInDescription).ToArray())}\" in /r/{subreddit}";
+            this.RedditApi = reddit;
         }
 
         public async Task Execute()
         {
-            for(int i = 20; i > 0; i--)
+            if(RedditApi == null)
             {
-                await Task.Delay(1000);
-                StatusUpdate?.Invoke(this, new ShareJobStatusEventArgs(this, $"Waiting {i} more seconds"));
+                throw new InvalidConfigurationException(
+                    "You must fill in your Reddit information into the settings page first.");
             }
+
+            Subreddit sub = await RedditApi.GetSubredditAsync(Subreddit);
+
+            await sub.SubmitPostAsync(Title, Url);
+
             Finished?.Invoke(this, new EventArgs());
         }
 

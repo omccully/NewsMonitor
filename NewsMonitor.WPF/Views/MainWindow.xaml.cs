@@ -14,6 +14,7 @@ using System.Configuration;
 using System.Collections.Specialized;
 using System.Data;
 using System.Text;
+using System.Windows.Media;
 
 namespace NewsMonitor.WPF
 {
@@ -55,12 +56,8 @@ namespace NewsMonitor.WPF
                 ShareJobQueue.JobStarted += ShareJobQueue_CurrentJobStatusUpdate;
                 ShareJobQueue.JobFinished += ShareJobQueue_CurrentJobStatusUpdate;
                 ShareJobQueue.CurrentJobStatusUpdate += ShareJobQueue_CurrentJobStatusUpdate;
+                ShareJobQueue.AllJobsFinished += ShareJobQueue_AllJobsFinished;
                 ShareJobQueue.Enqueue(unfinishedJobs);
-            }
-            catch (InvalidConfigurationException e)
-            {
-                MessageBox.Show(e.Message);
-                this.Close();
             }
             catch(DataException e)
             {
@@ -68,9 +65,13 @@ namespace NewsMonitor.WPF
                     String.Join(Environment.NewLine, ExceptionMessages(e)));
                 this.Close();
             }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                this.Close();
+            }
         }
 
-        
 
         List<string> ExceptionMessages(Exception e, List<string> messageList = null)
         {
@@ -228,9 +229,18 @@ namespace NewsMonitor.WPF
 
         private void ShareJobQueue_CurrentJobStatusUpdate(object sender, ShareJobStatusEventArgs e)
         {
-            JobStatusTextBlock.Text =  $"{ShareJobQueue.Count} jobs in queue -- " +
+            string message = $"{ShareJobQueue.Count} jobs in queue -- " +
                 $"{e.Job.Description}: {e.Status}";
+            Console.WriteLine(message);
+            JobStatusTextBlock.Text = message;
+            JobStatusTextBlock.Foreground = new SolidColorBrush(e.Failed ? Colors.Red : Colors.Black);
         }
+
+        private void ShareJobQueue_AllJobsFinished(object sender, EventArgs e)
+        {
+            JobStatusTextBlock.Text = "";
+        }
+
         #endregion
     }
 }

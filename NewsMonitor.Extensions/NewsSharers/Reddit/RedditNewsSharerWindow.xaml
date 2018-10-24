@@ -6,9 +6,35 @@
         xmlns:local="clr-namespace:NewsMonitor.Extensions.NewsSharers.Reddit"
         xmlns:views="clr-namespace:NewsMonitor.WPF.Views;assembly=NewsMonitor.WPF"
         mc:Ignorable="d"
-        Title="RedditNewsSharerWindow" Height="450" Width="800">
+        Title="RedditNewsSharerWindow" Height="520" Width="800">
     <StackPanel>
-    <TextBox x:Name="PostTitleTextBox"/>
-    <Button x:Name="PostButton" Click="PostButton_Click" />
+      <Label Content="Title" />
+      <TextBox x:Name="PostTitleTextBox"/>
+    <Label Content="URL" />
+    <TextBox x:Name="ArticleUrlTextBox"/>
+    <Label Content="Subreddits" />
+    <StackPanel Orientation="Horizontal" Height="300">
+      <TreeView x:Name="DefaultSubredditsTreeView" Width="200">
+        
+      </TreeView>
+      <Button Click="AddSelectedSubredditsButton_Click">&gt;</Button>
+      <StackPanel Width="200">
+        <ListView x:Name="SelectedSubredditsListView" Height="200">
+
+        </ListView>
+        <StackPanel Orientation="Horizontal">
+          <TextBox x:Name="SubredditInputTextBox" Width="100"></TextBox>
+          <Button Click="AddSubredditButton_Click" Width="100">Add</Button>
+        </StackPanel>
+        
+
+        <Button>Delete</Button>
+      </StackPanel>
+      
+    </StackPanel>
+      
+    <Button x:Name="PostButton" Height="40" Click="PostButton_Click">
+        Post
+      </Button>
   </StackPanel>
 </views:NewsSharerWindow>

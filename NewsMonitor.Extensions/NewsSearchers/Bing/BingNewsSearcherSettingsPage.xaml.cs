@@ -27,7 +27,7 @@ namespace NewsMonitor.Extensions.NewsSearchers.Bing
             InitializeComponent();
             Console.WriteLine("BingNewsSearcherSettingsPage");
 
-            SettingsMappings.Add(new SettingsMapping(BingNewsAccessKeyStorageKey, "",
+            SettingsMappings.Add(new TextBoxSettingsMapping(BingNewsAccessKeyStorageKey, "",
                     BingNewsAccessKeyTextBox));
         }
 

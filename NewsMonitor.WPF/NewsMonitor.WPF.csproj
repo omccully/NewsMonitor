@@ -89,25 +89,35 @@
     <Compile Include="Settings\InvalidConfigurationException.cs" />
     <Compile Include="Settings\InvalidExtensionTypeException.cs" />
     <Compile Include="Settings\ISettingsGroup.cs" />
+    <Compile Include="Settings\IStringHolder.cs" />
+    <Compile Include="Settings\Mappings\EditableTreeViewSettingsMapping.cs" />
+    <Compile Include="Settings\Mappings\PasswordBoxSettingsMapping.cs" />
+    <Compile Include="Settings\Mappings\TreeModelSettingsMapping.cs" />
     <Compile Include="Settings\SettingsGroup.cs" />
     <Compile Include="Settings\SettingsManager.cs" />
-    <Compile Include="Settings\SettingsMapping.cs" />
-    <Compile Include="Settings\TextValidator.cs" />
+    <Compile Include="Settings\Mappings\SettingsMapping.cs" />
+    <Compile Include="Settings\Mappings\TextBoxSettingsMapping.cs" />
+    <Compile Include="Settings\Mappings\TextValidator.cs" />
+    <Compile Include="Settings\Mappings\TreeViewSettingsMapping.cs" />
     <Compile Include="Views\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EmptySettingsPage.xaml.cs">
+    <Compile Include="Views\EditableTreeView\EditableTreeView.cs" />
+    <Compile Include="Views\EditableTreeView\EditableTreeViewLevelRule.cs" />
+    <Compile Include="Views\EditableTreeView\TreeModel.cs" />
+    <Compile Include="Views\EditableTreeView\TreeViewHelpers.cs" />
+    <Compile Include="Views\Settings\EmptySettingsPage.xaml.cs">
       <DependentUpon>EmptySettingsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\GeneralSettingsPage.xaml.cs">
+    <Compile Include="Views\Settings\GeneralSettingsPage.xaml.cs">
       <DependentUpon>GeneralSettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NewsSharerWindow.cs" />
-    <Compile Include="Views\SettingsPage.cs" />
-    <Compile Include="Views\SettingsWindow.xaml.cs">
+    <Compile Include="Views\Settings\SettingsPage.cs" />
+    <Compile Include="Views\Settings\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -143,11 +153,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Views\EmptySettingsPage.xaml">
+    <Page Include="Views\Settings\EmptySettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\GeneralSettingsPage.xaml">
+    <Page Include="Views\Settings\GeneralSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -155,7 +165,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\SettingsWindow.xaml">
+    <Page Include="Views\Settings\SettingsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

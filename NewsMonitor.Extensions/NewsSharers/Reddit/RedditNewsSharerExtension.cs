@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using NewsMonitor.Data.Models;
+using System.Xml.Serialization;
+using System.IO;
+using RedditSharp;
 
 namespace NewsMonitor.Extensions.NewsSharers.Reddit
 {
@@ -25,48 +28,116 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             return new RedditNewsSharerSettingsPage();
         }
 
+        BotWebAgent BotWebAgent;
+        RedditSharp.Reddit RedditApi;
+
+        string CurrentUsername;
+        string CurrentPassword;
+        string CurrentClientId;
+        string CurrentClientSecret;
+
+        void ReinitializeRedditApi(KeyValueStorage kvs)
+        {
+            string username = kvs.GetString(RedditNewsSharerSettingsPage.RedditUsernameKey);
+            string password = kvs.GetString(RedditNewsSharerSettingsPage.RedditPasswordKey);
+            string clientId = kvs.GetString(RedditNewsSharerSettingsPage.RedditClientIdKey);
+            string clientSecret = kvs.GetString(RedditNewsSharerSettingsPage.RedditClientSecretKey);
+
+            if (String.IsNullOrWhiteSpace(username) ||
+                String.IsNullOrWhiteSpace(password) ||
+                String.IsNullOrWhiteSpace(clientId) ||
+                String.IsNullOrWhiteSpace(clientSecret)) return;
+
+            // if the user has changed the settings since the last time, it needs to be reinitialized
+            if ((CurrentUsername != username || CurrentPassword != password ||
+                CurrentClientId != clientId || CurrentClientSecret != clientSecret) || BotWebAgent == null)
+            {
+                BotWebAgent = new BotWebAgent(username, password, clientId, clientSecret,
+                 "https://localhost/");
+
+                RedditApi = new RedditSharp.Reddit(BotWebAgent, false);
+
+                CurrentUsername = username;
+                CurrentPassword = password;
+                CurrentClientId = clientId;
+                CurrentClientSecret = clientSecret;
+            }
+        }
+
         public NewsSharerWindow CreateSharerWindow(NewsArticle newsArticle, KeyValueStorage kvs)
         {
-             /*BotWebAgent bwa = new BotWebAgent(
-                 kvs.GetString(RedditNewsSharerSettingsPage.RedditUsernameKey),
-                 kvs.GetString(RedditNewsSharerSettingsPage.RedditPasswordKey),
-                 kvs.GetString(RedditNewsSharerSettingsPage.RedditClientIdKey),
-                 kvs.GetString(RedditNewsSharerSettingsPage.RedditClientSecretKey),
-                 "https://localhost/");
-                 
-            RedditSharp.Reddit reddit = new RedditSharp.Reddit(bwa, false);*/
-             //reddit.GetSubreddit("/r/news").SubmitPostAsync()
+            ReinitializeRedditApi(kvs);
 
-
-            RedditNewsSharerWindow sharerWindow = new RedditNewsSharerWindow(newsArticle, kvs /*, reddit*/);
+            RedditNewsSharerWindow sharerWindow = new RedditNewsSharerWindow(newsArticle, kvs, RedditApi);
 
             sharerWindow.JobsCreated += delegate (object window, JobsCreatedEventArgs e)
             {
-                foreach(IShareJob job in e.Jobs)
-                {
-                    job.Finished += (jobbbbb, ea) =>
-                    {
-                        // TODO: remove job from UnfinishedJobs, update kvs
-                    };
-                }
-
-                // TODO: save unfinished jobs to KeyValueStorage
-
+                AddJobs(e.Jobs, kvs);
             };
 
             return sharerWindow;
         }
 
-        List<IShareJob> UnfinishedJobs = new List<IShareJob>()
+        void AddJobs(IEnumerable<IShareJob> jobs, KeyValueStorage kvs, bool updateDb = true)
         {
-            new RedditPostShareJob("test initial", "worldnews", "https://twitter.com")
-        };
+            foreach (IShareJob job in jobs)
+            {
+                job.Finished += (jobbbbb, ea) =>
+                {
+                    RemoveJob(job, kvs);
+                };
+
+                UnfinishedJobs.Add((RedditPostShareJob)job);
+            }
+
+            if(updateDb) UpdateUnfinishedJobsInStorage(kvs);
+        }
+
+        void RemoveJob(IShareJob job, KeyValueStorage kvs)
+        {
+            UnfinishedJobs.Remove((RedditPostShareJob)job);
+
+            UpdateUnfinishedJobsInStorage(kvs);
+        }
+
+        List<RedditPostShareJob> UnfinishedJobs = new List<RedditPostShareJob>();
+
         public IEnumerable<IShareJob> GetUnfinishedJobs(KeyValueStorage kvs)
         {
-            // TODO: deserialize value from kvs and set UnfinishedJobs 
+            List<RedditPostShareJob> rawJobs = null;
+            string storedXml = kvs.GetString(UnfinishedJobsKey);
+            if(storedXml != null)
+            {
+                XmlSerializer reader = new XmlSerializer(typeof(List<RedditPostShareJob>));
+                rawJobs = (List<RedditPostShareJob>)reader.Deserialize(new StringReader(storedXml));
+            }
 
+            ReinitializeRedditApi(kvs);
+            foreach (RedditPostShareJob job in rawJobs)
+            {
+                job.RedditApi = RedditApi;
+            }
 
-            return UnfinishedJobs;
+            UnfinishedJobs = new List<RedditPostShareJob>();
+            AddJobs(rawJobs, kvs, false);
+
+            return rawJobs;
+        }
+
+        const string UnfinishedJobsKey = "UnfinishedJobs";
+
+        void UpdateUnfinishedJobsInStorage(KeyValueStorage kvs)
+        {
+            Console.WriteLine("UpdateUnfinishedJobsInStorage Count=" + UnfinishedJobs.Count);
+
+            XmlSerializer writer = new XmlSerializer(typeof(List<RedditPostShareJob>));
+            StringWriter sw = new StringWriter();
+
+            writer.Serialize(sw, UnfinishedJobs);
+
+            string xml = sw.ToString();
+            kvs.SetValue(UnfinishedJobsKey, xml);
+            Console.WriteLine(xml);
         }
     }
 }

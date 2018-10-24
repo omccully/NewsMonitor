@@ -27,7 +27,7 @@ namespace NewsMonitor.WPF.Views
             InitializeComponent();
 
             SettingsMappings.Add(
-                new SettingsMapping(SearchTermsKey, SearchTermsDefault, SearchTermsTextBox));
+                new TextBoxSettingsMapping(SearchTermsKey, SearchTermsDefault, SearchTermsTextBox));
         }
 
         public const string MaxArticleAgeDaysKey = "MaxArticleAgeDays";
