@@ -26,9 +26,6 @@
           <TextBox x:Name="SubredditInputTextBox" Width="100"></TextBox>
           <Button Click="AddSubredditButton_Click" Width="100">Add</Button>
         </StackPanel>
-        
-
-        <Button>Delete</Button>
       </StackPanel>
       
     </StackPanel>

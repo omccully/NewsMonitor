@@ -102,10 +102,10 @@
     <Compile Include="Views\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EditableTreeView\EditableTreeView.cs" />
-    <Compile Include="Views\EditableTreeView\EditableTreeViewLevelRule.cs" />
-    <Compile Include="Views\EditableTreeView\TreeModel.cs" />
-    <Compile Include="Views\EditableTreeView\TreeViewHelpers.cs" />
+    <Compile Include="Views\Controls\EditableTreeView\EditableTreeView.cs" />
+    <Compile Include="Views\Controls\EditableTreeView\EditableTreeViewLevelRule.cs" />
+    <Compile Include="Views\Controls\EditableTreeView\TreeModel.cs" />
+    <Compile Include="Views\Controls\EditableTreeView\TreeViewHelpers.cs" />
     <Compile Include="Views\Settings\EmptySettingsPage.xaml.cs">
       <DependentUpon>EmptySettingsPage.xaml</DependentUpon>
     </Compile>

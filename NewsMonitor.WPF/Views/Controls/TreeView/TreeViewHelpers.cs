@@ -47,5 +47,30 @@ namespace NewsMonitor.WPF.Views.EditableTreeView
 
             return outerModels;
         }
+
+        public static void ExpandAll(this TreeViewItem tvi, int childLimit=0, bool recursive=false)
+        {
+            ExpandAll((ItemsControl)tvi, childLimit, recursive);
+        }
+
+        public static void ExpandAll(this TreeView tv, int childLimit=0, bool recursive = false)
+        {
+            ExpandAll((ItemsControl)tv, childLimit, recursive);
+        }
+
+        static void ExpandAll(ItemsControl control, int childLimit=0, bool recursive = false)
+        {
+            foreach (object item in control.Items)
+            {
+                TreeViewItem tvi = item as TreeViewItem;
+                if (tvi == null) continue;
+
+                if (childLimit == 0 || tvi.Items.Count <= childLimit)
+                {
+                    tvi.IsExpanded = true;
+                    if(recursive) ExpandAll((ItemsControl)tvi, childLimit, recursive);
+                }
+            }
+        }
     }
 }
