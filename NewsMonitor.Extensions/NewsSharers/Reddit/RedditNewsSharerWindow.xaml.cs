@@ -108,6 +108,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             if (!SelectedSubreddits.Contains(SubredditInputTextBox.Text))
             {
                 SelectedSubreddits.Add(SubredditInputTextBox.Text);
+                SubredditInputTextBox.Text = "";
             }
         }
     }

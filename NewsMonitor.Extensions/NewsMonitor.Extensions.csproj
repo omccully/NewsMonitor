@@ -59,6 +59,8 @@
     <Compile Include="NewsFilters\Recency\RecencyNewsFilterSettingsPage.xaml.cs">
       <DependentUpon>RecencyNewsFilterSettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NewsFilters\RegexTitle\IStringSectionsSerializer.cs" />
+    <Compile Include="NewsFilters\RegexTitle\JsonStringSectionSerializer.cs" />
     <Compile Include="NewsFilters\RegexTitle\RegexTitleNewsFilterExtension.cs" />
     <Compile Include="NewsFilters\RegexTitle\RegexTitleNewsFilterSettingsPage.xaml.cs">
       <DependentUpon>RegexTitleNewsFilterSettingsPage.xaml</DependentUpon>

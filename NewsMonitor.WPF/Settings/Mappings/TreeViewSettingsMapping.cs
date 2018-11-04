@@ -35,7 +35,7 @@ namespace NewsMonitor.WPF.Settings.Mappings
 
             TreeModelMapping.Deserialize(val);
 
-            Console.WriteLine(val);
+            //Console.WriteLine(val);
 
             if(Model == null)
             {

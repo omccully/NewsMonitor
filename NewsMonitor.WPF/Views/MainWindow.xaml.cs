@@ -133,6 +133,16 @@ namespace NewsMonitor.WPF
                 f => f.Extension.AllowArticle(newsArticle, searchTerm, f.SettingsGroup.KeyValueStorage));
         }
 
+        IEnumerable<string> SearchTerms
+        {
+            get
+            {
+                string searchTermsStr = SettingsManager.General
+                    .KeyValueStorage.GetString(GeneralSettingsPage.SearchTermsKey);
+                return searchTermsStr.Split(',').Select(str => str.Trim());
+            }
+        }
+
         private void FindArticlesButton_Click(object sender, RoutedEventArgs e)
         {
             FindArticlesButton.IsEnabled = false;
@@ -142,9 +152,7 @@ namespace NewsMonitor.WPF
                 IEnumerable<INewsSearcher> news_searchers = NewsSearchers;
                 HashSet<string> existing_article_urls = ExistingArticleUrls;
 
-                string searchTermsStr = SettingsManager.General
-                    .KeyValueStorage.GetString(GeneralSettingsPage.SearchTermsKey);
-                var search_terms = searchTermsStr.Split(',').Select(str => str.Trim());
+                IEnumerable<string> search_terms = SearchTerms;
 
                 foreach (string search_term in search_terms)
                 {
@@ -197,6 +205,24 @@ namespace NewsMonitor.WPF
                 article.Hidden = true;
 
                 dbContext.SaveChanges();
+            }
+        }
+
+        private void RefilterButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (object item in NewsArticlesDataGrid.SelectedItems)
+            {
+                NewsArticle article = (NewsArticle)item;
+
+                bool passedAll = SearchTerms.All(st => PassesAllFilters(article, st));
+
+                if (!passedAll) {
+                    
+                    article.Hidden = true;
+
+                    dbContext.SaveChanges();
+                }
+                
             }
         }
 

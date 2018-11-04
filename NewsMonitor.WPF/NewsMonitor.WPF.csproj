@@ -91,6 +91,7 @@
     <Compile Include="Settings\ISettingsGroup.cs" />
     <Compile Include="Settings\IStringHolder.cs" />
     <Compile Include="Settings\Mappings\EditableTreeViewSettingsMapping.cs" />
+    <Compile Include="Settings\Mappings\ObservableCollectionSettingsMapping.cs" />
     <Compile Include="Settings\Mappings\PasswordBoxSettingsMapping.cs" />
     <Compile Include="Settings\Mappings\TreeModelSettingsMapping.cs" />
     <Compile Include="Settings\SettingsGroup.cs" />
@@ -102,10 +103,10 @@
     <Compile Include="Views\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\EditableTreeView\EditableTreeView.cs" />
-    <Compile Include="Views\Controls\EditableTreeView\EditableTreeViewLevelRule.cs" />
-    <Compile Include="Views\Controls\EditableTreeView\TreeModel.cs" />
-    <Compile Include="Views\Controls\EditableTreeView\TreeViewHelpers.cs" />
+    <Compile Include="Views\Controls\TreeView\EditableTreeView.cs" />
+    <Compile Include="Views\Controls\TreeView\EditableTreeViewLevelRule.cs" />
+    <Compile Include="Views\Controls\TreeView\TreeModel.cs" />
+    <Compile Include="Views\Controls\TreeView\TreeViewHelpers.cs" />
     <Compile Include="Views\Settings\EmptySettingsPage.xaml.cs">
       <DependentUpon>EmptySettingsPage.xaml</DependentUpon>
     </Compile>

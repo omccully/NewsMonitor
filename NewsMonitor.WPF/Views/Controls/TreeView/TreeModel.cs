@@ -22,5 +22,24 @@ namespace NewsMonitor.WPF.Views.EditableTreeView
         {
 
         }
+
+        public Dictionary<T, IEnumerable<T>> GetNextLayerDictionary()
+        {
+            Dictionary<T, IEnumerable<T>> dict = new Dictionary<T, IEnumerable<T>>();
+
+            foreach(TreeModel<T> child in Children)
+            {
+                dict.Add(child.NodeValue,
+                    child.Children.Select(c => c.NodeValue).ToList());
+            }
+
+            return dict;
+        }
+
+        public static Dictionary<T, IEnumerable<T>> LayerToDictionary(IEnumerable<TreeModel<T>> treeModels)
+        {
+            return treeModels.ToDictionary(tm => tm.NodeValue, 
+                tm => tm.Children.Select(tmInner => tmInner.NodeValue));
+        }
     }
 }

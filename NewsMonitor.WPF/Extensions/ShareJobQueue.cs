@@ -116,7 +116,7 @@ namespace NewsMonitor.WPF.Extensions
                 }
                 catch(Exception e)
                 {
-                    Console.WriteLine("Failed: " + e.Message);
+                    Console.WriteLine("Job failed: " + e.ToString());
                     JobFinished?.Invoke(this, new ShareJobStatusEventArgs(nextJob, "Failed: " + e.Message, true));
                     return;
                 }

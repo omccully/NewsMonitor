@@ -58,7 +58,16 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
 
             Subreddit sub = await RedditApi.GetSubredditAsync(Subreddit);
 
-            await sub.SubmitPostAsync(Title, Url);
+            System.Diagnostics.Debug.WriteLine($"{sub}.SubmitPostAsync({Title}, {Url})");
+            try
+            {
+                Post post = await sub.SubmitPostAsync(Title, Url);
+               
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("reddit post fail: " + e.ToString());
+            }
 
             Finished?.Invoke(this, new EventArgs());
         }

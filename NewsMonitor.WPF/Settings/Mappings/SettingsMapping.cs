@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NewsMonitor.Data.Database;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,6 +33,16 @@ namespace NewsMonitor.WPF.Settings
         /// </summary>
         /// <returns></returns>
         public abstract string Serialize();
+
+        public void Load(KeyValueStorage kvs)
+        {
+            Deserialize(kvs.GetString(StorageKey, DefaultValue));
+        }
+
+        public void Save(KeyValueStorage kvs)
+        {
+            kvs.SetValue(StorageKey, Serialize());
+        }
 
         public bool IsValid
         {

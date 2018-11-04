@@ -28,7 +28,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             return new RedditNewsSharerSettingsPage();
         }
 
-        BotWebAgent BotWebAgent;
+        BotWebAgent botWebAgent;
         RedditSharp.Reddit RedditApi;
 
         string CurrentUsername;
@@ -38,6 +38,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
 
         void ReinitializeRedditApi(KeyValueStorage kvs)
         {
+            System.Diagnostics.Debug.WriteLine("ReinitializeRedditApi");
             string username = kvs.GetString(RedditNewsSharerSettingsPage.RedditUsernameKey);
             string password = kvs.GetString(RedditNewsSharerSettingsPage.RedditPasswordKey);
             string clientId = kvs.GetString(RedditNewsSharerSettingsPage.RedditClientIdKey);
@@ -50,12 +51,14 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
 
             // if the user has changed the settings since the last time, it needs to be reinitialized
             if ((CurrentUsername != username || CurrentPassword != password ||
-                CurrentClientId != clientId || CurrentClientSecret != clientSecret) || BotWebAgent == null)
+                CurrentClientId != clientId || CurrentClientSecret != clientSecret) || botWebAgent == null)
             {
-                BotWebAgent = new BotWebAgent(username, password, clientId, clientSecret,
+                System.Diagnostics.Debug.WriteLine($"REDDITINFO {username} {password} {clientId} {clientSecret}");
+                botWebAgent = new BotWebAgent(username, password, clientId, clientSecret,
                  "https://localhost/");
+                BotWebAgent.UserAgent = "News Sharer (/u/EinarrPorketill)";
 
-                RedditApi = new RedditSharp.Reddit(BotWebAgent, false);
+                RedditApi = new RedditSharp.Reddit(botWebAgent, false);
 
                 CurrentUsername = username;
                 CurrentPassword = password;
@@ -137,7 +140,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
 
             string xml = sw.ToString();
             kvs.SetValue(UnfinishedJobsKey, xml);
-            Console.WriteLine(xml);
+            //Console.WriteLine(xml);
         }
     }
 }

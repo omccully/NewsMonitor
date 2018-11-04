@@ -9,27 +9,16 @@
         Title="Settings" Height="450" Width="800">
   <DockPanel>
     <TreeView x:Name="SettingsPageSelectorTreeView" Width="200" DockPanel.Dock="Left">
-      <!--<TreeViewItem x:Name="GeneralSettingsTreeViewItem" 
-                    Header="General" Selected="GeneralSettingsTreeViewItem_Selected"/>
-      <TreeViewItem Header="News searchers" IsExpanded="True">
-        <TreeViewItem Header="Bing" />
-        <TreeViewItem Header="Google" />
-      </TreeViewItem>
-      <TreeViewItem Header="News sharers" IsExpanded="True">
-        <TreeViewItem Header="Reddit" />
-        <TreeViewItem Header="Twitter" />
-        <TreeViewItem Header="Facebook" />
-      </TreeViewItem>-->
     </TreeView>
     <DockPanel DockPanel.Dock="Right">
-      <Frame x:Name="SettingsFrame" DockPanel.Dock="Top" >
-
-      </Frame>
-      <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right"
+      <StackPanel MinHeight="40" VerticalAlignment="Bottom" HorizontalAlignment="Right"
         Height="40" DockPanel.Dock="Bottom" Orientation="Horizontal" >
         <!-- Add other buttons here if needed -->
-        <Button x:Name="OkButton" Padding="10" Margin="5,0,5,5" Click="OkButton_Click">Ok</Button>
+        <Button x:Name="OkButton"  Padding="10,0,10,0" Margin="5,5,5,5" Click="OkButton_Click">Ok</Button>
       </StackPanel>
+      <Frame x:Name="SettingsFrame" DockPanel.Dock="Top" >
+        <!-- Frame fills remaining space -->
+      </Frame>
     </DockPanel>
     
     

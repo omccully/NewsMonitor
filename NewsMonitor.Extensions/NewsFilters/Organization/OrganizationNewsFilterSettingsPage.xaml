@@ -9,8 +9,14 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="OrganizationNewsFilterSettingsPage">
-
-    <Grid>
-      <ListBox x:Name="OrganizationListBox"></ListBox>
-    </Grid>
+  <DockPanel>
+    <StackPanel Orientation="Horizontal">
+      <ListBox x:Name="OrganizationListBox" Width="250" />
+      <StackPanel Width="100">
+        <TextBox x:Name="NewOrganizationTextBox"></TextBox>
+        <Button Click="NewOrganizationButton_Click">Add</Button>
+      </StackPanel>
+    </StackPanel>
+  </DockPanel>
+    
 </views:SettingsPage>

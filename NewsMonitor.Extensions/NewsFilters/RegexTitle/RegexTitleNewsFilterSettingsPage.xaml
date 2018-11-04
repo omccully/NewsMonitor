@@ -5,11 +5,21 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:views="clr-namespace:NewsMonitor.WPF.Views;assembly=NewsMonitor.WPF"
+      xmlns:etv="clr-namespace:NewsMonitor.WPF.Views.EditableTreeView;assembly=NewsMonitor.WPF"
+  
+  
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="RegexTitleNewsFilterSettingsPage">
 
-    <Grid>
-      <ListBox x:Name="RegexListBox"></ListBox>
-    </Grid>
+  <StackPanel Orientation="Horizontal">
+    <etv:EditableTreeView Width="300" x:Name="RegexTitleTreeView">
+
+    </etv:EditableTreeView>
+    <StackPanel Width="150">
+      <Button Click="AddFromJsonFile_Click">Add from JSON file</Button>
+      <Button Click="ReplaceWithJsonFile_Click">Replace with JSON file</Button>
+      <Button Click="SaveToJsonFile_Click">Save to JSON file</Button>
+    </StackPanel>
+  </StackPanel>
 </views:SettingsPage>

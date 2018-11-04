@@ -72,5 +72,29 @@ namespace NewsMonitor.WPF.Views.EditableTreeView
                 }
             }
         }
+
+        public static TreeViewItem TreeViewItemWithHeader(this ItemsControl control, string str)
+        {
+            foreach (object item in control.Items)
+            {
+                TreeViewItem tvi = item as TreeViewItem;
+                if (tvi == null) continue;
+
+                if (tvi.Header.ToString() == str) return tvi;
+            }
+            return null;
+        }
+
+        public static bool ContainsChildHeader(this ItemsControl control, string str)
+        {
+            foreach(object item in control.Items)
+            {
+                TreeViewItem tvi = item as TreeViewItem;
+                if (tvi == null) continue;
+
+                if (tvi.Header.ToString() == str) return true;
+            }
+            return false;
+        }
     }
 }

@@ -13,6 +13,9 @@ namespace NewsMonitor.WPF.Views.EditableTreeView
     {
         public int MaxItemsForAutoExpand { get; set; } = 20;
 
+        IEnumerable<EditableTreeViewLevelRule> Rules;
+       
+
         public EditableTreeView()
         {
             // allow for delete functionality
@@ -32,6 +35,8 @@ namespace NewsMonitor.WPF.Views.EditableTreeView
             ExpandAll();
 
             AddTextBoxes(this, rules);
+
+            this.Rules = rules;
         }
 
         void ExpandAll()
@@ -45,6 +50,34 @@ namespace NewsMonitor.WPF.Views.EditableTreeView
                 {
                     tvi.IsExpanded = true;
                 }
+            }
+        }
+
+        public void RefreshTextBoxes()
+        {
+            RemoveTextBoxes(this);
+            AddTextBoxes(this, Rules);
+        }
+
+        void RemoveTextBoxes(ItemsControl control)
+        {
+            List<object> itemsToRemove = new List<object>();
+
+            foreach(object item in control.Items)
+            {
+                if(item is TextBox)
+                {
+                    itemsToRemove.Add(item);
+                }
+                else if(item is TreeViewItem)
+                {
+                    RemoveTextBoxes((TreeViewItem)item);
+                }
+            }
+
+            foreach(object item in itemsToRemove)
+            {
+                control.Items.Remove(item);
             }
         }
 
@@ -82,7 +115,7 @@ namespace NewsMonitor.WPF.Views.EditableTreeView
 
                 if (thisLayerRules.Unique)
                 {
-                    if (ItemsControlHasChildWithHeader(control, newItemText))
+                    if (control.ContainsChildHeader(newItemText))
                     {
                         tb.Background = new SolidColorBrush(Colors.Red);
                         return;
@@ -175,11 +208,5 @@ namespace NewsMonitor.WPF.Views.EditableTreeView
             return false;
         }
         #endregion
-
-
-        public TreeModel<string> ToModel()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

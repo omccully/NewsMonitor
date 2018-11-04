@@ -11,6 +11,7 @@
       <Button x:Name="FindArticlesButton" Click="FindArticlesButton_Click">Run</Button>
       <Button Click="SettingsButton_Click" Margin="5,0,0,0">Settings</Button>
       <Button Click="DeleteSelectedButton_Click" Margin="5,0,0,0">Delete selected</Button>
+      <Button Click="RefilterButton_Click" Margin="5,0,0,0">Refilter</Button>
       <Button Click="ShareSelectedButton_Click" Margin="5,0,0,0">Share selected</Button>
     </ToolBar>
     <StatusBar DockPanel.Dock="Bottom">
