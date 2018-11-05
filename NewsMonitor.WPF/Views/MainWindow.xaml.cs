@@ -15,6 +15,10 @@ using System.Collections.Specialized;
 using System.Data;
 using System.Text;
 using System.Windows.Media;
+using System.Diagnostics;
+using System.Windows.Documents;
+using System.ComponentModel;
+using System.Windows.Data;
 
 namespace NewsMonitor.WPF
 {
@@ -30,6 +34,9 @@ namespace NewsMonitor.WPF
         ObservableCollectionFilter<NewsArticle> NewsArticleFilter;
 
         ShareJobQueue ShareJobQueue;
+
+        ReadOnlyObservableCollection<NewsArticle> NewsArticlesSource;
+
 
         public MainWindow()
         {
@@ -72,7 +79,6 @@ namespace NewsMonitor.WPF
             }
         }
 
-
         List<string> ExceptionMessages(Exception e, List<string> messageList = null)
         {
             if (messageList == null) messageList = new List<string>();
@@ -91,9 +97,18 @@ namespace NewsMonitor.WPF
         {
             dbContext = new DatabaseContext("NewsMonitorDb");
             AllNewsArticles = new ObservableCollection<NewsArticle>(dbContext.NewsArticles.ToList());
-            NewsArticleFilter = new ObservableCollectionFilter<NewsArticle>(AllNewsArticles);
+            NewsArticleFilter = new ObservableCollectionFilter<NewsArticle>(AllNewsArticles, 
+                (na) => !na.Hidden);
+
+            NewsArticlesSource = NewsArticleFilter.FilteredResults;
 
             NewsArticlesDataGrid.ItemsSource = NewsArticleFilter.FilteredResults;
+            this.SizeToContent = SizeToContent.Width;
+        }
+
+        ReadOnlyObservableCollection<NewsArticle> GetNewsArticles()
+        {
+            return NewsArticleFilter.FilteredResults;
         }
 
         HashSet<string> ExistingArticleUrls
@@ -143,6 +158,15 @@ namespace NewsMonitor.WPF
             }
         }
 
+        IEnumerable<NewsArticle> SelectedNewsArticles
+        {
+            get
+            {
+                return NewsArticlesDataGrid.SelectedItems.Cast<NewsArticle>().ToList();
+            }
+        }
+
+
         private void FindArticlesButton_Click(object sender, RoutedEventArgs e)
         {
             FindArticlesButton.IsEnabled = false;
@@ -162,12 +186,13 @@ namespace NewsMonitor.WPF
                         Console.WriteLine("News Searcher=" + news_searcher.GetType());
                    
                         IEnumerable<NewsArticle> results = news_searcher.Search(search_term)
-                            .Where(article => !existing_article_urls.Contains(article.Url) &&
-                                PassesAllFilters(article, search_term));
+                            .Where(article => PassesAllFilters(article, search_term));
                         foreach (NewsArticle article in results)
                         {
-                            AllNewsArticles.Add(article);
+                            if (existing_article_urls.Contains(article.Url)) continue;
 
+                            AllNewsArticles.Add(article);
+                            existing_article_urls.Add(article.Url);
                             dbContext.NewsArticles.Add(article);
                             dbContext.SaveChanges();
 
@@ -196,12 +221,23 @@ namespace NewsMonitor.WPF
             Console.WriteLine("returned to main window");
         }
 
+        #region Delete and refilter
         private void DeleteSelectedButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach(object item in NewsArticlesDataGrid.SelectedItems)
-            {
-                NewsArticle article = (NewsArticle)item;
+            DeleteSelectedNewsArticles();
+        }
 
+        private void NewsArticlesDataGrid_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key != System.Windows.Input.Key.Delete) return;
+
+            DeleteSelectedNewsArticles();
+        }
+
+        void DeleteSelectedNewsArticles()
+        {
+            foreach (NewsArticle article in SelectedNewsArticles)
+            {
                 article.Hidden = true;
 
                 dbContext.SaveChanges();
@@ -210,10 +246,8 @@ namespace NewsMonitor.WPF
 
         private void RefilterButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (object item in NewsArticlesDataGrid.SelectedItems)
+            foreach (NewsArticle article in SelectedNewsArticles)
             {
-                NewsArticle article = (NewsArticle)item;
-
                 bool passedAll = SearchTerms.All(st => PassesAllFilters(article, st));
 
                 if (!passedAll) {
@@ -222,17 +256,38 @@ namespace NewsMonitor.WPF
 
                     dbContext.SaveChanges();
                 }
-                
+            }
+        }
+        #endregion
+
+        #region Launch article
+        void LaunchArticle(NewsArticle article)
+        {
+            if (article != null &&
+                (article.Url.StartsWith("http://") || article.Url.StartsWith("https://")))
+            {
+                Process.Start(article.Url);
             }
         }
 
-        IEnumerable<NewsArticle> SelectedNewsArticles
+        private void ShowSelectedInBrowser_Click(object sender, RoutedEventArgs e)
         {
-            get
+            foreach (NewsArticle article in SelectedNewsArticles)
             {
-                return NewsArticlesDataGrid.SelectedItems.Cast<NewsArticle>();
+                LaunchArticle(article);
             }
         }
+
+        void OnHyperlinkClick(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Source = " + e.Source);
+            System.Diagnostics.Debug.WriteLine("OriginalSource = " + e.OriginalSource);
+
+            NewsArticle article = ((Hyperlink)e.OriginalSource).DataContext as NewsArticle;
+
+            LaunchArticle(article);
+        }
+        #endregion
 
         #region Share
         private void ShareSelectedButton_Click(object sender, RoutedEventArgs e)

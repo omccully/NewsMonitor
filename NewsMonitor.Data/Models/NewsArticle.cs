@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace NewsMonitor.Data.Models
 {
-    public class NewsArticle
+    public class NewsArticle : INotifyPropertyChanged
     {
         [Key]
         public int Id { get; set; }
@@ -19,7 +20,19 @@ namespace NewsMonitor.Data.Models
 
         public DateTime TimePublished { get; set; }
         public DateTime TimeFound { get; set; }
-        public bool Hidden { get; set; }
+
+        bool _Hidden;
+        public bool Hidden {
+            get
+            {
+                return _Hidden;
+            }
+            set
+            {
+                _Hidden = value;
+                OnPropertyChanged(new PropertyChangedEventArgs("Hidden"));
+            }
+        }
 
         public NewsArticle()
         {
@@ -36,6 +49,13 @@ namespace NewsMonitor.Data.Models
 
             this.TimeFound = DateTime.Now;
             this.Hidden = false;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("NewsArticle.OnPropertyChanged");
+            PropertyChanged?.Invoke(this, e);
         }
 
         public override bool Equals(object obj)

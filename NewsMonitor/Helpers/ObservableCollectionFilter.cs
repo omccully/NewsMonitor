@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +41,17 @@ namespace NewsMonitor.Helpers
             Func<T, bool> filter = null)
         {
             SourceData = source_data;
+            foreach (T item in SourceData)
+            {
+                INotifyPropertyChanged npc = item as INotifyPropertyChanged;
+
+                if (npc != null)
+                {
+                    npc.PropertyChanged -= Npc_PropertyChanged;
+                    npc.PropertyChanged += Npc_PropertyChanged;
+                }
+            }
+
             ((INotifyCollectionChanged)source_data).CollectionChanged += SourceData_CollectionChanged;
 
             if (filter != null) this._Filter = filter;
@@ -77,7 +89,21 @@ namespace NewsMonitor.Helpers
                 {
                     EditableFilteredResults.Add(item);
                 }
+
+                INotifyPropertyChanged npc = item as INotifyPropertyChanged;
+
+                if (npc != null)
+                {
+                    npc.PropertyChanged -= Npc_PropertyChanged;
+                    npc.PropertyChanged += Npc_PropertyChanged;
+                }
             }
+        }
+
+        private void Npc_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("ObservableCollectionFilter.Npc_PropertyChanged");
+            Refresh();
         }
     }
 }

@@ -4,15 +4,32 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NewsMonitor.WPF"
+        xmlns:converters="clr-namespace:NewsMonitor.WPF.Converters"
+        xmlns:models="clr-namespace:NewsMonitor.Data.Models;assembly=NewsMonitor.Data"
         mc:Ignorable="d"
-        Title="News Monitor" Height="450" Width="800">
+        Title="News Monitor" Height="450" Width="800"
+        MaxWidth="1400">
+  <Window.Resources>
+    <converters:UrlToDomainConverter x:Key="urlToDomain"/>
+    <converters:DateTimeToStringConverter Format="d" x:Key="dtToString"/>
+    <Style x:Key="hyperlinkCellStyle" TargetType="{x:Type DataGridCell}" >
+      <Style.Triggers>
+        <Trigger Property="IsSelected"  Value="True">
+          <Setter Property="Foreground" Value="White"/>
+        </Trigger>
+      </Style.Triggers>
+      <EventSetter Event="Hyperlink.Click" Handler="OnHyperlinkClick" />
+    </Style>
+  </Window.Resources>
   <DockPanel>
     <ToolBar DockPanel.Dock="Top" x:Name="TopToolBar">
-      <Button x:Name="FindArticlesButton" Click="FindArticlesButton_Click">Run</Button>
-      <Button Click="SettingsButton_Click" Margin="5,0,0,0">Settings</Button>
-      <Button Click="DeleteSelectedButton_Click" Margin="5,0,0,0">Delete selected</Button>
-      <Button Click="RefilterButton_Click" Margin="5,0,0,0">Refilter</Button>
-      <Button Click="ShareSelectedButton_Click" Margin="5,0,0,0">Share selected</Button>
+      <Button x:Name="FindArticlesButton" Click="FindArticlesButton_Click">Find articles</Button>
+      <Button Click="SettingsButton_Click" Margin="7,0,0,0">Settings</Button>
+      <Button Click="DeleteSelectedButton_Click" Margin="7,0,0,0">Delete selected</Button>
+      <Button Click="RefilterButton_Click" Margin="7,0,0,0">Refilter</Button>
+      <!--<Button Click="ShowSelectedInBrowser_Click" Margin="7,0,0,0">Show selected in browser</Button>
+      -->
+      <Button Click="ShareSelectedButton_Click" Margin="7,0,0,0">Share selected</Button>
     </ToolBar>
     <StatusBar DockPanel.Dock="Bottom">
       <StatusBarItem>
@@ -21,8 +38,30 @@
     </StatusBar>
     <DataGrid x:Name="NewsArticlesDataGrid" 
       HorizontalAlignment="Stretch"
-      DockPanel.Dock="Bottom"/>
-    
+      AutoGenerateColumns="False"
+      AlternationCount="2" AlternatingRowBackground="Gainsboro"
+      IsReadOnly="True"
+      PreviewKeyDown="NewsArticlesDataGrid_KeyDown"
+      DockPanel.Dock="Bottom">
+      <DataGrid.Columns>
+        <DataGridTextColumn Binding="{Binding Path=Id}" Header="ID" />
+        <DataGridTextColumn Binding="{Binding Path=Title}" Header="Title" />
+        <DataGridHyperlinkColumn
+          Binding="{Binding Path=Url, Converter={StaticResource urlToDomain}}" 
+          Header="Domain"
+          CellStyle="{StaticResource hyperlinkCellStyle}">
+          <!--<DataGridHyperlinkColumn.ElementStyle>
+            <Style TargetType="TextBlock">
+              <EventSetter Event="Hyperlink.Click" Handler="OnHyperlinkClick" />
+            </Style>
+          </DataGridHyperlinkColumn.ElementStyle>-->
+        </DataGridHyperlinkColumn>
+        <DataGridTextColumn Binding="{Binding Path=TimePublished , Converter={StaticResource dtToString}}" Header="Published" />
+        <DataGridTextColumn Binding="{Binding Path=TimeFound}" Header="Found" />
+      </DataGrid.Columns>
+      
+    </DataGrid>
+
   </DockPanel>
 
   <!--<StackPanel>

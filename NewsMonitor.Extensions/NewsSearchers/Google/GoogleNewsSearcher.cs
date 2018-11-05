@@ -51,7 +51,7 @@ namespace NewsMonitor.Extensions.NewsSearchers.Google
             title = ParseTitle(title, out organization); 
             DateTime publishTime = item.PublishDate.UtcDateTime;
 
-            if (url == null || title == null) return null;
+            if (String.IsNullOrWhiteSpace(url) || String.IsNullOrWhiteSpace(title)) return null;
 
             return new NewsArticle(title, organization, url, publishTime);
         }
