@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NewsMonitor.Extensions</RootNamespace>
     <AssemblyName>NewsMonitor.Extensions</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,10 +38,12 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RedditSharp, Version=1.1.14.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RedditSharp.1.1.14\lib\net461\RedditSharp.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\RedditSharp\RedditSharp\bin\Debug\net462\RedditSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -71,6 +74,8 @@
       <DependentUpon>BingNewsSearcherSettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="NewsSearchers\Bing\InvalidBingNewsApiKeyException.cs" />
+    <Compile Include="NewsSearchers\Google\GoogleNewsSearcher.cs" />
+    <Compile Include="NewsSearchers\Google\GoogleNewsSearcherExtension.cs" />
     <Compile Include="NewsSharers\Reddit\RedditNewsSharerExtension.cs" />
     <Compile Include="NewsSharers\Reddit\RedditNewsSharerSettingsPage.xaml.cs">
       <DependentUpon>RedditNewsSharerSettingsPage.xaml</DependentUpon>

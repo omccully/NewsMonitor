@@ -53,10 +53,10 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             if ((CurrentUsername != username || CurrentPassword != password ||
                 CurrentClientId != clientId || CurrentClientSecret != clientSecret) || botWebAgent == null)
             {
-                System.Diagnostics.Debug.WriteLine($"REDDITINFO {username} {password} {clientId} {clientSecret}");
+                //System.Diagnostics.Debug.WriteLine($"REDDITINFO {username} {password} {clientId} {clientSecret}");
                 botWebAgent = new BotWebAgent(username, password, clientId, clientSecret,
                  "https://localhost/");
-                BotWebAgent.UserAgent = "News Sharer (/u/EinarrPorketill)";
+                botWebAgent.UserAgent = "News Sharer (/u/EinarrPorketill)";
 
                 RedditApi = new RedditSharp.Reddit(botWebAgent, false);
 
