@@ -63,7 +63,15 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             List<IShareJob> jobs = new List<IShareJob>();
             foreach (string subreddit in SelectedSubreddits)
             {
-                jobs.Add(new RedditPostShareJob(PostTitleTextBox.Text, subreddit, ArticleUrlTextBox.Text, RedditApi));
+                if(!String.IsNullOrWhiteSpace(subreddit))
+                {
+                    jobs.Add(new RedditPostShareJob(PostTitleTextBox.Text, subreddit, ArticleUrlTextBox.Text, RedditApi));
+                }
+            }
+            if(jobs.Count == 0)
+            {
+                MessageBox.Show("No subreddits are selected.");
+                return;
             }
 
             base.OnJobsCreated(new JobsCreatedEventArgs(jobs));
