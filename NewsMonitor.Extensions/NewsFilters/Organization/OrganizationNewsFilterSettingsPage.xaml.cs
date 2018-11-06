@@ -26,11 +26,11 @@ namespace NewsMonitor.Extensions.NewsFilters.Organization
     {
         ObservableCollection<string> FilteredOrganizations;
 
-        public OrganizationNewsFilterSettingsPage()
+        public OrganizationNewsFilterSettingsPage(ObservableCollection<string> filteredOrganizations)
         {
             InitializeComponent();
 
-            FilteredOrganizations = new ObservableCollection<string>();
+            FilteredOrganizations = filteredOrganizations;
 
             SettingsMappings.Add(
                 new ObservableCollectionSettingsMapping(FilteredOrganizationsKey, null, FilteredOrganizations));

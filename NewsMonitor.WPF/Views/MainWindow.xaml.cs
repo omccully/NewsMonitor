@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Windows.Documents;
 using System.ComponentModel;
 using System.Windows.Data;
+using System.Windows.Controls;
 
 namespace NewsMonitor.WPF
 {
@@ -53,30 +54,79 @@ namespace NewsMonitor.WPF
                     .SharerExtensionManager.Features
                     .SelectMany(f => f.Extension.GetUnfinishedJobs(f.KeyValueStorage));
 
-                Console.WriteLine("UnfinishedJobs.Count == " + unfinishedJobs.Count());
-                foreach(IShareJob job in unfinishedJobs)
-                {
-                    Console.WriteLine(job);
-                }
+                InitializeDataGridRowContextMenu();
 
-                ShareJobQueue = new ShareJobQueue();
-                ShareJobQueue.JobStarted += ShareJobQueue_CurrentJobStatusUpdate;
-                ShareJobQueue.JobFinished += ShareJobQueue_CurrentJobStatusUpdate;
-                ShareJobQueue.CurrentJobStatusUpdate += ShareJobQueue_CurrentJobStatusUpdate;
-                ShareJobQueue.AllJobsFinished += ShareJobQueue_AllJobsFinished;
-                ShareJobQueue.Enqueue(unfinishedJobs);
+                InitializeJobQueue(unfinishedJobs);
             }
             catch(DataException e)
             {
+                System.Diagnostics.Debug.WriteLine(e.ToString());
                 MessageBox.Show(
                     String.Join(Environment.NewLine, ExceptionMessages(e)));
                 this.Close();
             }
-            catch (Exception e)
+            catch (InvalidOperationException e)
             {
+                System.Diagnostics.Debug.WriteLine(e.ToString());
                 MessageBox.Show(e.Message);
                 this.Close();
             }
+        }
+
+        void InitializeDataGridRowContextMenu()
+        {
+            ContextMenu cm = (ContextMenu)NewsArticlesDataGrid.FindResource("RowMenu");
+
+            MenuItem fmi = cm.Items.Cast<MenuItem>().Where(mi => mi.Name == "FilterMenuItem").First();
+            foreach (ExtensionFeature<INewsFilterExtension> filter in SettingsManager.FilterExtensionManager.Features)
+            {
+                MenuItem mi = new MenuItem() { Header = filter.Extension.Name };
+                mi.Click += (o, e) =>
+                {
+                    foreach(NewsArticle article in SelectedNewsArticles)
+                    {
+                        System.Diagnostics.Debug.WriteLine(article.Title);
+                        FilterNewsArticle(article, filter);
+                    }
+
+                    e.Handled = true;
+                };
+                fmi.Items.Add(mi);
+            }
+
+
+            MenuItem smi = cm.Items.Cast<MenuItem>().Where(mi => mi.Name == "ShareMenuItem").First();
+            foreach (ExtensionFeature<INewsSharerExtension> sharer in SettingsManager.SharerExtensionManager.Features)
+            {
+                MenuItem mi = new MenuItem() { Header = sharer.Extension.Name };
+                mi.Click += (o, e) =>
+                {
+                    foreach (NewsArticle article in SelectedNewsArticles)
+                    {
+                        System.Diagnostics.Debug.WriteLine(article.Title);
+                        ShareNewsArticle(article, sharer);
+                    }
+
+                    e.Handled = true;
+                };
+                smi.Items.Add(mi);
+            }
+        }
+
+        void InitializeJobQueue(IEnumerable<IShareJob> unfinishedJobs)
+        {
+            Console.WriteLine("UnfinishedJobs.Count == " + unfinishedJobs.Count());
+            foreach (IShareJob job in unfinishedJobs)
+            {
+                Console.WriteLine(job);
+            }
+
+            ShareJobQueue = new ShareJobQueue();
+            ShareJobQueue.JobStarted += ShareJobQueue_CurrentJobStatusUpdate;
+            ShareJobQueue.JobFinished += ShareJobQueue_CurrentJobStatusUpdate;
+            ShareJobQueue.CurrentJobStatusUpdate += ShareJobQueue_CurrentJobStatusUpdate;
+            ShareJobQueue.AllJobsFinished += ShareJobQueue_AllJobsFinished;
+            ShareJobQueue.Enqueue(unfinishedJobs);
         }
 
         List<string> ExceptionMessages(Exception e, List<string> messageList = null)
@@ -258,6 +308,16 @@ namespace NewsMonitor.WPF
                 }
             }
         }
+
+        void FilterNewsArticle(NewsArticle newsArticle, ExtensionFeature<INewsFilterExtension> feature = null)
+        {
+            if (feature == null) feature = SettingsManager.FilterExtensionManager.Features.First();
+
+            Window window = feature.Extension.CreateQuickFilterWindow(newsArticle, feature.SettingsGroup.KeyValueStorage);
+            System.Diagnostics.Debug.WriteLine("window = " + window);
+            if(window != null) window.ShowDialog();
+        }
+
         #endregion
 
         #region Launch article
@@ -293,14 +353,30 @@ namespace NewsMonitor.WPF
         private void ShareSelectedButton_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Share selected");
-            ExtensionFeature<INewsSharerExtension> feature = SettingsManager.SharerExtensionManager.Features.First();
+           
             foreach(NewsArticle article in SelectedNewsArticles)
             {
-                NewsSharerWindow sharerWindow =
-                    feature.Extension.CreateSharerWindow(article, feature.SettingsGroup.KeyValueStorage);
-                sharerWindow.JobsCreated += SharerWindow_JobsCreated;
-                sharerWindow.ShowDialog();
+                ShareNewsArticle(article);
             }
+        }
+
+        private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.OriginalSource.GetType());
+            System.Diagnostics.Debug.WriteLine(e.Source.GetType());
+
+            NewsArticle article = ((DataGridRow)e.Source).Item as NewsArticle;
+            ShareNewsArticle(article);
+        }
+
+        void ShareNewsArticle(NewsArticle article, ExtensionFeature<INewsSharerExtension> feature=null)
+        {
+            if(feature == null) feature = SettingsManager.SharerExtensionManager.Features.First();
+
+            NewsSharerWindow sharerWindow =
+                feature.Extension.CreateSharerWindow(article, feature.SettingsGroup.KeyValueStorage);
+            sharerWindow.JobsCreated += SharerWindow_JobsCreated;
+            sharerWindow.ShowDialog();
         }
 
         private void SharerWindow_JobsCreated(object sender, JobsCreatedEventArgs e)
@@ -323,5 +399,27 @@ namespace NewsMonitor.WPF
         }
 
         #endregion
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Source.GetType());
+            System.Diagnostics.Debug.WriteLine(e.OriginalSource.GetType());
+
+            foreach(NewsArticle newsArticle in SelectedNewsArticles)
+            {
+                System.Diagnostics.Debug.WriteLine(newsArticle.Title);
+            }
+
+        }
+
+        private void SkipJobButton_Click(object sender, RoutedEventArgs e)
+        {
+            // remove the job from the extension's KVS
+            IShareJob currentJob = ShareJobQueue.CurrentJob;
+            currentJob?.Skip();
+
+            // continue on with the queue
+            ShareJobQueue.RunAllJobs();
+        }
     }
 }

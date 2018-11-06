@@ -1,0 +1,21 @@
+﻿<Window x:Class="NewsMonitor.Extensions.NewsFilters.RegexTitle.RegexTitleQuickFilterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Regex Title Quick Filter" Height="520" Width="800">
+    <StackPanel>
+      <Label Content="Title" />
+      <TextBox x:Name="PostTitleTextBox" IsReadOnly="True"/>
+      <Label Content="Filter text or regex" />
+      <TextBox x:Name="FilterTextOrRegex"/>
+      <Label Content="Apply for search term (or any)" />
+    <ComboBox x:Name="SearchTermsComboBox">
+
+    </ComboBox>
+    <Button x:Name="PostButton" Height="40" Click="AddFilterButton_Click">
+        Add Filter
+      </Button>
+  </StackPanel>
+</Window>

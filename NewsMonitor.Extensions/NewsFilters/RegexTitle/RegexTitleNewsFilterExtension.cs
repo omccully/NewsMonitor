@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NewsMonitor.WPF.Views.EditableTreeView;
 using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
 {
@@ -54,10 +55,10 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
 
         bool StringMatchesMatcher(string str, string matcher)
         {
-            if (str == matcher) return true;
+            if (str.ToLower() == matcher.ToLower()) return true;
             try
             {
-                Regex regex = new Regex(matcher);
+                Regex regex = new Regex(matcher, RegexOptions.IgnoreCase);
                 return regex.IsMatch(str);
             }
             catch
@@ -66,11 +67,20 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
             }
         }
 
-
-
         public SettingsPage CreateSettingsPage()
         {
             return new RegexTitleNewsFilterSettingsPage();
+        }
+
+        public Window CreateQuickFilterWindow(NewsArticle newsArticle, KeyValueStorage storage)
+        {
+            Mapping.Load(storage);
+            RegexTitleQuickFilterWindow window = new RegexTitleQuickFilterWindow(newsArticle.Title, Model);
+            window.Finished += (o, e) =>
+            {
+                Mapping.Save(storage);
+            };
+            return window;
         }
     }
 }

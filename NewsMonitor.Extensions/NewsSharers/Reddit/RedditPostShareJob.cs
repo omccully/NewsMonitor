@@ -72,6 +72,11 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             Finished?.Invoke(this, new EventArgs());
         }
 
+        public void Skip()
+        {
+            Finished?.Invoke(this, new EventArgs());
+        }
+
         public override string ToString()
         {
             return Description;

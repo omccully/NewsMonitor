@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace NewsMonitor.Extensions.NewsFilters.Recency
 {
@@ -22,9 +23,14 @@ namespace NewsMonitor.Extensions.NewsFilters.Recency
             return (DateTime.Now - newsArticle.TimePublished) < TimeSpan.FromDays(days);
         }
 
+        public Window CreateQuickFilterWindow(NewsArticle newsArticle, KeyValueStorage storage)
+        {
+            return null;
+        }
+
         public SettingsPage CreateSettingsPage()
         {
-            return new RecencyNewsFilterSettingsPage();
+            return null;
         }
     }
 }

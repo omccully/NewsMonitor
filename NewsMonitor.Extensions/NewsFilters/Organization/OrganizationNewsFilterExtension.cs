@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace NewsMonitor.Extensions.NewsFilters.Organization
 {
@@ -35,7 +36,20 @@ namespace NewsMonitor.Extensions.NewsFilters.Organization
 
         public SettingsPage CreateSettingsPage()
         {
-            return new OrganizationNewsFilterSettingsPage();
+            // modifies FilteredOrganizations if it was updated in the settings
+            return new OrganizationNewsFilterSettingsPage(FilteredOrganizations);
+        }
+
+        public Window CreateQuickFilterWindow(NewsArticle newsArticle, KeyValueStorage storage)
+        {
+            Mapping.Load(storage);
+            if (!FilteredOrganizations.Contains(newsArticle.OrganizationName))
+            {
+                FilteredOrganizations.Add(newsArticle.OrganizationName);
+                Mapping.Save(storage);
+            }
+
+            return null;
         }
     }
 }

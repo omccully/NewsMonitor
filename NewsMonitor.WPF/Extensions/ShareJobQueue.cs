@@ -87,8 +87,11 @@ namespace NewsMonitor.WPF.Extensions
             // will be executed when the others are done
         }
 
-        async void RunAllJobs()
+        object RunAllJobsLock = new object();
+        public async void RunAllJobs()
         {
+            if (IsRunningJob) return;
+
             while (true)
             {
                 Task jobTask = null;
@@ -114,7 +117,7 @@ namespace NewsMonitor.WPF.Extensions
                 {
                     await jobTask;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine("Job failed: " + e.ToString());
                     JobFinished?.Invoke(this, new ShareJobStatusEventArgs(nextJob, "Failed: " + e.Message, true));
@@ -124,11 +127,12 @@ namespace NewsMonitor.WPF.Extensions
                 {
                     IsRunningJob = false;
                     CurrentJob.StatusUpdate -= Job_StatusUpdate;
-                    CurrentJob = null;
+                    //CurrentJob = null;
                 }
 
                 JobFinished?.Invoke(this, new ShareJobStatusEventArgs(nextJob, "Finished"));
             }
+            
         }
 
         private void Job_StatusUpdate(object sender, ShareJobStatusEventArgs e)

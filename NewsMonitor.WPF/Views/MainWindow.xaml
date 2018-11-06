@@ -15,7 +15,7 @@
     <Style x:Key="hyperlinkCellStyle" TargetType="{x:Type DataGridCell}" >
       <Style.Triggers>
         <Trigger Property="IsSelected"  Value="True">
-          <Setter Property="Foreground" Value="White"/>
+          <Setter Property="Background" Value="White"/>
         </Trigger>
       </Style.Triggers>
       <EventSetter Event="Hyperlink.Click" Handler="OnHyperlinkClick" />
@@ -33,6 +33,9 @@
     </ToolBar>
     <StatusBar DockPanel.Dock="Bottom">
       <StatusBarItem>
+        <Button Click="SkipJobButton_Click">Skip</Button>
+      </StatusBarItem>
+      <StatusBarItem>
         <TextBlock Name="JobStatusTextBlock" />
       </StatusBarItem>
     </StatusBar>
@@ -43,14 +46,30 @@
       IsReadOnly="True"
       PreviewKeyDown="NewsArticlesDataGrid_KeyDown"
       DockPanel.Dock="Bottom">
+      <DataGrid.Resources>
+        <ContextMenu x:Key="RowMenu" 
+            DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+          <MenuItem Header="Filter"  x:Name="FilterMenuItem">
+            
+          </MenuItem>
+          <MenuItem Header="Share" Click="ShareSelectedButton_Click"  x:Name="ShareMenuItem">
+
+          </MenuItem>
+          <MenuItem Header="Delete" Click="DeleteSelectedButton_Click" />
+        </ContextMenu>
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightBlue"/>
+      </DataGrid.Resources>
       <DataGrid.Columns>
         <DataGridTextColumn Binding="{Binding Path=Id}" Header="ID" />
         <DataGridTextColumn Binding="{Binding Path=Title}" Header="Title" />
+        <DataGridTextColumn Binding="{Binding Path=OrganizationName}" Header="Organization" />
         <DataGridHyperlinkColumn
           Binding="{Binding Path=Url, Converter={StaticResource urlToDomain}}" 
           Header="Domain"
           CellStyle="{StaticResource hyperlinkCellStyle}">
-          <!--<DataGridHyperlinkColumn.ElementStyle>
+          <!--
+          ElementStyle="{StaticResource hyperlinkCellStyle}"
+          <DataGridHyperlinkColumn.ElementStyle>
             <Style TargetType="TextBlock">
               <EventSetter Event="Hyperlink.Click" Handler="OnHyperlinkClick" />
             </Style>
@@ -59,7 +78,12 @@
         <DataGridTextColumn Binding="{Binding Path=TimePublished , Converter={StaticResource dtToString}}" Header="Published" />
         <DataGridTextColumn Binding="{Binding Path=TimeFound}" Header="Found" />
       </DataGrid.Columns>
-      
+      <DataGrid.RowStyle>
+        <Style TargetType="DataGridRow" >
+          <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+          <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
+        </Style>
+      </DataGrid.RowStyle>
     </DataGrid>
 
   </DockPanel>
