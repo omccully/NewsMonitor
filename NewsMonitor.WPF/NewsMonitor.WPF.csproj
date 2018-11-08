@@ -85,6 +85,7 @@
     <Compile Include="Extensions\ISettingsPageFactory.cs" />
     <Compile Include="Extensions\IShareJob.cs" />
     <Compile Include="Extensions\JobsCreatedEventArgs.cs" />
+    <Compile Include="Extensions\NewsSharerExtension.cs" />
     <Compile Include="Extensions\ShareJobStatusEventArgs.cs" />
     <Compile Include="Extensions\ShareJobQueue.cs" />
     <Compile Include="Settings\GeneralSettingsPageFactory.cs" />
