@@ -43,6 +43,8 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             SettingsMappings.Add(
                 new PasswordBoxSettingsMapping(RedditClientSecretKey, null, RedditClientSecretTextBox));
             SettingsMappings.Add(
+                new TextBoxSettingsMapping(RedditUserAgentKey, "News Sharer", RedditUserAgentTextBox));
+            SettingsMappings.Add(
                 new EditableTreeViewSettingsMapping(RedditDefaultSubredditsKey, null, SubredditOptionsTreeView, EditableTreeViewRules));
         }
 

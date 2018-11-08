@@ -21,6 +21,7 @@
       <RowDefinition Height="auto"></RowDefinition>
       <RowDefinition Height="auto"></RowDefinition>
       <RowDefinition Height="auto"></RowDefinition>
+      <RowDefinition Height="auto"></RowDefinition>
       <RowDefinition></RowDefinition>
     </Grid.RowDefinitions>
     <Label HorizontalAlignment="Right">Reddit username:</Label>
@@ -32,8 +33,10 @@
     <TextBox Grid.Row="2" x:Name="RedditClientIdTextBox" Grid.Column="1"/>
     <Label Grid.Row="3" HorizontalAlignment="Right">Reddit client secret:</Label>
     <PasswordBox Grid.Row="3" x:Name="RedditClientSecretTextBox" Grid.Column="1"/>
+    <Label Grid.Row="4" HorizontalAlignment="Right">User agent:</Label>
+    <TextBox Grid.Row="4" x:Name="RedditUserAgentTextBox" Grid.Column="1"/>
 
-    <Label HorizontalAlignment="Right" Grid.Row="4">Subreddit options:</Label>
-    <etv:EditableTreeView x:Name="SubredditOptionsTreeView" Grid.Row="4" Grid.Column="1"/>
+    <Label HorizontalAlignment="Right" Grid.Row="5">Subreddit options:</Label>
+    <etv:EditableTreeView x:Name="SubredditOptionsTreeView" Grid.Row="5" Grid.Column="1"/>
   </Grid>
 </views:SettingsPage>
