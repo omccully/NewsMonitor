@@ -41,7 +41,7 @@ namespace NewsMonitor.WPF.Settings
             if (SettingsPageFactory == null) return null;
 
             SettingsPage settingsPage = SettingsPageFactory.CreateSettingsPage();
-            if(settingsPage.KeyValueStorage == null)
+            if(settingsPage != null && settingsPage.KeyValueStorage == null)
             {
                 settingsPage.KeyValueStorage = KeyValueStorage;
             }

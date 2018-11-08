@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace NewsMonitor.Extensions.NewsSharers.Twitter
 {
-    public class CredentialUpdatingTweeter : ITweeter
+    public class LatestCredentialsTweeter : ITweeter
     {
         ITweeter InnerTweeter;
         KeyValueStorage Storage;
 
-        public CredentialUpdatingTweeter(ITweeter innerTweeter, KeyValueStorage storage)
+        public LatestCredentialsTweeter(ITweeter innerTweeter, KeyValueStorage storage)
         {
             this.InnerTweeter = innerTweeter;
             this.Storage = storage;

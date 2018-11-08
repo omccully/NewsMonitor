@@ -93,7 +93,7 @@
       <DependentUpon>RedditNewsSharerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="NewsSharers\Reddit\RedditPostShareJob.cs" />
-    <Compile Include="NewsSharers\Twitter\CredentialUpdatingTweeter.cs" />
+    <Compile Include="NewsSharers\Twitter\LatestCredentialsTweeter.cs" />
     <Compile Include="NewsSharers\Twitter\ITweeter.cs" />
     <Compile Include="NewsSharers\Twitter\TweetSharpTweeter.cs" />
     <Compile Include="NewsSharers\Twitter\TwitterNewsSharerWindow.xaml.cs">

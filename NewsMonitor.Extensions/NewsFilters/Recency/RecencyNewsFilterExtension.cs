@@ -30,7 +30,7 @@ namespace NewsMonitor.Extensions.NewsFilters.Recency
 
         public SettingsPage CreateSettingsPage()
         {
-            return null;
+            return new RecencyNewsFilterSettingsPage();
         }
     }
 }

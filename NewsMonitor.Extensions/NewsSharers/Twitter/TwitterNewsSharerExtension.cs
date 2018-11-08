@@ -14,13 +14,13 @@ namespace NewsMonitor.Extensions.NewsSharers.Twitter
     {
         public override string Name => "Twitter";
 
-        CredentialUpdatingTweeter Tweeter;
+        LatestCredentialsTweeter Tweeter;
 
         void InitializeTweeter(KeyValueStorage kvs)
         {
             if(Tweeter == null)
             {
-                Tweeter = new CredentialUpdatingTweeter(new TweetSharpTweeter(), kvs);
+                Tweeter = new LatestCredentialsTweeter(new TweetSharpTweeter(), kvs);
             }
         }
 
