@@ -27,9 +27,9 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
     public partial class RedditNewsSharerWindow : NewsSharerWindow
     {
         //NewsArticle newsArticle
-        RedditSharp.Reddit RedditApi;
+        IRedditPoster RedditApi;
 
-        public RedditNewsSharerWindow(NewsArticle newsArticle, KeyValueStorage kvs, RedditSharp.Reddit reddit)
+        public RedditNewsSharerWindow(NewsArticle newsArticle, KeyValueStorage kvs, IRedditPoster reddit)
         {
             InitializeComponent();
 

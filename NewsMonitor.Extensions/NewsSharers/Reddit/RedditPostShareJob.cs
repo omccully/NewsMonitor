@@ -31,44 +31,27 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
         public string Url;
 
         const int MaxTitleLengthInDescription = 50;
-    
+
         [XmlIgnore]
-        public RedditSharp.Reddit RedditApi { get; set; }
+        public IRedditPoster RedditPoster { get; set; }
+        //public RedditSharp.Reddit RedditApi { get; set; }
 
         public RedditPostShareJob()
         {
 
         }
 
-        public RedditPostShareJob(string title, string subreddit, string url, RedditSharp.Reddit reddit)
+        public RedditPostShareJob(string title, string subreddit, string url, IRedditPoster redditPoster)
         {
             this.Title = title;
             this.Subreddit = subreddit;
             this.Url = url;
-            this.RedditApi = reddit;
+            this.RedditPoster = redditPoster;
         }
 
         public async Task Execute()
         {
-            if(RedditApi == null)
-            {
-                throw new InvalidConfigurationException(
-                    "You must fill in your Reddit information into the settings page first.");
-            }
-
-            Subreddit sub = await RedditApi.GetSubredditAsync(Subreddit);
-
-            System.Diagnostics.Debug.WriteLine($"{sub}.SubmitPostAsync({Title}, {Url})");
-            try
-            {
-                Post post = await sub.SubmitPostAsync(Title, Url);
-               
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine("reddit post fail: " + e.ToString());
-            }
-
+            await RedditPoster.PostUrl(Title, Url, Subreddit);
             Finished?.Invoke(this, new EventArgs());
         }
 

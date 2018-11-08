@@ -50,6 +50,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
         public const string RedditPasswordKey = "RedditPassword";
         public const string RedditClientIdKey = "RedditClientId";
         public const string RedditClientSecretKey = "RedditClientSecret";
+        public const string RedditUserAgentKey = "RedditUserAgent";
         public const string RedditDefaultSubredditsKey = "DefaultSubreddits";
 
         const string SectionText = "<section>";

@@ -4,9 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Regex Title Quick Filter" Height="520" Width="800">
-    <StackPanel>
-      <Label Content="Title" />
+        SizeToContent="Height"
+        Title="Regex Title Quick Filter" Width="800">
+    
+  <StackPanel>
+      <Label Content="Title (read-only, for your convenience)" />
       <TextBox x:Name="PostTitleTextBox" IsReadOnly="True"/>
       <Label Content="Filter text or regex" />
       <TextBox x:Name="FilterTextOrRegex"/>
@@ -14,7 +16,9 @@
     <ComboBox x:Name="SearchTermsComboBox">
 
     </ComboBox>
-    <Button x:Name="PostButton" Height="40" Click="AddFilterButton_Click">
+    <Button x:Name="PostButton" 
+            Margin="0,10,0,0"
+            Height="40" Click="AddFilterButton_Click">
         Add Filter
       </Button>
   </StackPanel>

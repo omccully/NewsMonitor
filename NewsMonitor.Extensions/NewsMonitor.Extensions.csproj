@@ -85,6 +85,8 @@
     <Compile Include="NewsSearchers\Bing\InvalidBingNewsApiKeyException.cs" />
     <Compile Include="NewsSearchers\Google\GoogleNewsSearcher.cs" />
     <Compile Include="NewsSearchers\Google\GoogleNewsSearcherExtension.cs" />
+    <Compile Include="NewsSharers\Reddit\IRedditPoster.cs" />
+    <Compile Include="NewsSharers\Reddit\LatestCredentialsRedditPoster.cs" />
     <Compile Include="NewsSharers\Reddit\RedditNewsSharerExtension.cs" />
     <Compile Include="NewsSharers\Reddit\RedditNewsSharerSettingsPage.xaml.cs">
       <DependentUpon>RedditNewsSharerSettingsPage.xaml</DependentUpon>
@@ -93,6 +95,7 @@
       <DependentUpon>RedditNewsSharerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="NewsSharers\Reddit\RedditPostShareJob.cs" />
+    <Compile Include="NewsSharers\Reddit\RedditSharpPoster.cs" />
     <Compile Include="NewsSharers\Twitter\LatestCredentialsTweeter.cs" />
     <Compile Include="NewsSharers\Twitter\ITweeter.cs" />
     <Compile Include="NewsSharers\Twitter\TweetSharpTweeter.cs" />
