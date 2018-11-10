@@ -84,5 +84,10 @@ namespace NewsMonitor.Extensions.NewsSearchers.Google
             organization = "";
             return rssTitle;
         }
+
+        public Task<IEnumerable<NewsArticle>> SearchAsync(string term)
+        {
+            return Task.Run(() => Search(term));
+        }
     }
 }

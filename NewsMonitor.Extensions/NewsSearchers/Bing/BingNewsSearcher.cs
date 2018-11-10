@@ -7,6 +7,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using NewsMonitor.Services.NewsSearchers;
+using System.Threading.Tasks;
 
 namespace NewsMonitor.Extensions.NewsSearchers.Bing
 {
@@ -32,7 +33,7 @@ namespace NewsMonitor.Extensions.NewsSearchers.Bing
             return $"{ApiBaseUrl}?q={Uri.EscapeDataString(term)}";
         }
 
-        string QueryRestApi(string term)
+        async Task<string> QueryRestApiAsync(string term)
         {
             try
             {
@@ -41,7 +42,7 @@ namespace NewsMonitor.Extensions.NewsSearchers.Bing
                     (HttpWebRequest)HttpWebRequest.Create(url);
                 request.Headers.Add("Ocp-Apim-Subscription-Key", AccessKey);
                 request.Method = "GET";
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (HttpWebResponse response = (HttpWebResponse)(await request.GetResponseAsync()))
                 {
                     Stream dataStream = response.GetResponseStream();
                     StreamReader reader = new StreamReader(dataStream);
@@ -65,15 +66,6 @@ namespace NewsMonitor.Extensions.NewsSearchers.Bing
             }
         }
 
-        public IEnumerable<NewsArticle> Search(string term)
-        {
-            JObject api_result = JObject.Parse(QueryRestApi(term));
-
-            return api_result["value"].Children().Select(
-                article => BingArticleToNewsArticle(article)
-                );
-        }
-
         NewsArticle BingArticleToNewsArticle(JToken article)
         {
             string url = article.Value<string>("url");
@@ -85,6 +77,15 @@ namespace NewsMonitor.Extensions.NewsSearchers.Bing
             string source_org = article["provider"].First.Value<string>("name");
 
             return new NewsArticle(title, source_org, url, dt_parsed);
+        }
+
+        public async Task<IEnumerable<NewsArticle>> SearchAsync(string term)
+        {
+            JObject api_result = JObject.Parse(await QueryRestApiAsync(term));
+
+            return api_result["value"].Children().Select(
+                article => BingArticleToNewsArticle(article)
+                );
         }
     }
 }

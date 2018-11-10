@@ -11,7 +11,7 @@ namespace NewsMonitor.WPF.Extensions
         string Description { get; }
        // event EventHandler Started;
         event EventHandler<ShareJobStatusEventArgs> StatusUpdate;
-        event EventHandler Finished;
+        event EventHandler<ShareJobFinishedEventArgs> Finished;
         void Skip();
 
         Task Execute();

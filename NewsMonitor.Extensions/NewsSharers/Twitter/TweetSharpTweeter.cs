@@ -37,11 +37,21 @@ namespace NewsMonitor.Extensions.NewsSharers.Twitter
             service.AuthenticateWith(accessToken, accessTokenSecret);
         }
 
-        public Task Tweet(string tweet)
+        string TweetSync(string tweet)
         {
-            IAsyncResult result = service.BeginSendTweet(new SendTweetOptions() { Status = tweet });
+            IAsyncResult result = service.BeginSendTweet(
+                new SendTweetOptions() { Status = tweet });
 
-            return Task.Factory.FromAsync(result, (r) => { });
+            TwitterStatus ts = service.EndSendTweet(result);
+
+            string tweetUrl = $"https://twitter.com/{ts.User.ScreenName}/status/{ts.Id}";
+
+            return tweetUrl;
+        }
+
+        public Task<string> Tweet(string tweet)
+        {
+            return Task.Run(() => TweetSync(tweet));
         }
     }
 }

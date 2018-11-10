@@ -7,6 +7,9 @@
         mc:Ignorable="d"
         Padding="50"
         Title="Settings" Height="450" Width="800">
+  <Window.Resources>
+
+  </Window.Resources>
   <DockPanel>
     <TreeView x:Name="SettingsPageSelectorTreeView" Width="200" DockPanel.Dock="Left">
     </TreeView>
@@ -20,7 +23,5 @@
         <!-- Frame fills remaining space -->
       </Frame>
     </DockPanel>
-    
-    
   </DockPanel>
 </Window>

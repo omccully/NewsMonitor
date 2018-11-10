@@ -18,7 +18,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Twitter
             this.Storage = storage;
         }
 
-        public async Task Tweet(string tweet)
+        public Task<string> Tweet(string tweet)
         {
             string TwitterConsumerKey = Storage.GetString(TwitterNewsSharerSettingsPage.TwitterConsumerKeyKey);
             string TwitterConsumerSecret = Storage.GetString(TwitterNewsSharerSettingsPage.TwitterConsumerSecretKey);
@@ -27,7 +27,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Twitter
             string TwitterAccessTokenSecret = Storage.GetString(TwitterNewsSharerSettingsPage.TwitterAccessTokenSecretKey);
             InnerTweeter.UpdateCredentials(TwitterConsumerKey, TwitterConsumerSecret, TwitterAccessToken, TwitterAccessTokenSecret);
 
-            await InnerTweeter.Tweet(tweet);
+            return InnerTweeter.Tweet(tweet);
         }
 
         public void UpdateCredentials(string consumerKey, string consumerSecret, string accessToken, string accessTokenSecret)

@@ -10,7 +10,7 @@
   <DockPanel>
     <StackPanel DockPanel.Dock="Top">
       <Label Content="Title" />
-      <TextBox x:Name="PostTitleTextBox"/>
+      <TextBox x:Name="PostTitleTextBox" MaxLength="300" />
       <Label Content="URL" />
       <TextBox x:Name="ArticleUrlTextBox"/>
       <Label Content="Subreddits" />

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace NewsMonitor.WPF.Views
 {
@@ -15,6 +16,11 @@ namespace NewsMonitor.WPF.Views
         public KeyValueStorage KeyValueStorage { get; set; }
 
         protected List<SettingsMapping> SettingsMappings { get; } = new List<SettingsMapping>();
+
+        public SettingsPage()
+        {
+
+        }
 
         public virtual void Restore()
         {

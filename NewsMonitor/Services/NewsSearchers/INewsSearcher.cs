@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using NewsMonitor.Data.Models;
 
 namespace NewsMonitor.Services.NewsSearchers
 { 
     public interface INewsSearcher
     {
-        IEnumerable<NewsArticle> Search(string term);
+        Task<IEnumerable<NewsArticle>> SearchAsync(string term);
     }
 }

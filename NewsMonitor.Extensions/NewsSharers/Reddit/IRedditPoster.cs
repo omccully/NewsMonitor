@@ -11,6 +11,6 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
         void UpdateCredentials(string username, string password,
             string clientId, string clientSecret, string userAgent = null);
 
-        Task PostUrl(string title, string url, string subreddit);
+        Task<string> PostUrl(string title, string url, string subreddit);
     }
 }

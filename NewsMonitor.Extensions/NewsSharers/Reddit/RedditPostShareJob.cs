@@ -24,7 +24,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
         }
 
         public event EventHandler<ShareJobStatusEventArgs> StatusUpdate;
-        public event EventHandler Finished;
+        public event EventHandler<ShareJobFinishedEventArgs> Finished;
 
         public string Title;
         public string Subreddit;
@@ -51,13 +51,13 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
 
         public async Task Execute()
         {
-            await RedditPoster.PostUrl(Title, Url, Subreddit);
-            Finished?.Invoke(this, new EventArgs());
+            string url = await RedditPoster.PostUrl(Title, Url, Subreddit);
+            Finished?.Invoke(this, new ShareJobFinishedEventArgs(url));
         }
 
         public void Skip()
         {
-            Finished?.Invoke(this, new EventArgs());
+            Finished?.Invoke(this, ShareJobFinishedEventArgs.Skipped);
         }
 
         public override string ToString()

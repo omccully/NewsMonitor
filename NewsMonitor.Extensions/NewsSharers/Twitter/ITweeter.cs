@@ -10,6 +10,6 @@ namespace NewsMonitor.Extensions.NewsSharers.Twitter
     {
         void UpdateCredentials(string consumerKey, string consumerSecret, string accessToken, string accessTokenSecret);
 
-        Task Tweet(string tweet);
+        Task<string> Tweet(string tweet);
     }
 }

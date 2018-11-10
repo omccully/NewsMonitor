@@ -44,8 +44,13 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="NewsMonitor.Extensions">
+    <Reference Include="NewsMonitor.Extensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\NewsMonitor.Extensions\bin\Debug\NewsMonitor.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -83,11 +88,12 @@
     <Compile Include="Extensions\INewsSharerExtension.cs" />
     <Compile Include="Extensions\ISettingsGroupExtension.cs" />
     <Compile Include="Extensions\ISettingsPageFactory.cs" />
-    <Compile Include="Extensions\IShareJob.cs" />
-    <Compile Include="Extensions\JobsCreatedEventArgs.cs" />
+    <Compile Include="Extensions\ShareJobs\IShareJob.cs" />
+    <Compile Include="Extensions\ShareJobs\JobsCreatedEventArgs.cs" />
     <Compile Include="Extensions\NewsSharerExtension.cs" />
-    <Compile Include="Extensions\ShareJobStatusEventArgs.cs" />
-    <Compile Include="Extensions\ShareJobQueue.cs" />
+    <Compile Include="Extensions\ShareJobs\ShareJobFinishedEventArgs.cs" />
+    <Compile Include="Extensions\ShareJobs\ShareJobStatusEventArgs.cs" />
+    <Compile Include="Extensions\ShareJobs\ShareJobQueue.cs" />
     <Compile Include="Settings\GeneralSettingsPageFactory.cs" />
     <Compile Include="Settings\InvalidConfigurationException.cs" />
     <Compile Include="Settings\InvalidExtensionTypeException.cs" />
@@ -150,7 +156,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="Views\App.xaml">

@@ -18,7 +18,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             this.Storage = storage;
         }
 
-        public Task PostUrl(string title, string url, string subreddit)
+        public Task<string> PostUrl(string title, string url, string subreddit)
         {
             string username = Storage.GetString(RedditNewsSharerSettingsPage.RedditUsernameKey);
             string password = Storage.GetString(RedditNewsSharerSettingsPage.RedditPasswordKey);

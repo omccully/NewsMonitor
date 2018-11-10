@@ -38,16 +38,17 @@ namespace NewsMonitor.Extensions.NewsSharers.Twitter
         }
 
         public event EventHandler<ShareJobStatusEventArgs> StatusUpdate;
-        public event EventHandler Finished;
+        public event EventHandler<ShareJobFinishedEventArgs> Finished;
 
-        public Task Execute()
+        public async Task Execute()
         {
-            return Tweeter.Tweet(Description + " " + Url);
+            string tweetUrl = await Tweeter.Tweet(Description + " " + Url);
+            Finished?.Invoke(this, new ShareJobFinishedEventArgs(tweetUrl));
         }
 
         public void Skip()
         {
-            Finished?.Invoke(this, new EventArgs());
+            Finished?.Invoke(this, ShareJobFinishedEventArgs.Skipped);
         }
     }
 }

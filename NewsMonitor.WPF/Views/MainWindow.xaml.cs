@@ -20,6 +20,7 @@ using System.Windows.Documents;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Controls;
+using System.Threading.Tasks;
 
 namespace NewsMonitor.WPF
 {
@@ -118,6 +119,7 @@ namespace NewsMonitor.WPF
             Console.WriteLine("UnfinishedJobs.Count == " + unfinishedJobs.Count());
             foreach (IShareJob job in unfinishedJobs)
             {
+                job.Finished += Job_Finished;
                 Console.WriteLine(job);
             }
 
@@ -127,6 +129,13 @@ namespace NewsMonitor.WPF
             ShareJobQueue.CurrentJobStatusUpdate += ShareJobQueue_CurrentJobStatusUpdate;
             ShareJobQueue.AllJobsFinished += ShareJobQueue_AllJobsFinished;
             ShareJobQueue.Enqueue(unfinishedJobs);
+        }
+
+        private void Job_Finished(object sender, ShareJobFinishedEventArgs e)
+        {
+            IShareJob job = (IShareJob)sender;
+            Console.WriteLine(job.Description);
+            Console.WriteLine("e.Url=" + e.Url);
         }
 
         List<string> ExceptionMessages(Exception e, List<string> messageList = null)
@@ -219,23 +228,32 @@ namespace NewsMonitor.WPF
 
         private void FindArticlesButton_Click(object sender, RoutedEventArgs e)
         {
+            FindArticlesAsync();
+        }
+
+        async void FindArticlesAsync()
+        {
             FindArticlesButton.IsEnabled = false;
 
             try
             {
+                FindArticlesProgressBar.Value = 0;
+
                 IEnumerable<INewsSearcher> news_searchers = NewsSearchers;
                 HashSet<string> existing_article_urls = ExistingArticleUrls;
 
                 IEnumerable<string> search_terms = SearchTerms;
 
+                FindArticlesProgressBar.Maximum = news_searchers.Count() * search_terms.Count();
+
                 foreach (string search_term in search_terms)
                 {
                     Console.WriteLine("Search Term=" + search_term);
-                    foreach(INewsSearcher news_searcher in news_searchers)
+                    foreach (INewsSearcher news_searcher in news_searchers)
                     {
                         Console.WriteLine("News Searcher=" + news_searcher.GetType());
-                   
-                        IEnumerable<NewsArticle> results = news_searcher.Search(search_term)
+
+                        IEnumerable<NewsArticle> results = (await news_searcher.SearchAsync(search_term))
                             .Where(article => PassesAllFilters(article, search_term));
                         foreach (NewsArticle article in results)
                         {
@@ -248,6 +266,8 @@ namespace NewsMonitor.WPF
 
                             Console.WriteLine(article);
                         }
+
+                        FindArticlesProgressBar.Value++;
                     }
                 }
                 Console.WriteLine("finished");
@@ -255,12 +275,13 @@ namespace NewsMonitor.WPF
             catch (Exception err)
             {
                 MessageBox.Show(err.Message);
-                
+
                 return;
             }
             finally
             {
                 FindArticlesButton.IsEnabled = true;
+                FindArticlesProgressBar.Value = 0;
             }
         }
 
@@ -381,6 +402,10 @@ namespace NewsMonitor.WPF
 
         private void SharerWindow_JobsCreated(object sender, JobsCreatedEventArgs e)
         {
+            foreach(IShareJob job in e.Jobs)
+            {
+                job.Finished += Job_Finished;
+            }
             ShareJobQueue.Enqueue(e.Jobs);
         }
 

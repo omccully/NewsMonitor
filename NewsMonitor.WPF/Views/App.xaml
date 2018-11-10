@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:NewsMonitor.WPF"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-         
+
     </Application.Resources>
 </Application>

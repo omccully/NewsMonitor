@@ -26,7 +26,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
 
 
 
-        public async Task PostUrl(string title, string url, string subreddit)
+        public async Task<string> PostUrl(string title, string url, string subreddit)
         {
             if (RedditApi == null)
             {
@@ -40,6 +40,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             {
                 Post post = await sub.SubmitPostAsync(title, url);
 
+                return new Uri(new Uri("https://reddit.com/"), post.Permalink).ToString();
             }
             catch (Exception e)
             {

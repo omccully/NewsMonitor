@@ -8,7 +8,8 @@
         xmlns:models="clr-namespace:NewsMonitor.Data.Models;assembly=NewsMonitor.Data"
         mc:Ignorable="d"
         Title="News Monitor" Height="450" Width="800"
-        MaxWidth="1400">
+        FontSize="13.5"
+        MaxWidth="2000">
   <Window.Resources>
     <converters:UrlToDomainConverter x:Key="urlToDomain"/>
     <converters:DateTimeToStringConverter Format="d" x:Key="dtToString"/>
@@ -39,6 +40,7 @@
         <TextBlock Name="JobStatusTextBlock" />
       </StatusBarItem>
     </StatusBar>
+    <ProgressBar DockPanel.Dock="Bottom" x:Name="FindArticlesProgressBar" Minimum="0" Height="15" Maximum="100" Value="0" />
     <DataGrid x:Name="NewsArticlesDataGrid" 
       HorizontalAlignment="Stretch"
       AutoGenerateColumns="False"
