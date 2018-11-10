@@ -12,9 +12,9 @@ using RedditSharp.Things;
 namespace NewsMonitor.Extensions.NewsSharers.Reddit
 {
     [Serializable]
-    public class RedditPostShareJob : IShareJob
+    public class RedditPostShareJob : ShareJob
     {
-        public string Description
+        public override string Description
         {
             get
             {
@@ -22,9 +22,6 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
                 return $"Posting \"{new string(Title.Take(MaxTitleLengthInDescription).ToArray())}\" in /r/{Subreddit}";
             }
         }
-
-        public event EventHandler<ShareJobStatusEventArgs> StatusUpdate;
-        public event EventHandler<ShareJobFinishedEventArgs> Finished;
 
         public string Title;
         public string Subreddit;
@@ -34,7 +31,6 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
 
         [XmlIgnore]
         public IRedditPoster RedditPoster { get; set; }
-        //public RedditSharp.Reddit RedditApi { get; set; }
 
         public RedditPostShareJob()
         {
@@ -49,20 +45,9 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             this.RedditPoster = redditPoster;
         }
 
-        public async Task Execute()
+        protected override Task<string> InnerExecute()
         {
-            string url = await RedditPoster.PostUrl(Title, Url, Subreddit);
-            Finished?.Invoke(this, new ShareJobFinishedEventArgs(url));
-        }
-
-        public void Skip()
-        {
-            Finished?.Invoke(this, ShareJobFinishedEventArgs.Skipped);
-        }
-
-        public override string ToString()
-        {
-            return Description;
+            return RedditPoster.PostUrl(Title, Url, Subreddit);
         }
     }
 }

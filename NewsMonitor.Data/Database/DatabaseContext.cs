@@ -39,5 +39,6 @@ namespace NewsMonitor.Data.Database
         public DbSet<BlockedTitleMatcher> BlockedTitleMatchers { get; set; }
         public DbSet<KeyValuePair> KeyValuePairs { get; set; }
         public DbSet<SearchTerm> SearchTerms { get; set; }
+        public DbSet<ShareJobResult> ShareJobResults { get; set; }
     }
 }

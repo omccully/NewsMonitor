@@ -39,6 +39,8 @@ namespace NewsMonitor.WPF
 
         ReadOnlyObservableCollection<NewsArticle> NewsArticlesSource;
 
+        ObservableCollection<ShareJobResult> AllShareJobResults;
+
 
         public MainWindow()
         {
@@ -131,13 +133,6 @@ namespace NewsMonitor.WPF
             ShareJobQueue.Enqueue(unfinishedJobs);
         }
 
-        private void Job_Finished(object sender, ShareJobFinishedEventArgs e)
-        {
-            IShareJob job = (IShareJob)sender;
-            Console.WriteLine(job.Description);
-            Console.WriteLine("e.Url=" + e.Url);
-        }
-
         List<string> ExceptionMessages(Exception e, List<string> messageList = null)
         {
             if (messageList == null) messageList = new List<string>();
@@ -158,10 +153,11 @@ namespace NewsMonitor.WPF
             AllNewsArticles = new ObservableCollection<NewsArticle>(dbContext.NewsArticles.ToList());
             NewsArticleFilter = new ObservableCollectionFilter<NewsArticle>(AllNewsArticles, 
                 (na) => !na.Hidden);
-
             NewsArticlesSource = NewsArticleFilter.FilteredResults;
-
             NewsArticlesDataGrid.ItemsSource = NewsArticleFilter.FilteredResults;
+
+            AllShareJobResults = new ObservableCollection<ShareJobResult>(dbContext.ShareJobResults.ToList());
+            ShareHistoryDataGrid.ItemsSource = AllShareJobResults;
             this.SizeToContent = SizeToContent.Width;
         }
 
@@ -262,7 +258,7 @@ namespace NewsMonitor.WPF
                             AllNewsArticles.Add(article);
                             existing_article_urls.Add(article.Url);
                             dbContext.NewsArticles.Add(article);
-                            dbContext.SaveChanges();
+                            dbContext.SaveChangesAsync();
 
                             Console.WriteLine(article);
                         }
@@ -342,12 +338,11 @@ namespace NewsMonitor.WPF
         #endregion
 
         #region Launch article
-        void LaunchArticle(NewsArticle article)
+        void LaunchUrl(string url)
         {
-            if (article != null &&
-                (article.Url.StartsWith("http://") || article.Url.StartsWith("https://")))
+            if (url != null && (url.StartsWith("http://") || url.StartsWith("https://")))
             {
-                Process.Start(article.Url);
+                Process.Start(url);
             }
         }
 
@@ -355,7 +350,7 @@ namespace NewsMonitor.WPF
         {
             foreach (NewsArticle article in SelectedNewsArticles)
             {
-                LaunchArticle(article);
+                if (article != null) LaunchUrl(article.Url);
             }
         }
 
@@ -364,9 +359,13 @@ namespace NewsMonitor.WPF
             System.Diagnostics.Debug.WriteLine("Source = " + e.Source);
             System.Diagnostics.Debug.WriteLine("OriginalSource = " + e.OriginalSource);
 
-            NewsArticle article = ((Hyperlink)e.OriginalSource).DataContext as NewsArticle;
+            object dataContext = ((Hyperlink)e.OriginalSource).DataContext;
+            
+            NewsArticle article = dataContext as NewsArticle;
+            if(article != null) LaunchUrl(article.Url);
 
-            LaunchArticle(article);
+            ShareJobResult sjr = dataContext as ShareJobResult;
+            if (sjr != null) LaunchUrl(sjr.Url);
         }
         #endregion
 
@@ -409,8 +408,9 @@ namespace NewsMonitor.WPF
             ShareJobQueue.Enqueue(e.Jobs);
         }
 
-        private void ShareJobQueue_CurrentJobStatusUpdate(object sender, ShareJobStatusEventArgs e)
+        private void ShareJobQueue_CurrentJobStatusUpdate(object sender, ShareJobQueueStatusEventArgs e)
         {
+            // update status bar based on queue status
             string message = $"{ShareJobQueue.Count} jobs in queue -- " +
                 $"{e.Job.Description}: {e.Status}";
             Console.WriteLine(message);
@@ -421,6 +421,20 @@ namespace NewsMonitor.WPF
         private void ShareJobQueue_AllJobsFinished(object sender, EventArgs e)
         {
             JobStatusTextBlock.Text = "";
+        }
+
+        private void Job_Finished(object sender, ShareJobFinishedEventArgs e)
+        {
+            IShareJob job = (IShareJob)sender;
+            Console.WriteLine(job.Description);
+            Console.WriteLine("e.Url=" + e.Url);
+
+            ShareJobResult sjr = new ShareJobResult(job.Description,
+                e.Url, e.WasCancelled, e.ErrorMessage);
+
+            AllShareJobResults.Add(sjr);
+            dbContext.ShareJobResults.Add(sjr);
+            dbContext.SaveChanges();
         }
 
         #endregion
@@ -441,7 +455,7 @@ namespace NewsMonitor.WPF
         {
             // remove the job from the extension's KVS
             IShareJob currentJob = ShareJobQueue.CurrentJob;
-            currentJob?.Skip();
+            currentJob?.Cancel();
 
             // continue on with the queue
             ShareJobQueue.RunAllJobs();

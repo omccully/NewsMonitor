@@ -9,16 +9,15 @@ using System.Xml.Serialization;
 namespace NewsMonitor.Extensions.NewsSharers.Twitter
 {
     [Serializable]
-    public class TwitterTweetShareJob : IShareJob
+    public class TwitterTweetShareJob : ShareJob
     {
-        public string Description => Comment;
+        public override string Description => $"Tweeting \"{Comment}\"";
         public const int MaxTweetLength = 280;
         public const int TweetUrlCharactersUsed = 24;
         public const int MaxTweetLengthWithUrl = MaxTweetLength - TweetUrlCharactersUsed;
 
         public string Url;
         public string Comment;
-
 
         [XmlIgnore]
         public ITweeter Tweeter { get; set; }
@@ -34,21 +33,12 @@ namespace NewsMonitor.Extensions.NewsSharers.Twitter
 
         public TwitterTweetShareJob()
         {
-                
+
         }
 
-        public event EventHandler<ShareJobStatusEventArgs> StatusUpdate;
-        public event EventHandler<ShareJobFinishedEventArgs> Finished;
-
-        public async Task Execute()
+        protected override Task<string> InnerExecute()
         {
-            string tweetUrl = await Tweeter.Tweet(Description + " " + Url);
-            Finished?.Invoke(this, new ShareJobFinishedEventArgs(tweetUrl));
-        }
-
-        public void Skip()
-        {
-            Finished?.Invoke(this, ShareJobFinishedEventArgs.Skipped);
+            return Tweeter.Tweet(Description + " " + Url);
         }
     }
 }

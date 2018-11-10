@@ -8,16 +8,11 @@ namespace NewsMonitor.WPF.Extensions
 {
     public class ShareJobStatusEventArgs : EventArgs
     {
-        public IShareJob Job { get; private set; }
-        public string Status { get; private set; }
-        public bool Failed { get; private set; }
+        public string Message { get; private set; }
 
-        public ShareJobStatusEventArgs(IShareJob job, string status, bool failed=false)
+        public ShareJobStatusEventArgs(string message)
         {
-            this.Job = job;
-            this.Status = status;
-            this.Failed = failed;
+            this.Message = message;
         }
-
     }
 }

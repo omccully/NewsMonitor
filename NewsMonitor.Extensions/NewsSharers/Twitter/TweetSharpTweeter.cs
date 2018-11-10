@@ -44,9 +44,9 @@ namespace NewsMonitor.Extensions.NewsSharers.Twitter
 
             TwitterStatus ts = service.EndSendTweet(result);
 
-            string tweetUrl = $"https://twitter.com/{ts.User.ScreenName}/status/{ts.Id}";
+            if (ts == null) throw new Exception("Error sending tweet");
 
-            return tweetUrl;
+            return $"https://twitter.com/{ts.User.ScreenName}/status/{ts.Id}";
         }
 
         public Task<string> Tweet(string tweet)

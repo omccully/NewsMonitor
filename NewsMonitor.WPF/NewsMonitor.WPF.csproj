@@ -91,9 +91,11 @@
     <Compile Include="Extensions\ShareJobs\IShareJob.cs" />
     <Compile Include="Extensions\ShareJobs\JobsCreatedEventArgs.cs" />
     <Compile Include="Extensions\NewsSharerExtension.cs" />
+    <Compile Include="Extensions\ShareJobs\ShareJob.cs" />
     <Compile Include="Extensions\ShareJobs\ShareJobFinishedEventArgs.cs" />
-    <Compile Include="Extensions\ShareJobs\ShareJobStatusEventArgs.cs" />
+    <Compile Include="Extensions\ShareJobs\ShareJobQueueStatusEventArgs.cs" />
     <Compile Include="Extensions\ShareJobs\ShareJobQueue.cs" />
+    <Compile Include="Extensions\ShareJobs\ShareJobStatusEventArgs.cs" />
     <Compile Include="Settings\GeneralSettingsPageFactory.cs" />
     <Compile Include="Settings\InvalidConfigurationException.cs" />
     <Compile Include="Settings\InvalidExtensionTypeException.cs" />

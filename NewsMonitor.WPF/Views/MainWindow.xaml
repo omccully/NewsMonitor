@@ -7,7 +7,7 @@
         xmlns:converters="clr-namespace:NewsMonitor.WPF.Converters"
         xmlns:models="clr-namespace:NewsMonitor.Data.Models;assembly=NewsMonitor.Data"
         mc:Ignorable="d"
-        Title="News Monitor" Height="450" Width="800"
+        Title="News Monitor" Height="600" MinWidth="700"
         FontSize="13.5"
         MaxWidth="2000">
   <Window.Resources>
@@ -26,11 +26,6 @@
     <ToolBar DockPanel.Dock="Top" x:Name="TopToolBar">
       <Button x:Name="FindArticlesButton" Click="FindArticlesButton_Click">Find articles</Button>
       <Button Click="SettingsButton_Click" Margin="7,0,0,0">Settings</Button>
-      <Button Click="DeleteSelectedButton_Click" Margin="7,0,0,0">Delete selected</Button>
-      <Button Click="RefilterButton_Click" Margin="7,0,0,0">Refilter</Button>
-      <!--<Button Click="ShowSelectedInBrowser_Click" Margin="7,0,0,0">Show selected in browser</Button>
-      -->
-      <Button Click="ShareSelectedButton_Click" Margin="7,0,0,0">Share selected</Button>
     </ToolBar>
     <StatusBar DockPanel.Dock="Bottom">
       <StatusBarItem>
@@ -41,52 +36,74 @@
       </StatusBarItem>
     </StatusBar>
     <ProgressBar DockPanel.Dock="Bottom" x:Name="FindArticlesProgressBar" Minimum="0" Height="15" Maximum="100" Value="0" />
-    <DataGrid x:Name="NewsArticlesDataGrid" 
-      HorizontalAlignment="Stretch"
-      AutoGenerateColumns="False"
-      AlternationCount="2" AlternatingRowBackground="Gainsboro"
-      IsReadOnly="True"
-      PreviewKeyDown="NewsArticlesDataGrid_KeyDown"
-      DockPanel.Dock="Bottom">
-      <DataGrid.Resources>
-        <ContextMenu x:Key="RowMenu" 
-            DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-          <MenuItem Header="Filter"  x:Name="FilterMenuItem">
-            
-          </MenuItem>
-          <MenuItem Header="Share" Click="ShareSelectedButton_Click"  x:Name="ShareMenuItem">
 
-          </MenuItem>
-          <MenuItem Header="Delete" Click="DeleteSelectedButton_Click" />
-        </ContextMenu>
-        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightBlue"/>
-      </DataGrid.Resources>
-      <DataGrid.Columns>
-        <DataGridTextColumn Binding="{Binding Path=Id}" Header="ID" />
-        <DataGridTextColumn Binding="{Binding Path=Title}" Header="Title" />
-        <DataGridTextColumn Binding="{Binding Path=OrganizationName}" Header="Organization" />
-        <DataGridHyperlinkColumn
-          Binding="{Binding Path=Url, Converter={StaticResource urlToDomain}}" 
-          Header="Domain"
-          CellStyle="{StaticResource hyperlinkCellStyle}">
-          <!--
-          ElementStyle="{StaticResource hyperlinkCellStyle}"
-          <DataGridHyperlinkColumn.ElementStyle>
-            <Style TargetType="TextBlock">
-              <EventSetter Event="Hyperlink.Click" Handler="OnHyperlinkClick" />
+    <TabControl>
+      <TabItem Header="News Articles">
+        <DataGrid x:Name="NewsArticlesDataGrid" 
+            HorizontalAlignment="Stretch"
+            AutoGenerateColumns="False"
+            AlternationCount="2" AlternatingRowBackground="Gainsboro"
+            IsReadOnly="True"
+            PreviewKeyDown="NewsArticlesDataGrid_KeyDown"
+            DockPanel.Dock="Bottom">  
+          <DataGrid.Resources>
+            <ContextMenu x:Key="RowMenu" 
+            DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+              <MenuItem Header="Filter"  x:Name="FilterMenuItem">
+
+              </MenuItem>
+              <MenuItem Header="Share" Click="ShareSelectedButton_Click"  x:Name="ShareMenuItem">
+
+              </MenuItem>
+              <MenuItem Header="Delete" Click="DeleteSelectedButton_Click" />
+            </ContextMenu>
+            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="LightBlue"/>
+          </DataGrid.Resources>
+          <DataGrid.Columns>
+            <DataGridTextColumn Binding="{Binding Path=Id}" Header="ID" />
+            <DataGridTextColumn Binding="{Binding Path=Title}" Header="Title" />
+            <DataGridTextColumn Binding="{Binding Path=OrganizationName}" Header="Organization" />
+            <DataGridHyperlinkColumn
+              Binding="{Binding Path=Url, Converter={StaticResource urlToDomain}}" 
+              Header="Domain"
+              CellStyle="{StaticResource hyperlinkCellStyle}">
+            </DataGridHyperlinkColumn>
+            <DataGridTextColumn Binding="{Binding Path=TimePublished , Converter={StaticResource dtToString}}" Header="Published" />
+            <DataGridTextColumn Binding="{Binding Path=TimeFound}" Header="Found" />
+          </DataGrid.Columns>
+          <DataGrid.RowStyle>
+            <Style TargetType="DataGridRow" >
+              <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+              <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
             </Style>
-          </DataGridHyperlinkColumn.ElementStyle>-->
-        </DataGridHyperlinkColumn>
-        <DataGridTextColumn Binding="{Binding Path=TimePublished , Converter={StaticResource dtToString}}" Header="Published" />
-        <DataGridTextColumn Binding="{Binding Path=TimeFound}" Header="Found" />
-      </DataGrid.Columns>
-      <DataGrid.RowStyle>
-        <Style TargetType="DataGridRow" >
-          <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
-          <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick"/>
-        </Style>
-      </DataGrid.RowStyle>
-    </DataGrid>
+          </DataGrid.RowStyle>
+        </DataGrid>
+      </TabItem>
+      
+      
+      <TabItem Header="Sharing history">
+        <DataGrid x:Name="ShareHistoryDataGrid" 
+            HorizontalAlignment="Stretch"
+            AutoGenerateColumns="False"
+            AlternationCount="2" AlternatingRowBackground="Gainsboro"
+                  
+            IsReadOnly="True">
+          <DataGrid.Columns>
+            <DataGridTextColumn Binding="{Binding Path=Id}" Header="ID" />
+            <DataGridTextColumn Binding="{Binding Path=Description}" Header="Description" />
+            <DataGridHyperlinkColumn
+              Binding="{Binding Path=Url}" 
+              Header="URL"
+              CellStyle="{StaticResource hyperlinkCellStyle}">
+            </DataGridHyperlinkColumn>
+            <DataGridTextColumn Binding="{Binding Path=ErrorMessage}" Header="Error" />
+            <DataGridTextColumn Binding="{Binding Path=Time}" Header="Time" />
+            <DataGridCheckBoxColumn Binding="{Binding Path=Skipped}" Header="Skipped" />
+          </DataGrid.Columns>
+        </DataGrid>
+      </TabItem>
+    </TabControl>
+    
 
   </DockPanel>
 

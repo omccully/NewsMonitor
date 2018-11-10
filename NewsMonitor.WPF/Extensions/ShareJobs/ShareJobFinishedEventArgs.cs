@@ -15,17 +15,27 @@ namespace NewsMonitor.WPF.Extensions
             this.Url = url;
         }
 
-        public bool WasSkipped { get; set; }
+        public bool WasCancelled { get; set; }
 
-        public static ShareJobFinishedEventArgs Skipped
+        public string ErrorMessage { get; set; }
+
+        public static ShareJobFinishedEventArgs Cancel
         {
             get
             {
                 return new ShareJobFinishedEventArgs()
                 {
-                    WasSkipped = true
+                    WasCancelled = true
                 };
             }
+        }
+
+        public static ShareJobFinishedEventArgs Error(string message)
+        {
+            return new ShareJobFinishedEventArgs()
+            {
+                ErrorMessage = message
+            };
         }
     }
 }

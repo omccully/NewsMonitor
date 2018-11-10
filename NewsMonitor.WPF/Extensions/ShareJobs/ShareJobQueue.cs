@@ -12,9 +12,9 @@ namespace NewsMonitor.WPF.Extensions
         ConcurrentQueue<IShareJob> InnerQueue = 
             new ConcurrentQueue<IShareJob>();
 
-        public event EventHandler<ShareJobStatusEventArgs> JobStarted;
-        public event EventHandler<ShareJobStatusEventArgs> JobFinished;
-        public event EventHandler<ShareJobStatusEventArgs> 
+        public event EventHandler<ShareJobQueueStatusEventArgs> JobStarted;
+        public event EventHandler<ShareJobQueueStatusEventArgs> JobFinished;
+        public event EventHandler<ShareJobQueueStatusEventArgs> 
             CurrentJobStatusUpdate;
         public event EventHandler AllJobsFinished;
 
@@ -94,8 +94,6 @@ namespace NewsMonitor.WPF.Extensions
 
             while (true)
             {
-                Task jobTask = null;
-
                 IShareJob nextJob = null;
 
                 // TryDequeue is thread-safe
@@ -106,38 +104,39 @@ namespace NewsMonitor.WPF.Extensions
                 }
 
                 nextJob.StatusUpdate += Job_StatusUpdate;
+                nextJob.Finished += NextJob_Finished;
 
                 IsRunningJob = true;
                 CurrentJob = nextJob;
 
-                JobStarted?.Invoke(this, new ShareJobStatusEventArgs(nextJob, "Started"));
-                jobTask = nextJob.Execute();
+                JobStarted?.Invoke(this, new ShareJobQueueStatusEventArgs(nextJob, "Started"));
 
-                try
-                {
-                    await jobTask;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Job failed: " + e.ToString());
-                    JobFinished?.Invoke(this, new ShareJobStatusEventArgs(nextJob, "Failed: " + e.Message, true));
-                    return;
-                }
-                finally
-                {
-                    IsRunningJob = false;
-                    CurrentJob.StatusUpdate -= Job_StatusUpdate;
-                    //CurrentJob = null;
-                }
+                await nextJob.Execute(); // executes NextJob_Finished when finished
 
-                JobFinished?.Invoke(this, new ShareJobStatusEventArgs(nextJob, "Finished"));
+                IsRunningJob = false;
+                CurrentJob.StatusUpdate -= Job_StatusUpdate;
             }
             
         }
 
+        private void NextJob_Finished(object sender, ShareJobFinishedEventArgs e)
+        {
+            IShareJob job = (IShareJob)sender;
+            if (e.ErrorMessage != null)
+            {
+                JobFinished?.Invoke(this, new ShareJobQueueStatusEventArgs(job, "Failed: " + e.ErrorMessage, true));
+            }
+            else
+            {
+                JobFinished?.Invoke(this, new ShareJobQueueStatusEventArgs(job, "Finished"));
+            }
+        }
+
         private void Job_StatusUpdate(object sender, ShareJobStatusEventArgs e)
         {
-            CurrentJobStatusUpdate?.Invoke(this, e);
+            IShareJob job = (IShareJob)sender;
+            ShareJobQueueStatusEventArgs ee = new ShareJobQueueStatusEventArgs(job, e.Message);
+            CurrentJobStatusUpdate?.Invoke(this, ee);
         }
     }
 }
