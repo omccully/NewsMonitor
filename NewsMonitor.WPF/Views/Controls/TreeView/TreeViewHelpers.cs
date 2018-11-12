@@ -48,6 +48,11 @@ namespace NewsMonitor.WPF.Views.EditableTreeView
             return outerModels;
         }
 
+        public static TreeModel<string> SaveToTreeModel(this ItemsControl control, string root)
+        {
+            return new TreeModel<string>(root, control.SaveToTreeModel());
+        }
+
         public static void ExpandAll(this TreeViewItem tvi, int childLimit=0, bool recursive=false)
         {
             ExpandAll((ItemsControl)tvi, childLimit, recursive);

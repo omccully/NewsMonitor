@@ -41,5 +41,71 @@ namespace NewsMonitor.WPF.Views.EditableTreeView
             return treeModels.ToDictionary(tm => tm.NodeValue, 
                 tm => tm.Children.Select(tmInner => tmInner.NodeValue));
         }
+
+        public TreeModel<T> Duplicate()
+        {
+            return new TreeModel<T>(this.NodeValue,
+                this.Children.Select(tm => tm.Duplicate()).ToList());
+        }
+
+        public List<TreeModel<T>> Flatten(List<TreeModel<T>> result = null)
+        {
+            if(result == null) result = new List<TreeModel<T>>();
+
+            result.Add(this);
+
+            foreach(TreeModel<T> child in Children)
+            {
+                child.Flatten(result);
+            }
+
+            return result;
+        }
+
+        // override object.Equals
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            TreeModel<T> tm = obj as TreeModel<T>;
+            if (tm == null) return false;
+
+            return Equals(tm);
+        }
+
+        public bool Equals(TreeModel<T> tm)
+        {
+            if (tm == null) return false;
+
+            if(!Object.ReferenceEquals(tm.NodeValue, this.NodeValue))
+            {
+                if (tm.NodeValue == null)
+                    return false; // tm.NodeValue is null but now this.NodeValue
+
+                if (!tm.NodeValue.Equals(this.NodeValue)) return false;
+            }
+
+            if (tm.Children.Count != this.Children.Count) return false;
+
+            int count = tm.Children.Count;
+            for (int i = 0; i < count; i++)
+            {
+                // recursive call
+                if(!tm.Children[i].Equals(this.Children[i])) return false;
+            }
+
+            return true;
+        }
+
+
+
+        // override object.GetHashCode
+        public override int GetHashCode()
+        {
+            return NodeValue.GetHashCode() ^ Children.GetHashCode();
+        }
     }
 }

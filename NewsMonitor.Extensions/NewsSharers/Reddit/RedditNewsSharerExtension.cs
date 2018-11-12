@@ -20,7 +20,12 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
 
         public RedditNewsSharerExtension()
         {
+            InnerRedditPoster = new RedditSharpPoster();
+        }
 
+        public RedditNewsSharerExtension(IRedditPoster redditPoster)
+        {
+            InnerRedditPoster = redditPoster;
         }
 
         public override SettingsPage CreateSettingsPage()
@@ -28,14 +33,13 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             return new RedditNewsSharerSettingsPage();
         }
 
-
+        IRedditPoster InnerRedditPoster;
         IRedditPoster RedditPoster;
         void InitializeRedditPoster(KeyValueStorage kvs)
         {
             if(RedditPoster == null)
             {
-                RedditPoster = new LatestCredentialsRedditPoster(
-                    new RedditSharpPoster(), kvs);
+                RedditPoster = new LatestCredentialsRedditPoster(InnerRedditPoster, kvs);
             }
         }
 
