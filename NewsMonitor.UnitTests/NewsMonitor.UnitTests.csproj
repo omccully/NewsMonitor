@@ -83,6 +83,7 @@
     <Compile Include="Extensions\GoogleNewsSearcherTest.cs" />
     <Compile Include="Extensions\NewsSharers\Reddit\RedditNewsSearcherExtensionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WPF\Settings\Mappings\MappingsTest.cs" />
     <Compile Include="WPF\Views\Controls\TreeView\EditableTreeViewTest.cs" />
     <Compile Include="WPF\Views\Controls\TreeView\TreeModelTest.cs" />
     <Compile Include="WPF\Views\FakePresentationSource.cs" />

@@ -39,6 +39,16 @@ namespace NewsMonitor.WPF.Views.EditableTreeView
             this.Rules = rules;
         }
 
+        public void LoadModel(TreeModel<string> model)
+        {
+            this.RestoreFromTreeModel(model);
+
+            ExpandAll();
+
+            if (Rules == null) Rules = new List<EditableTreeViewLevelRule>();
+            AddTextBoxes(this, Rules);
+        }
+
         void ExpandAll()
         {
             foreach (object item in Items)
