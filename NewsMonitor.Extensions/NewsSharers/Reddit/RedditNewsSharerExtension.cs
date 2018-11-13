@@ -39,7 +39,8 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
         {
             if(RedditPoster == null)
             {
-                RedditPoster = new LatestCredentialsRedditPoster(InnerRedditPoster, kvs);
+                RedditPoster = new LatestCredentialsRedditPoster(InnerRedditPoster, 
+                    new RedditSettings(kvs));
             }
         }
 

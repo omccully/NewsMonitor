@@ -10,32 +10,28 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
     class LatestCredentialsRedditPoster : IRedditPoster
     {
         IRedditPoster InnerPoster;
-        KeyValueStorage Storage;
+        RedditSettings Settings;
 
-        public LatestCredentialsRedditPoster(IRedditPoster innerPoster, KeyValueStorage storage)
+        public LatestCredentialsRedditPoster(IRedditPoster innerPoster, RedditSettings settings)
         {
             this.InnerPoster = innerPoster;
-            this.Storage = storage;
+            this.Settings = settings;
         }
 
         public Task<string> PostUrl(string title, string url, string subreddit)
         {
-            string username = Storage.GetString(RedditNewsSharerSettingsPage.RedditUsernameKey);
-            string password = Storage.GetString(RedditNewsSharerSettingsPage.RedditPasswordKey);
-            string clientId = Storage.GetString(RedditNewsSharerSettingsPage.RedditClientIdKey);
-            string clientSecret = Storage.GetString(RedditNewsSharerSettingsPage.RedditClientSecretKey);
-            string userAgent = Storage.GetString(RedditNewsSharerSettingsPage.RedditUserAgentKey);
-            InnerPoster.UpdateCredentials(username, password, clientId, clientSecret);
+            InnerPoster.UpdateCredentials(Settings.Username, Settings.Password, 
+                Settings.ClientId, Settings.ClientSecret, Settings.UserAgent);
             return InnerPoster.PostUrl(title, url, subreddit);
         }
 
         public void UpdateCredentials(string username, string password, string clientId, string clientSecret, string userAgent = null)
         {
-            Storage.SetValue(RedditNewsSharerSettingsPage.RedditUsernameKey, username);
-            Storage.SetValue(RedditNewsSharerSettingsPage.RedditPasswordKey, password);
-            Storage.SetValue(RedditNewsSharerSettingsPage.RedditClientIdKey, clientId);
-            Storage.SetValue(RedditNewsSharerSettingsPage.RedditClientSecretKey, clientSecret);
-            Storage.SetValue(RedditNewsSharerSettingsPage.RedditUserAgentKey, userAgent);
+            Settings.Username = username;
+            Settings.Password = password;
+            Settings.ClientId = clientId;
+            Settings.ClientSecret = clientSecret;
+            Settings.UserAgent = userAgent;
         }
     }
 }
