@@ -9,7 +9,7 @@ News searchers are search engines for news. Extensions for Google and Bing are p
 
 ## INewsFilterExtension
 
-You may want to block certain news articles. Extensions are provided for filtering out news articles with titles matching a a set of regular expressions, older than a certain number of days, and published by certain news organizations. The INewsFilterExtension implementation can provide a quick-filter window. This allows the user to quickly and easily add a certain article to the filter without having to go into the extension's settings. 
+You may want to block certain news articles. Extensions are provided for filtering out news articles with titles matching a set of regular expressions, filtering news older than a certain number of days, and filtering news published by certain news organizations. The INewsFilterExtension implementation can provide a quick-filter window. This allows the user to quickly and easily add a certain article to the filter without having to go into the extension's settings. 
 
 
 ## INewsSharerExtension
