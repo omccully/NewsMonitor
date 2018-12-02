@@ -23,6 +23,8 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
 
         public const string AnySection = "any";
 
+        IStringMatcher StringMatcher = new RegexStringMatcher();
+
         public RegexTitleNewsFilterExtension()
         {
             Model = new TreeModel<string>();
@@ -50,21 +52,7 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
 
         bool StringMatchesAny(string str, IEnumerable<string> matchers)
         {
-            return matchers.Any(m => StringMatchesMatcher(str, m));
-        }
-
-        bool StringMatchesMatcher(string str, string matcher)
-        {
-            if (str.ToLower() == matcher.ToLower()) return true;
-            try
-            {
-                Regex regex = new Regex(matcher, RegexOptions.IgnoreCase);
-                return regex.IsMatch(str);
-            }
-            catch
-            {
-                return false;
-            }
+            return matchers.Any(m => StringMatcher.Matches(str, m));
         }
 
         public SettingsPage CreateSettingsPage()
@@ -75,7 +63,8 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
         public Window CreateQuickFilterWindow(NewsArticle newsArticle, KeyValueStorage storage)
         {
             Mapping.Load(storage);
-            RegexTitleQuickFilterWindow window = new RegexTitleQuickFilterWindow(newsArticle.Title, Model);
+            RegexTitleQuickFilterWindow window = new RegexTitleQuickFilterWindow(
+                newsArticle.Title, Model, StringMatcher);
             window.Finished += (o, e) =>
             {
                 Mapping.Save(storage);

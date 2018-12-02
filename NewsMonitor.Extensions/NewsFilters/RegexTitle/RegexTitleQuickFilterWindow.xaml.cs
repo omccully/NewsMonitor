@@ -24,8 +24,10 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
     public partial class RegexTitleQuickFilterWindow : Window
     {
         TreeModel<string> Model;
+        IStringMatcher StringMatcher;
 
-        public RegexTitleQuickFilterWindow(string title, TreeModel<string> model)
+        public RegexTitleQuickFilterWindow(string title, TreeModel<string> model, 
+            IStringMatcher stringMatcher = null)
         {
             InitializeComponent();
 
@@ -33,6 +35,8 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
             SearchTermsComboBox.ItemsSource = SearchTerms;
             SearchTermsComboBox.SelectedIndex = 0;
             PostTitleTextBox.Text = title;
+
+            this.StringMatcher = stringMatcher;
         }
 
         IEnumerable<string> SearchTerms
@@ -91,6 +95,26 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
         protected void OnFinished()
         {
             Finished?.Invoke(this, new EventArgs());
+        }
+
+        private void FilterTextOrRegex_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (StringMatcher == null) return;
+
+            bool matchesMatchesTitle = StringMatcher.Matches(
+                PostTitleTextBox.Text, FilterTextOrRegex.Text);
+                
+            if (matchesMatchesTitle)
+            {
+                PostTitleTextBox.Foreground = 
+                    new SolidColorBrush(Colors.Green);
+            }
+            else
+            {
+                PostTitleTextBox.Foreground = 
+                    new SolidColorBrush(Colors.Black);
+            }
+
         }
     }
 }

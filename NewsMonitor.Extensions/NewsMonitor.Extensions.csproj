@@ -69,8 +69,10 @@
     <Compile Include="NewsFilters\Recency\RecencyNewsFilterSettingsPage.xaml.cs">
       <DependentUpon>RecencyNewsFilterSettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NewsFilters\RegexTitle\IStringMatcher.cs" />
     <Compile Include="NewsFilters\RegexTitle\IStringSectionsSerializer.cs" />
     <Compile Include="NewsFilters\RegexTitle\JsonStringSectionSerializer.cs" />
+    <Compile Include="NewsFilters\RegexTitle\RegexStringMatcher.cs" />
     <Compile Include="NewsFilters\RegexTitle\RegexTitleQuickFilterWindow.xaml.cs">
       <DependentUpon>RegexTitleQuickFilterWindow.xaml</DependentUpon>
     </Compile>
