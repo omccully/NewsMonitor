@@ -19,6 +19,14 @@ namespace NewsMonitor.WPF.Extensions
             this.SettingsGroup = settingsGroup;
         }
 
+        public string Name
+        {
+            get
+            {
+                return Extension.Name;
+            }
+        }
+
         public KeyValueStorage KeyValueStorage
         {
             get

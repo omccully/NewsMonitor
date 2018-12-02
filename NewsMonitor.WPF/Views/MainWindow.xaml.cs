@@ -32,16 +32,53 @@ namespace NewsMonitor.WPF
         DatabaseContext dbContext;
         SettingsManager SettingsManager;
 
-        ObservableCollection<NewsArticle> AllNewsArticles;
-        ObservableCollectionFilter<NewsArticle> NewsArticleFilter;
+        ObservableCollection<NewsArticle> _AllNewsArticles;   
+        ObservableCollection<NewsArticle> AllNewsArticles
+        {
+            get
+            {
+                return _AllNewsArticles;
+            }
+            set
+            {
+                if(value != null)
+                {
+                    NewsArticlesPage = new NewsArticlesPage(value,
+                        SettingsManager.FilterExtensionManager.Features,
+                        SettingsManager.SharerExtensionManager.Features);
+                    NewsArticlesPage.ShareJobsCreated += NewsArticlesPage_JobsCreated;
+                    NewsArticlesPage.NewsArticleModified += NewsArticlesPage_NewsArticleModified;
+                    NewsArticlesPageFrame.Navigate(NewsArticlesPage);
 
-        ShareJobQueue ShareJobQueue;
+                    NewsArticlesPageFrame.Navigating += NewsArticlesPageFrame_Navigating;
+                }
+                
+                _AllNewsArticles = value;
+            }
+        }
 
-        ReadOnlyObservableCollection<NewsArticle> NewsArticlesSource;
+        ObservableCollection<ShareJobResult> _AllShareJobResults;
+        ObservableCollection<ShareJobResult> AllShareJobResults
+        {
+            get
+            {
+                return _AllShareJobResults;
+            }
+            set
+            {
+                if(value != null)
+                {
+                    ShareHistoryPageFrame.Navigate(new ShareHistoryPage(value));
+                    ShareHistoryPageFrame.Navigating += NewsArticlesPageFrame_Navigating;
+                }
+                   
+                _AllShareJobResults = value;
+            }
+        }
 
-        ObservableCollection<ShareJobResult> AllShareJobResults;
+        NewsArticlesPage NewsArticlesPage;
 
-
+        #region Initialization
         public MainWindow()
         {
             InitializeComponent();
@@ -50,16 +87,11 @@ namespace NewsMonitor.WPF
             {
                 InitializeFromDb();
 
-                this.SettingsManager = new SettingsManager(
-                    new DatabaseKeyValueStorage(dbContext));
+                InitializeStatusBar();
 
-                IEnumerable<IShareJob> unfinishedJobs = SettingsManager
-                    .SharerExtensionManager.Features
-                    .SelectMany(f => f.Extension.GetUnfinishedJobs(f.KeyValueStorage));
+                InitializeProgressBar();
 
-                InitializeDataGridRowContextMenu();
-
-                InitializeJobQueue(unfinishedJobs);
+                this.SizeToContent = SizeToContent.Width;
             }
             catch(DataException e)
             {
@@ -76,61 +108,40 @@ namespace NewsMonitor.WPF
             }
         }
 
-        void InitializeDataGridRowContextMenu()
+        void InitializeProgressBar()
         {
-            ContextMenu cm = (ContextMenu)NewsArticlesDataGrid.FindResource("RowMenu");
+            FindArticlesProgressBar.NewsSearchers = NewsSearchers;
+            FindArticlesProgressBar.FilterFeatures = SettingsManager.FilterExtensionManager.Features;
+            FindArticlesProgressBar.ProvideSearchTerms = () => SearchTerms;
+            FindArticlesProgressBar.ArticlesFound += FindArticlesProgressBar_ArticlesFound;
+        }
 
-            MenuItem fmi = cm.Items.Cast<MenuItem>().Where(mi => mi.Name == "FilterMenuItem").First();
-            foreach (ExtensionFeature<INewsFilterExtension> filter in SettingsManager.FilterExtensionManager.Features)
+        void InitializeStatusBar()
+        {
+            IEnumerable<IShareJob> unfinishedJobs = SettingsManager
+                   .SharerExtensionManager.Features
+                   .SelectMany(f => f.Extension.GetUnfinishedJobs(f.KeyValueStorage));
+            ShareJobStatusBar.AddUnfinishedJobs(unfinishedJobs);
+        }
+
+        private void FindArticlesProgressBar_ArticlesFound(object sender, Services.NewsArticlesFoundEventArgs e)
+        {
+            foreach (NewsArticle article in e.NewsArticles)
             {
-                MenuItem mi = new MenuItem() { Header = filter.Extension.Name };
-                mi.Click += (o, e) =>
-                {
-                    foreach(NewsArticle article in SelectedNewsArticles)
-                    {
-                        System.Diagnostics.Debug.WriteLine(article.Title);
-                        FilterNewsArticle(article, filter);
-                    }
+                if (ExistingArticleUrls.Contains(article.Url)) continue;
 
-                    e.Handled = true;
-                };
-                fmi.Items.Add(mi);
-            }
+                AllNewsArticles.Add(article);
 
+                dbContext.NewsArticles.Add(article);
+                dbContext.SaveChangesAsync();
 
-            MenuItem smi = cm.Items.Cast<MenuItem>().Where(mi => mi.Name == "ShareMenuItem").First();
-            foreach (ExtensionFeature<INewsSharerExtension> sharer in SettingsManager.SharerExtensionManager.Features)
-            {
-                MenuItem mi = new MenuItem() { Header = sharer.Extension.Name };
-                mi.Click += (o, e) =>
-                {
-                    foreach (NewsArticle article in SelectedNewsArticles)
-                    {
-                        System.Diagnostics.Debug.WriteLine(article.Title);
-                        ShareNewsArticle(article, sharer);
-                    }
-
-                    e.Handled = true;
-                };
-                smi.Items.Add(mi);
+                Console.WriteLine(article);
             }
         }
 
-        void InitializeJobQueue(IEnumerable<IShareJob> unfinishedJobs)
+        private void NewsArticlesPage_NewsArticleModified(object sender, EventArgs e)
         {
-            Console.WriteLine("UnfinishedJobs.Count == " + unfinishedJobs.Count());
-            foreach (IShareJob job in unfinishedJobs)
-            {
-                job.Finished += Job_Finished;
-                Console.WriteLine(job);
-            }
-
-            ShareJobQueue = new ShareJobQueue();
-            ShareJobQueue.JobStarted += ShareJobQueue_CurrentJobStatusUpdate;
-            ShareJobQueue.JobFinished += ShareJobQueue_CurrentJobStatusUpdate;
-            ShareJobQueue.CurrentJobStatusUpdate += ShareJobQueue_CurrentJobStatusUpdate;
-            ShareJobQueue.AllJobsFinished += ShareJobQueue_AllJobsFinished;
-            ShareJobQueue.Enqueue(unfinishedJobs);
+            dbContext.SaveChangesAsync();
         }
 
         List<string> ExceptionMessages(Exception e, List<string> messageList = null)
@@ -147,60 +158,38 @@ namespace NewsMonitor.WPF
             return messageList;
         }
 
+
         void InitializeFromDb()
         {
             dbContext = new DatabaseContext("NewsMonitorDb");
-            AllNewsArticles = new ObservableCollection<NewsArticle>(dbContext.NewsArticles.ToList());
-            NewsArticleFilter = new ObservableCollectionFilter<NewsArticle>(AllNewsArticles, 
-                (na) => !na.Hidden);
-            NewsArticlesSource = NewsArticleFilter.FilteredResults;
-            NewsArticlesDataGrid.ItemsSource = NewsArticleFilter.FilteredResults;
 
+            SettingsManager = new SettingsManager(
+                    new DatabaseKeyValueStorage(dbContext));
+
+            AllNewsArticles = new ObservableCollection<NewsArticle>(
+                dbContext.NewsArticles.ToList());
+            ExistingArticleUrls = new ObservableCollectionSearcher<NewsArticle, string>(
+                AllNewsArticles, (article) => article.Url);
+            
             AllShareJobResults = new ObservableCollection<ShareJobResult>(dbContext.ShareJobResults.ToList());
-            ShareHistoryDataGrid.ItemsSource = AllShareJobResults;
-            this.SizeToContent = SizeToContent.Width;
         }
+        #endregion
 
-        ReadOnlyObservableCollection<NewsArticle> GetNewsArticles()
-        {
-            return NewsArticleFilter.FilteredResults;
-        }
-
-        HashSet<string> ExistingArticleUrls
-        {
-            get
-            {
-                HashSet<string> existing_article_urls = new HashSet<string>();
-                foreach (NewsArticle na in AllNewsArticles)
-                {
-                    existing_article_urls.Add(na.Url);
-                }
-                return existing_article_urls;
-            }
-        }
+        ObservableCollectionSearcher<NewsArticle, string> ExistingArticleUrls;
 
         IEnumerable<INewsSearcher> NewsSearchers
         {
             get
             {
-                List<INewsSearcher> results = new List<INewsSearcher>();
-
-                foreach (ExtensionFeature<INewsSearcherExtension> extFeature in
-                    SettingsManager.SearcherExtensionManager.Features)
-                {
-                    INewsSearcher searcher = extFeature.Extension.CreateNewsSearcher(
-                        extFeature.SettingsGroup.KeyValueStorage);
-
-                    results.Add(searcher);
-                }
-                return results;
+                return SettingsManager.SearcherExtensionManager.Features
+                    .Select(f => f.Extension.CreateNewsSearcher(f.KeyValueStorage));
             }
         }
 
         bool PassesAllFilters(NewsArticle newsArticle, string searchTerm)
         {
             return SettingsManager.FilterExtensionManager.Features.All(
-                f => f.Extension.AllowArticle(newsArticle, searchTerm, f.SettingsGroup.KeyValueStorage));
+                f => f.Extension.AllowArticle(newsArticle, searchTerm, f.KeyValueStorage));
         }
 
         IEnumerable<string> SearchTerms
@@ -213,72 +202,13 @@ namespace NewsMonitor.WPF
             }
         }
 
-        IEnumerable<NewsArticle> SelectedNewsArticles
-        {
-            get
-            {
-                return NewsArticlesDataGrid.SelectedItems.Cast<NewsArticle>().ToList();
-            }
-        }
-
-
-        private void FindArticlesButton_Click(object sender, RoutedEventArgs e)
-        {
-            FindArticlesAsync();
-        }
-
-        async void FindArticlesAsync()
+        private async void FindArticlesButton_Click(object sender, RoutedEventArgs e)
         {
             FindArticlesButton.IsEnabled = false;
 
-            try
-            {
-                FindArticlesProgressBar.Value = 0;
+            await FindArticlesProgressBar.FindArticlesAsync();
 
-                IEnumerable<INewsSearcher> news_searchers = NewsSearchers;
-                HashSet<string> existing_article_urls = ExistingArticleUrls;
-
-                IEnumerable<string> search_terms = SearchTerms;
-
-                FindArticlesProgressBar.Maximum = news_searchers.Count() * search_terms.Count();
-
-                foreach (string search_term in search_terms)
-                {
-                    Console.WriteLine("Search Term=" + search_term);
-                    foreach (INewsSearcher news_searcher in news_searchers)
-                    {
-                        Console.WriteLine("News Searcher=" + news_searcher.GetType());
-
-                        IEnumerable<NewsArticle> results = (await news_searcher.SearchAsync(search_term))
-                            .Where(article => PassesAllFilters(article, search_term));
-                        foreach (NewsArticle article in results)
-                        {
-                            if (existing_article_urls.Contains(article.Url)) continue;
-
-                            AllNewsArticles.Add(article);
-                            existing_article_urls.Add(article.Url);
-                            dbContext.NewsArticles.Add(article);
-                            dbContext.SaveChangesAsync();
-
-                            Console.WriteLine(article);
-                        }
-
-                        FindArticlesProgressBar.Value++;
-                    }
-                }
-                Console.WriteLine("finished");
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message);
-
-                return;
-            }
-            finally
-            {
-                FindArticlesButton.IsEnabled = true;
-                FindArticlesProgressBar.Value = 0;
-            }
+            FindArticlesButton.IsEnabled = true;
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
@@ -288,32 +218,9 @@ namespace NewsMonitor.WPF
             Console.WriteLine("returned to main window");
         }
 
-        #region Delete and refilter
-        private void DeleteSelectedButton_Click(object sender, RoutedEventArgs e)
-        {
-            DeleteSelectedNewsArticles();
-        }
-
-        private void NewsArticlesDataGrid_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key != System.Windows.Input.Key.Delete) return;
-
-            DeleteSelectedNewsArticles();
-        }
-
-        void DeleteSelectedNewsArticles()
-        {
-            foreach (NewsArticle article in SelectedNewsArticles)
-            {
-                article.Hidden = true;
-
-                dbContext.SaveChanges();
-            }
-        }
-
         private void RefilterButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (NewsArticle article in SelectedNewsArticles)
+            foreach (NewsArticle article in NewsArticlesPage.SelectedNewsArticles)
             {
                 bool passedAll = SearchTerms.All(st => PassesAllFilters(article, st));
 
@@ -326,139 +233,14 @@ namespace NewsMonitor.WPF
             }
         }
 
-        void FilterNewsArticle(NewsArticle newsArticle, ExtensionFeature<INewsFilterExtension> feature = null)
+        private void NewsArticlesPage_JobsCreated(object sender, JobsCreatedEventArgs e)
         {
-            if (feature == null) feature = SettingsManager.FilterExtensionManager.Features.First();
-
-            Window window = feature.Extension.CreateQuickFilterWindow(newsArticle, feature.SettingsGroup.KeyValueStorage);
-            System.Diagnostics.Debug.WriteLine("window = " + window);
-            if(window != null) window.ShowDialog();
+            ShareJobStatusBar.AddUnfinishedJobs(e.Jobs);
         }
 
-        #endregion
-
-        #region Launch article
-        void LaunchUrl(string url)
+        private void NewsArticlesPageFrame_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
-            if (url != null && (url.StartsWith("http://") || url.StartsWith("https://")))
-            {
-                Process.Start(url);
-            }
-        }
-
-        private void ShowSelectedInBrowser_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (NewsArticle article in SelectedNewsArticles)
-            {
-                if (article != null) LaunchUrl(article.Url);
-            }
-        }
-
-        void OnHyperlinkClick(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("Source = " + e.Source);
-            System.Diagnostics.Debug.WriteLine("OriginalSource = " + e.OriginalSource);
-
-            object dataContext = ((Hyperlink)e.OriginalSource).DataContext;
-            
-            NewsArticle article = dataContext as NewsArticle;
-            if(article != null) LaunchUrl(article.Url);
-
-            ShareJobResult sjr = dataContext as ShareJobResult;
-            if (sjr != null) LaunchUrl(sjr.Url);
-        }
-        #endregion
-
-        #region Share
-        private void ShareSelectedButton_Click(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Share selected");
-           
-            foreach(NewsArticle article in SelectedNewsArticles)
-            {
-                ShareNewsArticle(article);
-            }
-        }
-
-        private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine(e.OriginalSource.GetType());
-            System.Diagnostics.Debug.WriteLine(e.Source.GetType());
-
-            NewsArticle article = ((DataGridRow)e.Source).Item as NewsArticle;
-            ShareNewsArticle(article);
-        }
-
-        void ShareNewsArticle(NewsArticle article, ExtensionFeature<INewsSharerExtension> feature=null)
-        {
-            if(feature == null) feature = SettingsManager.SharerExtensionManager.Features.First();
-
-            NewsSharerWindow sharerWindow =
-                feature.Extension.CreateSharerWindow(article, feature.SettingsGroup.KeyValueStorage);
-            sharerWindow.JobsCreated += SharerWindow_JobsCreated;
-            sharerWindow.ShowDialog();
-        }
-
-        private void SharerWindow_JobsCreated(object sender, JobsCreatedEventArgs e)
-        {
-            foreach(IShareJob job in e.Jobs)
-            {
-                job.Finished += Job_Finished;
-            }
-            ShareJobQueue.Enqueue(e.Jobs);
-        }
-
-        private void ShareJobQueue_CurrentJobStatusUpdate(object sender, ShareJobQueueStatusEventArgs e)
-        {
-            // update status bar based on queue status
-            string message = $"{ShareJobQueue.Count} jobs in queue -- " +
-                $"{e.Job.Description}: {e.Status}";
-            Console.WriteLine(message);
-            JobStatusTextBlock.Text = message;
-            JobStatusTextBlock.Foreground = new SolidColorBrush(e.Failed ? Colors.Red : Colors.Black);
-        }
-
-        private void ShareJobQueue_AllJobsFinished(object sender, EventArgs e)
-        {
-            JobStatusTextBlock.Text = "";
-        }
-
-        private void Job_Finished(object sender, ShareJobFinishedEventArgs e)
-        {
-            IShareJob job = (IShareJob)sender;
-            Console.WriteLine(job.Description);
-            Console.WriteLine("e.Url=" + e.Url);
-
-            ShareJobResult sjr = new ShareJobResult(job.Description,
-                e.Url, e.WasCancelled, e.ErrorMessage);
-
-            AllShareJobResults.Add(sjr);
-            dbContext.ShareJobResults.Add(sjr);
-            dbContext.SaveChanges();
-        }
-
-        #endregion
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine(e.Source.GetType());
-            System.Diagnostics.Debug.WriteLine(e.OriginalSource.GetType());
-
-            foreach(NewsArticle newsArticle in SelectedNewsArticles)
-            {
-                System.Diagnostics.Debug.WriteLine(newsArticle.Title);
-            }
-
-        }
-
-        private void SkipJobButton_Click(object sender, RoutedEventArgs e)
-        {
-            // remove the job from the extension's KVS
-            IShareJob currentJob = ShareJobQueue.CurrentJob;
-            currentJob?.Cancel();
-
-            // continue on with the queue
-            ShareJobQueue.RunAllJobs();
+            e.Cancel = true;
         }
     }
 }

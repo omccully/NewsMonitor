@@ -42,8 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\ObservableCollectionFilter.cs" />
+    <Compile Include="Helpers\ObservableCollectionSearcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IUrlLauncher.cs" />
+    <Compile Include="Services\NewsArticleFoundEventArgs.cs" />
     <Compile Include="Services\NewsSearchers\INewsSearcher.cs" />
+    <Compile Include="Services\UrlLauncher.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\" />

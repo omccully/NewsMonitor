@@ -1,0 +1,42 @@
+﻿<Page x:Class="NewsMonitor.WPF.Views.ShareHistoryPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:NewsMonitor.WPF.Views"
+      xmlns:converters="clr-namespace:NewsMonitor.WPF.Converters"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="ShareHistoryPage">
+  <Page.Resources>
+    <converters:UrlToDomainConverter x:Key="urlToDomain"/>
+    <converters:DateTimeToStringConverter Format="d" x:Key="dtToString"/>
+    <Style x:Key="hyperlinkCellStyle" TargetType="{x:Type DataGridCell}" >
+      <Style.Triggers>
+        <Trigger Property="IsSelected"  Value="True">
+          <Setter Property="Background" Value="White"/>
+        </Trigger>
+      </Style.Triggers>
+      <EventSetter Event="Hyperlink.Click" Handler="OnHyperlinkClick" />
+    </Style>
+  </Page.Resources>
+  <DataGrid x:Name="ShareHistoryDataGrid" 
+            HorizontalAlignment="Stretch"
+            AutoGenerateColumns="False"
+            AlternationCount="2" AlternatingRowBackground="Gainsboro"
+                  
+            IsReadOnly="True">
+    <DataGrid.Columns>
+      <DataGridTextColumn Binding="{Binding Path=Id}" Header="ID" />
+      <DataGridTextColumn Binding="{Binding Path=Description}" Header="Description" />
+      <DataGridHyperlinkColumn
+              Binding="{Binding Path=Url}" 
+              Header="URL"
+              CellStyle="{StaticResource hyperlinkCellStyle}">
+      </DataGridHyperlinkColumn>
+      <DataGridTextColumn Binding="{Binding Path=ErrorMessage}" Header="Error" />
+      <DataGridTextColumn Binding="{Binding Path=Time}" Header="Time" />
+      <DataGridCheckBoxColumn Binding="{Binding Path=Skipped}" Header="Skipped" />
+    </DataGrid.Columns>
+  </DataGrid>
+</Page>

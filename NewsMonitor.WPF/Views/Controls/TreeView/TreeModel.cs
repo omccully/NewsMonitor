@@ -100,12 +100,11 @@ namespace NewsMonitor.WPF.Views.EditableTreeView
             return true;
         }
 
-
-
         // override object.GetHashCode
         public override int GetHashCode()
         {
-            return NodeValue.GetHashCode() ^ Children.GetHashCode();
+            return (NodeValue == null ? 0 : NodeValue.GetHashCode()) ^
+                (Children == null ? 0 : Children.GetHashCode());
         }
     }
 }

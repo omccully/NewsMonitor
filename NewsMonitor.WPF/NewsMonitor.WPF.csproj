@@ -44,8 +44,7 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="NewsMonitor.Extensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="NewsMonitor.Extensions">
       <HintPath>..\NewsMonitor.Extensions\bin\Debug\NewsMonitor.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -118,6 +117,12 @@
     <Compile Include="Views\Controls\TreeView\EditableTreeViewLevelRule.cs" />
     <Compile Include="Views\Controls\TreeView\TreeModel.cs" />
     <Compile Include="Views\Controls\TreeView\TreeViewHelpers.cs" />
+    <Compile Include="Views\FindNewsArticlesProgressBar.xaml.cs">
+      <DependentUpon>FindNewsArticlesProgressBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NewsArticlesPage.xaml.cs">
+      <DependentUpon>NewsArticlesPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Settings\EmptySettingsPage.xaml.cs">
       <DependentUpon>EmptySettingsPage.xaml</DependentUpon>
     </Compile>
@@ -131,6 +136,12 @@
     <Compile Include="Views\Settings\SettingsPage.cs" />
     <Compile Include="Views\Settings\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShareHistoryPage.xaml.cs">
+      <DependentUpon>ShareHistoryPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShareJobStatusBar.xaml.cs">
+      <DependentUpon>ShareJobStatusBar.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +178,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Views\FindNewsArticlesProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NewsArticlesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Settings\EmptySettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -182,6 +201,14 @@
     <Page Include="Views\Settings\SettingsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ShareHistoryPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShareJobStatusBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
