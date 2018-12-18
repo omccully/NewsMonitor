@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:NewsMonitor.WPF.Views">
+  <Style TargetType="TextBox">
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+  <Style TargetType="PasswordBox">
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+</ResourceDictionary>
