@@ -35,6 +35,10 @@
     <Reference Include="Hammock.ClientProfile, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c148cfba29ed1a4d, processorArchitecture=MSIL">
       <HintPath>..\packages\TweetSharp.2.3.1\lib\4.0\Hammock.ClientProfile.dll</HintPath>
     </Reference>
+    <Reference Include="NewsMonitor.WPF, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\NewsMonitor.WPF.exe</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\TweetSharp.2.3.1\lib\4.0\Newtonsoft.Json.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
@@ -155,10 +159,6 @@
     <ProjectReference Include="..\NewsMonitor.Data\NewsMonitor.Data.csproj">
       <Project>{d3e357d0-bdf6-49de-8b5b-70106552c6b7}</Project>
       <Name>NewsMonitor.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NewsMonitor.WPF\NewsMonitor.WPF.csproj">
-      <Project>{7c1a3645-899d-4c07-bf0d-c6d96120747c}</Project>
-      <Name>NewsMonitor.WPF</Name>
     </ProjectReference>
     <ProjectReference Include="..\NewsMonitor\NewsMonitor.csproj">
       <Project>{bac62f3e-7285-435c-a460-75ff6b0ebeae}</Project>

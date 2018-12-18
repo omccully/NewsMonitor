@@ -10,7 +10,14 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="RedditNewsSharerSettingsPage">
-
+  <Page.Resources>
+    <Style TargetType="TextBox">
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style TargetType="PasswordBox">
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+  </Page.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="auto"></ColumnDefinition>

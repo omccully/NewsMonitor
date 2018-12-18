@@ -10,7 +10,14 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="RedditNewsSharerSettingsPage">
-
+  <Page.Resources>
+    <Style TargetType="TextBox">
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style TargetType="PasswordBox">
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+  </Page.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="auto"></ColumnDefinition>
@@ -27,7 +34,7 @@
     <Label HorizontalAlignment="Right">Reddit username:</Label>
     <TextBox x:Name="RedditUsernameTextBox" Grid.Column="1"/>
     <Label HorizontalAlignment="Right" Grid.Row="1">Reddit password:</Label>
-    <PasswordBox x:Name="RedditPasswordTextBox" Grid.Row="1" Grid.Column="1"/>
+    <PasswordBox x:Name="RedditPasswordTextBox" Grid.Row="1" Grid.Column="1" BorderThickness="1" />
 
     <Label Grid.Row="2" HorizontalAlignment="Right">Reddit client ID:</Label>
     <TextBox Grid.Row="2" x:Name="RedditClientIdTextBox" Grid.Column="1"/>
