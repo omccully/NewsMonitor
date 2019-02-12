@@ -45,9 +45,30 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             this.RedditPoster = redditPoster;
         }
 
-        protected override Task<string> InnerExecute()
+        protected override async Task<string> InnerExecute()
         {
-            return RedditPoster.PostUrl(Title, Url, Subreddit);
+            const int SecondsBetweenTries = 60;
+            try
+            {
+                return await RedditPoster.PostUrl(Title, Url, Subreddit);
+            }
+            catch(Exception e)
+            {
+                if(e.Message == "RATELIMIT")
+                {
+                    // try again
+                    for (int i = SecondsBetweenTries; i > 0; i--)
+                    {
+                        OnStatusUpdate(
+                            new ShareJobStatusEventArgs(
+                                $"Reddit rate limit exceeded. Trying again in {i} seconds"));
+                           await Task.Delay(1000);
+                    }
+                    
+                    return await InnerExecute();
+                }
+                throw;
+            }
         }
     }
 }
