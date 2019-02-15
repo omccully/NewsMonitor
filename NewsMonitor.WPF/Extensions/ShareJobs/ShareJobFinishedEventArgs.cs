@@ -8,10 +8,12 @@ namespace NewsMonitor.WPF.Extensions
 {
     public class ShareJobFinishedEventArgs : EventArgs
     {
+        public IShareJob Job { get; private set; }
         public string Url { get; private set; }
 
-        public ShareJobFinishedEventArgs(string url = null)
+        public ShareJobFinishedEventArgs(IShareJob job, string url = null)
         {
+            this.Job = job;
             this.Url = url;
         }
 
@@ -19,20 +21,17 @@ namespace NewsMonitor.WPF.Extensions
 
         public string ErrorMessage { get; set; }
 
-        public static ShareJobFinishedEventArgs Cancel
+        public static ShareJobFinishedEventArgs Cancel(IShareJob job)
         {
-            get
+            return new ShareJobFinishedEventArgs(job)
             {
-                return new ShareJobFinishedEventArgs()
-                {
-                    WasCancelled = true
-                };
-            }
+                WasCancelled = true
+            };
         }
 
-        public static ShareJobFinishedEventArgs Error(string message)
+        public static ShareJobFinishedEventArgs Error(IShareJob job, string message)
         {
-            return new ShareJobFinishedEventArgs()
+            return new ShareJobFinishedEventArgs(job)
             {
                 ErrorMessage = message
             };

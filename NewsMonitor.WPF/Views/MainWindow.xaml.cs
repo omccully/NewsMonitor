@@ -70,10 +70,16 @@ namespace NewsMonitor.WPF
                 {
                     ShareHistoryPageFrame.Navigate(new ShareHistoryPage(value));
                     ShareHistoryPageFrame.Navigating += NewsArticlesPageFrame_Navigating;
+                    value.CollectionChanged += AllShareJobResults_CollectionChanged;
                 }
                    
                 _AllShareJobResults = value;
             }
+        }
+
+        private void AllShareJobResults_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            dbContext.SaveChangesAsync();
         }
 
         NewsArticlesPage NewsArticlesPage;
@@ -122,6 +128,14 @@ namespace NewsMonitor.WPF
                    .SharerExtensionManager.Features
                    .SelectMany(f => f.Extension.GetUnfinishedJobs(f.KeyValueStorage));
             ShareJobStatusBar.AddUnfinishedJobs(unfinishedJobs);
+            ShareJobStatusBar.JobFinished += ShareJobStatusBar_JobFinished;
+        }
+
+        private void ShareJobStatusBar_JobFinished(object sender, ShareJobFinishedEventArgs e)
+        {
+            AllShareJobResults.Add(
+                new ShareJobResult(e.Job.Description,
+                e.Url, e.WasCancelled, e.ErrorMessage));
         }
 
         private void FindArticlesProgressBar_ArticlesFound(object sender, Services.NewsArticlesFoundEventArgs e)

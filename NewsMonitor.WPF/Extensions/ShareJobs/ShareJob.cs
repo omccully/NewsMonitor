@@ -36,11 +36,11 @@ namespace NewsMonitor.WPF.Extensions
             try
             {
                 string url = await InnerExecute();
-                OnFinished(new ShareJobFinishedEventArgs(url));
+                OnFinished(new ShareJobFinishedEventArgs(this, url));
             }
             catch (Exception e)
             {
-                OnFinished(ShareJobFinishedEventArgs.Error(e.Message));
+                OnFinished(ShareJobFinishedEventArgs.Error(this, e.Message));
             }
         }
         
@@ -48,7 +48,7 @@ namespace NewsMonitor.WPF.Extensions
 
         public void Cancel()
         { 
-            OnFinished(ShareJobFinishedEventArgs.Cancel);
+            OnFinished(ShareJobFinishedEventArgs.Cancel(this));
         }
 
         public override string ToString()
