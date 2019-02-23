@@ -79,6 +79,12 @@ namespace NewsMonitor.WPF
 
         private void AllShareJobResults_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.NewItems == null) return;
+            foreach(var newItem in e.NewItems)
+            {
+                dbContext.ShareJobResults.Add((ShareJobResult)newItem);
+            }
+            
             dbContext.SaveChangesAsync();
         }
 
