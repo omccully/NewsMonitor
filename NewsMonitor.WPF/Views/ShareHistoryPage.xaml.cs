@@ -3,6 +3,7 @@ using NewsMonitor.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace NewsMonitor.WPF.Views
     {
         public IUrlLauncher UrlLauncher { get; set; } = new UrlLauncher();
 
+        ICollectionView AllShareJobResultsCollectionView;
         ObservableCollection<ShareJobResult> AllShareJobResults;
 
         public ShareHistoryPage(ObservableCollection<ShareJobResult> allShareJobResults)
@@ -32,7 +34,12 @@ namespace NewsMonitor.WPF.Views
             InitializeComponent();
 
             this.AllShareJobResults = allShareJobResults;
-            ShareHistoryDataGrid.ItemsSource = allShareJobResults;
+            AllShareJobResultsCollectionView = CollectionViewSource.GetDefaultView(allShareJobResults);
+
+            AllShareJobResultsCollectionView.SortDescriptions.Add(
+                new SortDescription("Id", ListSortDirection.Descending));
+
+            ShareHistoryDataGrid.ItemsSource = AllShareJobResultsCollectionView;
         }
 
         void OnHyperlinkClick(object sender, RoutedEventArgs e)

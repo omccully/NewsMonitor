@@ -26,6 +26,7 @@
             AlternationCount="2" AlternatingRowBackground="Gainsboro"
             IsReadOnly="True"
             PreviewKeyDown="NewsArticlesDataGrid_KeyDown"
+            FontSize="15"
             DockPanel.Dock="Bottom">
     <DataGrid.Resources>
       <ContextMenu x:Key="RowMenu" 
