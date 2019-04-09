@@ -21,6 +21,8 @@ using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Controls;
 using System.Threading.Tasks;
+using System.Windows.Threading;
+using System.Timers;
 
 namespace NewsMonitor.WPF
 {
@@ -103,6 +105,8 @@ namespace NewsMonitor.WPF
 
                 InitializeProgressBar();
 
+                InitializeMonitor();
+
                 this.SizeToContent = SizeToContent.Width;
             }
             catch(DataException e)
@@ -117,6 +121,53 @@ namespace NewsMonitor.WPF
                 System.Diagnostics.Debug.WriteLine(e.ToString());
                 MessageBox.Show(e.Message);
                 this.Close();
+            }
+        }
+
+        Timer timer;
+        void InitializeMonitor()
+        {
+            Timer_Elapsed(null, null);
+            // 10 mins
+            timer = new Timer(1000 * 60 * 10);
+            timer.Elapsed += Timer_Elapsed;
+            timer.AutoReset = true;
+            timer.Enabled = true;
+        }
+
+        bool ShareJobAppliesToPostMonitor(ShareJobResult shareJobResult, IPostMonitorExtension postMonitor)
+        {
+            TimeSpan timeSinceShareJob = DateTime.Now - shareJobResult.Time;
+
+            if (shareJobResult.Url == null) return false;
+            Uri uri = new Uri(shareJobResult.Url);
+            return uri.Host.EndsWith(postMonitor.Domain) &&
+                timeSinceShareJob < postMonitor.TimeSpan;
+        }
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Monitoring...");
+            foreach(ExtensionFeature<IPostMonitorExtension> postMonitor in PostMonitors)
+            {
+                IEnumerable<ShareJobResult> applicableResults = dbContext
+                    .ShareJobResults.ToList().Where(sjr =>
+                        ShareJobAppliesToPostMonitor(sjr, postMonitor.Extension))
+                    .OrderByDescending(sjr => sjr.Time).ToList();
+
+                KeyValueStorage kvs = postMonitor.KeyValueStorage;
+                if(kvs != null)
+                {
+                    string shareSettingsWith = postMonitor.Extension.ShareSettingsWith;
+                    if (shareSettingsWith != null)
+                    {
+                        var sharer = SettingsManager.SharerExtensionManager.Features
+                            .FirstOrDefault(f => f.Extension.Name == shareSettingsWith);
+                        kvs = sharer.KeyValueStorage;
+                    }
+                }
+
+                postMonitor.Extension.Monitor(applicableResults, kvs);
             }
         }
 
@@ -196,6 +247,32 @@ namespace NewsMonitor.WPF
         #endregion
 
         ObservableCollectionSearcher<NewsArticle, string> ExistingArticleUrls;
+
+        IEnumerable<ExtensionFeature<IPostMonitorExtension>> _postMonitors;
+        IEnumerable<ExtensionFeature<IPostMonitorExtension>> PostMonitors
+        {
+            get
+            {
+                if(_postMonitors == null)
+                {
+                    _postMonitors = SettingsManager.PostMonitorExtensionManager
+                        .Features.ToList();
+                    foreach(ExtensionFeature<IPostMonitorExtension> feature in _postMonitors)
+                    {
+                        feature.Extension.NeedsAttention += PostMonitor_NeedsAttention;
+                    }
+                }
+                return _postMonitors;
+            }
+        }
+
+        private void PostMonitor_NeedsAttention(object sender, NeedsAttentionEventArgs e)
+        {
+           Dispatcher.BeginInvoke((Action)delegate
+           {
+               MessageBox.Show(e.Result.Url + "\n\n" + e.Message);
+           });
+        }
 
         IEnumerable<INewsSearcher> NewsSearchers
         {

@@ -92,8 +92,8 @@
     <Compile Include="NewsSearchers\Bing\InvalidBingNewsApiKeyException.cs" />
     <Compile Include="NewsSearchers\Google\GoogleNewsSearcher.cs" />
     <Compile Include="NewsSearchers\Google\GoogleNewsSearcherExtension.cs" />
+    <Compile Include="NewsSharers\Reddit\Common\RedditSharpClient.cs" />
     <Compile Include="NewsSharers\Reddit\IRedditPoster.cs" />
-    <Compile Include="NewsSharers\Reddit\LatestCredentialsRedditPoster.cs" />
     <Compile Include="NewsSharers\Reddit\RedditNewsSharerExtension.cs" />
     <Compile Include="NewsSharers\Reddit\RedditNewsSharerSettingsPage.xaml.cs">
       <DependentUpon>RedditNewsSharerSettingsPage.xaml</DependentUpon>
@@ -102,7 +102,7 @@
       <DependentUpon>RedditNewsSharerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="NewsSharers\Reddit\RedditPostShareJob.cs" />
-    <Compile Include="NewsSharers\Reddit\RedditSettings.cs" />
+    <Compile Include="NewsSharers\Reddit\Common\RedditSettings.cs" />
     <Compile Include="NewsSharers\Reddit\RedditSharpPoster.cs" />
     <Compile Include="NewsSharers\Twitter\LatestCredentialsTweeter.cs" />
     <Compile Include="NewsSharers\Twitter\ITweeter.cs" />
@@ -115,7 +115,12 @@
     </Compile>
     <Compile Include="NewsSharers\Twitter\TwitterTweetShareJob.cs" />
     <Compile Include="NewsSharers\Twitter\TwitterNewsSharerExtension.cs" />
+    <Compile Include="PostMonitors\RedditPostMonitorExtension.cs" />
+    <Compile Include="PostMonitors\RedditSharpReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NewsSharers\Reddit\Common\IRedditCredentials.cs" />
+    <Compile Include="NewsSharers\Reddit\Common\LatestRedditCredentials.cs" />
+    <Compile Include="NewsSharers\Reddit\Common\RedditCredentials.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="NewsFilters\Organization\OrganizationNewsFilterSettingsPage.xaml">
@@ -169,5 +174,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

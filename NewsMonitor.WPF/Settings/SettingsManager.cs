@@ -19,7 +19,7 @@ namespace NewsMonitor.WPF.Settings
             {
                 return new List<ISettingsGroup>()
                 {
-                    General, NewsSearchers, NewsFilters, NewsSharers
+                    General, NewsSearchers, NewsFilters, NewsSharers, PostMonitors
                 };
             }
         }
@@ -31,6 +31,9 @@ namespace NewsMonitor.WPF.Settings
             { get; private set; }
 
         public ExtensionManager<INewsSharerExtension> SharerExtensionManager
+            { get; private set; }
+
+        public ExtensionManager<IPostMonitorExtension> PostMonitorExtensionManager
             { get; private set; }
 
         public SettingsManager(KeyValueStorage globalKvs)
@@ -53,6 +56,11 @@ namespace NewsMonitor.WPF.Settings
                 new ExtensionManager<INewsSharerExtension>(globalKvs,
                 GetNewsSharerExtensionsFromConfig(), "News Sharers");
             NewsSharers = SharerExtensionManager.SettingsGroup;
+
+            PostMonitorExtensionManager =
+                new ExtensionManager<IPostMonitorExtension>(globalKvs,
+                GetPostMonitorExtensionsFromConfig(), "Post Monitors");
+            PostMonitors = PostMonitorExtensionManager.SettingsGroup;
         }
 
         IEnumerable<INewsSearcherExtension> GetNewsSearcherExtensionsFromConfig()
@@ -71,6 +79,12 @@ namespace NewsMonitor.WPF.Settings
         {
             return GetExtensionsFromNameValueConfig<INewsSharerExtension>(
                 "newsSharerExtensions");
+        }
+
+        IEnumerable<IPostMonitorExtension> GetPostMonitorExtensionsFromConfig()
+        {
+            return GetExtensionsFromNameValueConfig<IPostMonitorExtension>(
+                "postMonitorExtensions");
         }
 
         IEnumerable<T> GetExtensionsFromNameValueConfig<T>(string sectionName)
@@ -114,5 +128,7 @@ namespace NewsMonitor.WPF.Settings
         { get; private set; }
         public ISettingsGroup NewsSharers
             { get; private set; }
+        public ISettingsGroup PostMonitors
+        { get; private set; }
     }
 }

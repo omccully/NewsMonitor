@@ -27,6 +27,16 @@ namespace NewsMonitor.Data.Models
 
         }
 
+        public ShareJobResult(ShareJobResult other)
+        {
+            Id = other.Id;
+            Description = other.Description;
+            Url = other.Url;
+            Skipped = other.Skipped;
+            ErrorMessage = other.ErrorMessage;
+            Time = other.Time;
+        }
+
         public ShareJobResult(string description, string url, bool skipped = false, string errorMessage = null)
         {
             this.Description = description;

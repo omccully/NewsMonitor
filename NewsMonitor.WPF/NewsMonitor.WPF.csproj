@@ -86,8 +86,10 @@
     <Compile Include="Extensions\INewsFilterExtension.cs" />
     <Compile Include="Extensions\INewsSearcherExtension.cs" />
     <Compile Include="Extensions\INewsSharerExtension.cs" />
+    <Compile Include="Extensions\IPostMonitorExtension.cs" />
     <Compile Include="Extensions\ISettingsGroupExtension.cs" />
     <Compile Include="Extensions\ISettingsPageFactory.cs" />
+    <Compile Include="Extensions\NeedsAttentionEventArgs.cs" />
     <Compile Include="Extensions\ShareJobs\IShareJob.cs" />
     <Compile Include="Extensions\ShareJobs\JobsCreatedEventArgs.cs" />
     <Compile Include="Extensions\NewsSharerExtension.cs" />

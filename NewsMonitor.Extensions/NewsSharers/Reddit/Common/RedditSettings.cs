@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NewsMonitor.Extensions.NewsSharers.Reddit
+namespace NewsMonitor.Extensions.NewsSharers.Reddit.Common
 {
-    class RedditSettings
+    class RedditSettings : IRedditCredentials
     {
         KeyValueStorage Storage;
     
@@ -74,6 +74,27 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
         public RedditSettings(KeyValueStorage kvs)
         {
             this.Storage = kvs;
+        }
+
+        public override bool Equals(object obj)
+        {
+            IRedditCredentials otherCreds = obj as IRedditCredentials;
+            if (obj == null) return false;
+
+            return Username == otherCreds.Username &&
+                Password == otherCreds.Password &&
+                ClientId == otherCreds.ClientId &&
+                ClientSecret == otherCreds.ClientSecret &&
+                UserAgent == otherCreds.UserAgent;
+        }
+
+        public override int GetHashCode()
+        {
+            return Username.GetHashCode() ^
+                Password.GetHashCode() ^
+                ClientId.GetHashCode() ^
+                ClientSecret.GetHashCode() ^
+                UserAgent.GetHashCode();
         }
     }
 }

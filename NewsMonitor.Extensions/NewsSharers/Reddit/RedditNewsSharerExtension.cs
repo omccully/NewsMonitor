@@ -11,6 +11,7 @@ using NewsMonitor.Data.Models;
 using System.Xml.Serialization;
 using System.IO;
 using RedditSharp;
+using NewsMonitor.Extensions.NewsSharers.Reddit.Common;
 
 namespace NewsMonitor.Extensions.NewsSharers.Reddit
 {
@@ -20,12 +21,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
 
         public RedditNewsSharerExtension()
         {
-            InnerRedditPoster = new RedditSharpPoster();
-        }
 
-        public RedditNewsSharerExtension(IRedditPoster redditPoster)
-        {
-            InnerRedditPoster = redditPoster;
         }
 
         public override SettingsPage CreateSettingsPage()
@@ -33,14 +29,12 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
             return new RedditNewsSharerSettingsPage();
         }
 
-        IRedditPoster InnerRedditPoster;
         IRedditPoster RedditPoster;
         void InitializeRedditPoster(KeyValueStorage kvs)
         {
             if(RedditPoster == null)
             {
-                RedditPoster = new LatestCredentialsRedditPoster(InnerRedditPoster, 
-                    new RedditSettings(kvs));
+                RedditPoster = new RedditSharpPoster(new RedditSettings(kvs));
             }
         }
 

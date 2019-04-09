@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NewsMonitor.Extensions.NewsSharers.Reddit.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
 {
     public interface IRedditPoster
     {
-        void UpdateCredentials(string username, string password,
-            string clientId, string clientSecret, string userAgent = null);
+        IRedditCredentials Credentials { get; set; }
 
         Task<string> PostUrl(string title, string url, string subreddit);
     }
