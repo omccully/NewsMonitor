@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.Timers;
+using NewsMonitor.Services;
 
 namespace NewsMonitor.WPF
 {
@@ -124,12 +125,12 @@ namespace NewsMonitor.WPF
             }
         }
 
+        TimeSpan _monitorInterval = TimeSpan.FromMinutes(15);
         Timer timer;
         void InitializeMonitor()
         {
             Timer_Elapsed(null, null);
-            // 10 mins
-            timer = new Timer(1000 * 60 * 10);
+            timer = new Timer(_monitorInterval.TotalMilliseconds);
             timer.Elapsed += Timer_Elapsed;
             timer.AutoReset = true;
             timer.Enabled = true;
@@ -270,7 +271,13 @@ namespace NewsMonitor.WPF
         {
            Dispatcher.BeginInvoke((Action)delegate
            {
-               MessageBox.Show(e.Result.Url + "\n\n" + e.Message);
+               MessageBoxResult dialogResult = MessageBox.Show("Needs attention", 
+                   e.Result.Url + "\n\n" + e.Message + "\n\n" + 
+                   "Would you like to launch this URL now?", MessageBoxButton.YesNo);
+               if (dialogResult == MessageBoxResult.Yes)
+               {
+                   new UrlLauncher().Launch(e.Result.Url);
+               }
            });
         }
 

@@ -115,6 +115,9 @@
     </Compile>
     <Compile Include="NewsSharers\Twitter\TwitterTweetShareJob.cs" />
     <Compile Include="NewsSharers\Twitter\TwitterNewsSharerExtension.cs" />
+    <Compile Include="PostMonitors\RedditPostMonitorSettingsPage.xaml.cs">
+      <DependentUpon>RedditPostMonitorSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PostMonitors\RedditPostMonitorExtension.cs" />
     <Compile Include="PostMonitors\RedditSharpReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

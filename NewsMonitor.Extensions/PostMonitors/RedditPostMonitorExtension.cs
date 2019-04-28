@@ -38,18 +38,19 @@ namespace NewsMonitor.Extensions.PostMonitors
             foreach (ShareJobResult result in results)
             {
                 Post post = await reader.GetPostInfo(result.Url);
-                if (post.Upvotes > 5)
+                if (post.Upvotes >= kvs.GetInteger(RedditPostMonitorSettingsPage.UpvoteThreshold) &&
+                    post.CommentCount >= kvs.GetInteger(RedditPostMonitorSettingsPage.CommentTheshold))
                 {
                     NeedsAttention?.Invoke(this, new NeedsAttentionEventArgs(result, 
-                        result.Url + " needs attention"));
+                         $"{result.Url} needs attention. {post.Upvotes} upvotes, {post.CommentCount} comments"));
                 }
-                System.Diagnostics.Debug.WriteLine("post.Upvotes = " + post.Upvotes);
+                System.Diagnostics.Debug.WriteLine($"post.Upvotes = {post.Upvotes}, post.CommentCount = {post.CommentCount}");
             }
         }
 
         public SettingsPage CreateSettingsPage()
         {
-            return null;
+            return new RedditPostMonitorSettingsPage();
         }
     }
 }
