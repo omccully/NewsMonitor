@@ -37,6 +37,13 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
             PostTitleTextBox.Text = title;
 
             this.StringMatcher = stringMatcher;
+
+            FilterTextOrRegex.Loaded += RegexTitleQuickFilterWindow_Loaded;
+        }
+
+        private void RegexTitleQuickFilterWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            Keyboard.Focus(FilterTextOrRegex);
         }
 
         IEnumerable<string> SearchTerms
@@ -49,7 +56,11 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
 
         private void AddFilterButton_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("AddFilterButton_Click");
+            Submit();
+        }
+
+        private void Submit()
+        {
             string selectedSearchTerm = SearchTermsComboBox.SelectedItem.ToString();
             if (String.IsNullOrWhiteSpace(selectedSearchTerm))
             {
@@ -66,7 +77,7 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
 
             foreach (TreeModel<string> child in Model.Children)
             {
-                if(child.NodeValue == selectedSearchTerm)
+                if (child.NodeValue == selectedSearchTerm)
                 {
                     if (child.Children.Any(tm => tm.NodeValue.ToLower() == FilterTextOrRegex.Text.ToLower()))
                     {
@@ -113,6 +124,20 @@ namespace NewsMonitor.Extensions.NewsFilters.RegexTitle
             {
                 PostTitleTextBox.Foreground = 
                     new SolidColorBrush(Colors.Black);
+            }
+
+        }
+
+        private void FilterTextOrRegex_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch(e.Key)
+            {
+                case Key.Enter:
+                    Submit();
+                    break;
+                case Key.Escape:
+                    this.Close();
+                    break;
             }
 
         }

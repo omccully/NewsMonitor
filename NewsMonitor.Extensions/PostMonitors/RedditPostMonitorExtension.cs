@@ -38,12 +38,14 @@ namespace NewsMonitor.Extensions.PostMonitors
             foreach (ShareJobResult result in results)
             {
                 Post post = await reader.GetPostInfo(result.Url);
-                if (post.Upvotes >= kvs.GetInteger(RedditPostMonitorSettingsPage.UpvoteThreshold) &&
-                    post.CommentCount >= kvs.GetInteger(RedditPostMonitorSettingsPage.CommentTheshold))
+                int upvoteThreshold = kvs.GetInteger(RedditPostMonitorSettingsPage.UpvoteThreshold, 5);
+                int commentThreshold = kvs.GetInteger(RedditPostMonitorSettingsPage.CommentTheshold, 5);
+                if (post.Upvotes >= upvoteThreshold && post.CommentCount >= commentThreshold)
                 {
                     NeedsAttention?.Invoke(this, new NeedsAttentionEventArgs(result, 
                          $"{result.Url} needs attention. {post.Upvotes} upvotes, {post.CommentCount} comments"));
                 }
+                System.Diagnostics.Debug.WriteLine($"upvoteThreshold = {upvoteThreshold}, commentThreshold = {commentThreshold}");
                 System.Diagnostics.Debug.WriteLine($"post.Upvotes = {post.Upvotes}, post.CommentCount = {post.CommentCount}");
             }
         }

@@ -15,7 +15,8 @@
     <ToolBar DockPanel.Dock="Top" x:Name="TopToolBar">
       <Button x:Name="FindArticlesButton" Click="FindArticlesButton_Click">Find articles</Button>
       <Button Click="SettingsButton_Click" Margin="7,0,0,0">Settings</Button>
-      <Button Click="RefilterButton_Click" Margin="7,0,0,0">Refilter</Button>
+      <Button Click="RefilterButton_Click" Margin="7,0,0,0">Refilter selected</Button>
+      <Button Click="RefilterAllButton_Click" Margin="7,0,0,0">Refilter all</Button>
     </ToolBar>
     <views:ShareJobStatusBar 
         DockPanel.Dock="Bottom" 

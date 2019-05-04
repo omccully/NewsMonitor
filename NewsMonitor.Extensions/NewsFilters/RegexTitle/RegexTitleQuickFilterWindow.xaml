@@ -12,7 +12,7 @@
       <TextBox x:Name="PostTitleTextBox" IsReadOnly="True"/>
       <Label Content="Filter text or regex" />
       <TextBox x:Name="FilterTextOrRegex" 
-               TextChanged="FilterTextOrRegex_TextChanged" />
+               TextChanged="FilterTextOrRegex_TextChanged" KeyDown="FilterTextOrRegex_KeyDown" />
       <Label Content="Apply for search term (or any)" />
     <ComboBox x:Name="SearchTermsComboBox">
 

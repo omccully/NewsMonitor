@@ -51,6 +51,7 @@ namespace NewsMonitor.WPF
                         SettingsManager.SharerExtensionManager.Features);
                     NewsArticlesPage.ShareJobsCreated += NewsArticlesPage_JobsCreated;
                     NewsArticlesPage.NewsArticleModified += NewsArticlesPage_NewsArticleModified;
+                    NewsArticlesPage.QuickFilterFinished += NewsArticlesPage_QuickFilterFinished;
                     NewsArticlesPageFrame.Navigate(NewsArticlesPage);
 
                     NewsArticlesPageFrame.Navigating += NewsArticlesPageFrame_Navigating;
@@ -271,9 +272,10 @@ namespace NewsMonitor.WPF
         {
            Dispatcher.BeginInvoke((Action)delegate
            {
-               MessageBoxResult dialogResult = MessageBox.Show("Needs attention", 
-                   e.Result.Url + "\n\n" + e.Message + "\n\n" + 
-                   "Would you like to launch this URL now?", MessageBoxButton.YesNo);
+               string messageText = e.Result.Url + "\n\n" + e.Message + "\n\n" +
+                   "Would you like to launch this URL now?";
+               MessageBoxResult dialogResult = MessageBox.Show(messageText, "Needs attention", 
+                   MessageBoxButton.YesNo);
                if (dialogResult == MessageBoxResult.Yes)
                {
                    new UrlLauncher().Launch(e.Result.Url);
@@ -324,12 +326,28 @@ namespace NewsMonitor.WPF
 
         private void RefilterButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (NewsArticle article in NewsArticlesPage.SelectedNewsArticles)
+            Refilter(NewsArticlesPage.SelectedNewsArticles);
+        }
+
+        private void NewsArticlesPage_QuickFilterFinished(object sender, EventArgs e)
+        {
+            //Refilter(NewsArticlesPage.SelectedNewsArticles);
+        }
+
+        private void RefilterAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            Refilter(AllNewsArticles);
+        }
+
+        private void Refilter(IEnumerable<NewsArticle> articles)
+        {
+            // AllNewsArticles.Where(a => !a.Hidden)
+            foreach (NewsArticle article in articles.Where(a => !a.Hidden))
             {
                 bool passedAll = SearchTerms.All(st => PassesAllFilters(article, st));
 
-                if (!passedAll) {
-                    
+                if (!passedAll)
+                {
                     article.Hidden = true;
 
                     dbContext.SaveChanges();

@@ -54,7 +54,6 @@ namespace NewsMonitor.Data.Models
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("NewsArticle.OnPropertyChanged");
             PropertyChanged?.Invoke(this, e);
         }
 
@@ -111,6 +110,11 @@ namespace NewsMonitor.Data.Models
         {
             return Title.GetHashCode() ^ OrganizationName.GetHashCode()
                 ^ Url.GetHashCode() ^ TimePublished.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return $"{OrganizationName}: {Title}";
         }
     }
 }

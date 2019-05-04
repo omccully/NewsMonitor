@@ -47,7 +47,7 @@ namespace NewsMonitor.Extensions.NewsSharers.Reddit
 
         protected override async Task<string> InnerExecute()
         {
-            const int SecondsBetweenTries = 60;
+            const int SecondsBetweenTries = 180;
             try
             {
                 return await RedditPoster.PostUrl(Title, Url, Subreddit);

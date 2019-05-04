@@ -45,7 +45,7 @@ namespace NewsMonitor.Extensions.NewsSearchers.Google
 
         NewsArticle SyndicationItemToNewsArticle(SyndicationItem item)
         {
-            string url = ParseUrl(item.Id);
+            string url = item.Links.First().Uri.ToString();
             string title = item.Title.Text;
             string organization;
             title = ParseTitle(title, out organization); 

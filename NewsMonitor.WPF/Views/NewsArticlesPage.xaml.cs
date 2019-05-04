@@ -27,6 +27,7 @@ namespace NewsMonitor.WPF.Views
     {
         public event EventHandler<JobsCreatedEventArgs> ShareJobsCreated;
         public event EventHandler NewsArticleModified;
+        public event EventHandler QuickFilterFinished;
 
         public IUrlLauncher UrlLauncher { get; set; } = new UrlLauncher();
 
@@ -158,6 +159,7 @@ namespace NewsMonitor.WPF.Views
             Window window = feature.Extension.CreateQuickFilterWindow(newsArticle, feature.KeyValueStorage);
             System.Diagnostics.Debug.WriteLine("window = " + window);
             if (window != null) window.ShowDialog();
+            QuickFilterFinished?.Invoke(this, new EventArgs());
         }
 
         private void NewsArticlesDataGrid_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
