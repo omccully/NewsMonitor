@@ -15,7 +15,7 @@ namespace NewsMonitor.Data.Models
         public string Title { get; set; }
         public string OrganizationName { get; set; }
 
-        [Index(IsUnique=true)]
+        [Index(IsUnique = true)]
         public string Url { get; set; }
 
         public DateTime TimePublished { get; set; }

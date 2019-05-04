@@ -12,7 +12,7 @@ namespace NewsMonitor.Data.Database
 {
     public class DatabaseContext : SQLiteDB.SqLiteDbContext<DatabaseContext>
     {
-        private const int CurrentSchemaVersion = 1;
+        private const int CurrentSchemaVersion = 2;
 
         public DatabaseContext() : base("name=NewsMonitorDb", CurrentSchemaVersion) 
         {
@@ -29,5 +29,6 @@ namespace NewsMonitor.Data.Database
         public DbSet<KeyValuePair> KeyValuePairs { get; set; }
         public DbSet<SearchTerm> SearchTerms { get; set; }
         public DbSet<ShareJobResult> ShareJobResults { get; set; }
+        public DbSet<OrganizationRating> OrganizationRatings { get; set; }
     }
 }

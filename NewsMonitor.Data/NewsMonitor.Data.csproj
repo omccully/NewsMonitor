@@ -73,6 +73,7 @@
     <Compile Include="Models\BlockedTitleMatcher.cs" />
     <Compile Include="Models\KeyValuePair.cs" />
     <Compile Include="Models\NewsArticle.cs" />
+    <Compile Include="Models\OrganizationRating.cs" />
     <Compile Include="Models\SearchTerm.cs" />
     <Compile Include="Models\ShareJobResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
