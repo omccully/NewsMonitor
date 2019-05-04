@@ -34,6 +34,9 @@ namespace NewsMonitor.Data.Models
             }
         }
 
+        public int Rating { get; set; }
+        public bool UserSetRating { get; set; }
+
         public NewsArticle()
         {
 

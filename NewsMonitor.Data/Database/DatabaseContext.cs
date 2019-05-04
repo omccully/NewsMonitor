@@ -10,28 +10,17 @@ using NewsMonitor.Data.Models;
 
 namespace NewsMonitor.Data.Database
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext : SQLiteDB.SqLiteDbContext<DatabaseContext>
     {
-        public DatabaseContext()
+        private const int CurrentSchemaVersion = 1;
+
+        public DatabaseContext() : base("name=NewsMonitorDb", CurrentSchemaVersion) 
         {
         }
-
+        
         public DatabaseContext(string nameOrConnectionString)
-            : base(nameOrConnectionString)
+            : base(nameOrConnectionString, CurrentSchemaVersion)
         {
-        }
-
-        public DatabaseContext(DbConnection connection, bool contextOwnsConnection)
-           : base(connection, contextOwnsConnection)
-        {
-        }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            System.Diagnostics.Debug.WriteLine("OnModelCreating");
-            var sqliteConnectionInitializer =
-                new SqliteDropCreateDatabaseWhenModelChanges<DatabaseContext>(modelBuilder);
-            System.Data.Entity.Database.SetInitializer(sqliteConnectionInitializer);
         }
 
         public DbSet<NewsArticle> NewsArticles { get; set; }
