@@ -19,7 +19,7 @@ namespace NewsMonitor.Extensions.PostMonitors
 
         public string Domain => "reddit.com";
         
-        public TimeSpan TimeSpan => TimeSpan.FromDays(1);
+        public TimeSpan TimeSpan => TimeSpan.FromHours(14);
 
         public string ShareSettingsWith => "Reddit";
 

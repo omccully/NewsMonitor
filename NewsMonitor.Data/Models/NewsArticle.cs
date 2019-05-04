@@ -30,12 +30,37 @@ namespace NewsMonitor.Data.Models
             set
             {
                 _Hidden = value;
-                OnPropertyChanged(new PropertyChangedEventArgs("Hidden"));
+                OnPropertyChanged("Hidden");
             }
         }
 
-        public int Rating { get; set; }
-        public bool UserSetRating { get; set; }
+        private int _rating = 0;
+        public int Rating
+        {
+            get
+            {
+                return _rating;
+            }
+            set
+            {
+                _rating = value;
+                OnPropertyChanged(nameof(Rating));
+            }
+        }
+
+        private bool _userSetRating = false;
+        public bool UserSetRating
+        {
+            get
+            {
+                return _userSetRating;
+            }
+            set
+            {
+                _userSetRating = value;
+                OnPropertyChanged(nameof(UserSetRating));
+            }
+        }
 
         public NewsArticle()
         {
@@ -52,6 +77,12 @@ namespace NewsMonitor.Data.Models
 
             this.TimeFound = DateTime.Now;
             this.Hidden = false;
+        }
+
+
+        protected void OnPropertyChanged(string prop)
+        {
+            OnPropertyChanged(new PropertyChangedEventArgs(prop));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

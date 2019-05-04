@@ -46,7 +46,7 @@ namespace NewsMonitor.WPF
             {
                 if(value != null)
                 {
-                    NewsArticlesPage = new NewsArticlesPage(value,
+                    NewsArticlesPage = new NewsArticlesPage(dbContext, value,
                         SettingsManager.FilterExtensionManager.Features,
                         SettingsManager.SharerExtensionManager.Features);
                     NewsArticlesPage.ShareJobsCreated += NewsArticlesPage_JobsCreated;

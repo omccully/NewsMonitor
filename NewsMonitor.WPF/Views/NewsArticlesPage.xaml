@@ -5,12 +5,14 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:NewsMonitor.WPF.Views"
       xmlns:converters="clr-namespace:NewsMonitor.WPF.Converters"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="NewsArticlesPage">
   <Page.Resources>
     <converters:UrlToDomainConverter x:Key="urlToDomain"/>
     <converters:DateTimeToStringConverter Format="d" x:Key="dtToString"/>
+    <converters:RatingToColorMultiConverter x:Key="ratingToColor" />
     <Style x:Key="hyperlinkCellStyle" TargetType="{x:Type DataGridCell}" >
       <Style.Triggers>
         <Trigger Property="IsSelected"  Value="True">
@@ -18,6 +20,19 @@
         </Trigger>
       </Style.Triggers>
       <EventSetter Event="Hyperlink.Click" Handler="OnHyperlinkClick" />
+    </Style>
+    <Style x:Key="RatingButtonStyle" TargetType="Button">
+      <EventSetter Event="Click" Handler="RatingButton_Click" />
+      <Setter Property="Padding" Value="5,0,5,0" />
+      <Setter Property="Background">
+        <Setter.Value>
+          <MultiBinding Converter="{StaticResource ratingToColor}">
+            <Binding Path="Rating"/>
+            <Binding Path="UserSetRating"/>
+            <Binding Path="Content" RelativeSource="{RelativeSource Self}"/>
+          </MultiBinding>
+        </Setter.Value>
+      </Setter>
     </Style>
   </Page.Resources>
   <DataGrid x:Name="NewsArticlesDataGrid" 
@@ -43,6 +58,24 @@
     </DataGrid.Resources>
     <DataGrid.Columns>
       <DataGridTextColumn Binding="{Binding Path=Id}" Header="ID" />
+      <DataGridTemplateColumn Header="Rating" SortMemberPath="Rating">
+        <DataGridTemplateColumn.CellTemplate>
+          <DataTemplate>
+            <StackPanel Orientation="Horizontal">
+              <Button Content="1" 
+                          Style="{StaticResource RatingButtonStyle}" />
+              <Button Content="2" 
+                          Style="{StaticResource RatingButtonStyle}" />
+              <Button Content="3" 
+                          Style="{StaticResource RatingButtonStyle}" />
+              <Button Content="4" 
+                          Style="{StaticResource RatingButtonStyle}" />
+              <Button Content="5" 
+                          Style="{StaticResource RatingButtonStyle}" />
+            </StackPanel>
+          </DataTemplate>
+        </DataGridTemplateColumn.CellTemplate>
+      </DataGridTemplateColumn>
       <DataGridTextColumn Binding="{Binding Path=Title}" Header="Title" />
       <DataGridTextColumn Binding="{Binding Path=OrganizationName}" Header="Organization" />
       <DataGridHyperlinkColumn 

@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using NewsMonitor.Services;
 using NewsMonitor.Helpers;
+using NewsMonitor.Data.Database;
 
 namespace NewsMonitor.WPF.Views
 {
@@ -36,12 +37,17 @@ namespace NewsMonitor.WPF.Views
 
         ObservableCollectionFilter<NewsArticle> NewsArticleFilter;
         ReadOnlyObservableCollection<NewsArticle> NewsArticlesSource;
+        DatabaseContext _dbContext;
 
-        public NewsArticlesPage(ObservableCollection<NewsArticle> allNewsArticles, 
+        public NewsArticlesPage(
+            DatabaseContext dbContext,
+            ObservableCollection<NewsArticle> allNewsArticles, 
             IEnumerable<ExtensionFeature<INewsFilterExtension>> newsFilterExtensionFeatures,
             IEnumerable<ExtensionFeature<INewsSharerExtension>> newsSharerExtensionFeatures)
         {
             InitializeComponent();
+
+            _dbContext = dbContext;
 
             NewsArticleFilter = new ObservableCollectionFilter<NewsArticle>(allNewsArticles,
                 (na) => !na.Hidden);
@@ -183,5 +189,23 @@ namespace NewsMonitor.WPF.Views
         }
 
         #endregion
+
+        private void RatingButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+
+            string ratingStr = button.Content.ToString();
+            int rating = Int32.Parse(ratingStr);
+
+            NewsArticle newsArticle = (NewsArticle)button.DataContext;
+
+            newsArticle.Rating = rating;
+            newsArticle.UserSetRating = true;
+
+            System.Diagnostics.Debug.WriteLine("Rate " + rating + " " + newsArticle);
+            e.Handled = true;
+
+            _dbContext.SaveChangesAsync();
+        }
     }
 }

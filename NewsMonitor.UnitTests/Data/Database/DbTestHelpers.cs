@@ -17,7 +17,7 @@ namespace NewsMonitor.UnitTests.Data.Database
             var conn = DbProviderFactories.GetFactory("System.Data.SQLite.EF6").CreateConnection();
             conn.ConnectionString = "data source=.\\" + file;
 
-            return new DatabaseContext(conn, true);
+            return null; // new DatabaseContext(conn, true);
         }
     }
 }
