@@ -48,6 +48,9 @@ namespace NewsMonitor.Data.Models
             }
         }
 
+        [NotMapped]
+        public float FloatRating => Rating;
+
         private bool _userSetRating = false;
         public bool UserSetRating
         {

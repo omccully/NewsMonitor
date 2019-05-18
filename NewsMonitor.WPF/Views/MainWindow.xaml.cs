@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.Timers;
 using NewsMonitor.Services;
+using NewsMonitor.WPF.MachineLearning;
 
 namespace NewsMonitor.WPF
 {
@@ -34,6 +35,8 @@ namespace NewsMonitor.WPF
     {
         DatabaseContext dbContext;
         SettingsManager SettingsManager;
+
+        NewsArticleRatingPredictor _newsArticleRatingPredictor;
 
         ObservableCollection<NewsArticle> _AllNewsArticles;   
         ObservableCollection<NewsArticle> AllNewsArticles
@@ -55,6 +58,8 @@ namespace NewsMonitor.WPF
                     NewsArticlesPageFrame.Navigate(NewsArticlesPage);
 
                     NewsArticlesPageFrame.Navigating += NewsArticlesPageFrame_Navigating;
+
+                    _newsArticleRatingPredictor = new NewsArticleRatingPredictor(value);
                 }
                 
                 _AllNewsArticles = value;
@@ -337,6 +342,22 @@ namespace NewsMonitor.WPF
         private void RefilterAllButton_Click(object sender, RoutedEventArgs e)
         {
             Refilter(AllNewsArticles);
+        }
+
+        private void RepredictRatingButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach(NewsArticle article in NewsArticlesPage.SelectedNewsArticles)
+            {
+                if (article.UserSetRating) continue;
+
+                int newRating = _newsArticleRatingPredictor.Predict(article);
+                bool ratingChanged = newRating != article.Rating;
+                article.Rating = newRating;
+                if(ratingChanged)
+                {
+                    dbContext.SaveChanges();
+                }
+            }
         }
 
         private void Refilter(IEnumerable<NewsArticle> articles)

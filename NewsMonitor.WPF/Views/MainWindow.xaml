@@ -17,6 +17,7 @@
       <Button Click="SettingsButton_Click" Margin="7,0,0,0">Settings</Button>
       <Button Click="RefilterButton_Click" Margin="7,0,0,0">Refilter selected</Button>
       <Button Click="RefilterAllButton_Click" Margin="7,0,0,0">Refilter all</Button>
+      <Button Click="RepredictRatingButton_Click" Margin="7,0,0,0">Repredict ratings of selected</Button>
     </ToolBar>
     <views:ShareJobStatusBar 
         DockPanel.Dock="Bottom" 
