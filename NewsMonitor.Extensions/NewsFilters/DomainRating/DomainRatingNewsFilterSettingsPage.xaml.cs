@@ -27,13 +27,18 @@ namespace NewsMonitor.Extensions.NewsFilters.DomainRating
     public partial class DomainRatingNewsFilterSettingsPage : SettingsPage
     {
         public const string DomainRatingsKey = "DomainRatings";
+        public const string MinimumMonthlyVisitorsKey = "MinimumMonthlyVisitors";
+        public const int DefaultMinimumMonthlyVisitors = 200000;
 
         public DomainRatingNewsFilterSettingsPage(IDomainRatingsSerializer serializer)
         {
             InitializeComponent();
 
             SettingsMappings.Add(new DataGridSettingsMapping(DomainRatingsKey, 
-                null, RatingsDataGrid, serializer));
+                "[]", RatingsDataGrid, serializer));
+            SettingsMappings.Add(new TextBoxSettingsMapping(MinimumMonthlyVisitorsKey,
+                DefaultMinimumMonthlyVisitors.ToString(), 
+                MinimumMonthlyVisitorsTextBox, TextValidator.IntegerValidator));
         }
     }
 }

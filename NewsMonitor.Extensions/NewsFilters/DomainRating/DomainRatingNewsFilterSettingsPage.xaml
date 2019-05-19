@@ -10,15 +10,23 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="DomainRatingNewsFilterSettingsPage">
 
-  <Grid>
+  <DockPanel>
+    <Grid DockPanel.Dock="Top">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto"></ColumnDefinition>
+        <ColumnDefinition></ColumnDefinition>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto"></RowDefinition>
+      </Grid.RowDefinitions>
+      <Label HorizontalAlignment="Right" 
+             Grid.Row="0" Grid.Column="0">Minimum monthly visitors:</Label>
+      <TextBox x:Name="MinimumMonthlyVisitorsTextBox" 
+               HorizontalAlignment="Left" Width="100" Grid.Row="0" Grid.Column="1"></TextBox>
+    </Grid>
     <DataGrid x:Name="RatingsDataGrid" FontSize="15"
               CanUserAddRows="false"
                AlternationCount="2" AlternatingRowBackground="Gainsboro">
-      <!--<DataGrid.Columns>
-        <DataGridTextColumn Binding="{Binding Domain}" />
-        <DataGridComboBoxColumn ItemsSource="{Binding Decision}" />
-        <DataGridTextColumn Binding="{Binding MonthlyVisitors}" />
-      </DataGrid.Columns>-->
     </DataGrid>
-  </Grid>
+  </DockPanel>
 </views:SettingsPage>

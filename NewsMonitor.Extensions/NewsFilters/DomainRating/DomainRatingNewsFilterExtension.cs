@@ -21,12 +21,6 @@ namespace NewsMonitor.Extensions.NewsFilters.DomainRating
 
         IDomainRatingsSerializer _serializer = new JsonDomainRatingsSerializer();
 
-        string[] ThreePartDomains =
-        {
-            "com.au", "co.uk",
-        };
-
-
         public bool AllowArticle(NewsArticle newsArticle, string searchTerm, KeyValueStorage storage)
         {
             Uri uri = new Uri(newsArticle.Url);
@@ -59,7 +53,8 @@ namespace NewsMonitor.Extensions.NewsFilters.DomainRating
                 SaveDomainRatings(storage);
             }
 
-            bool allow = rating.MonthlyVisitors > 200000;
+            bool allow = rating.MonthlyVisitors > storage.GetInteger(
+                DomainRatingNewsFilterSettingsPage.MinimumMonthlyVisitorsKey);
             if(!allow)
             { 
                 System.Diagnostics.Debug.WriteLine("Not allowing domain " +
