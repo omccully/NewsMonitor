@@ -158,7 +158,9 @@
     <Compile Include="Settings\InvalidExtensionTypeException.cs" />
     <Compile Include="Settings\ISettingsGroup.cs" />
     <Compile Include="Settings\IStringHolder.cs" />
+    <Compile Include="Settings\Mappings\DataGridSettingsMapping.cs" />
     <Compile Include="Settings\Mappings\EditableTreeViewSettingsMapping.cs" />
+    <Compile Include="Settings\Mappings\IListSerializer.cs" />
     <Compile Include="Settings\Mappings\ObservableCollectionSettingsMapping.cs" />
     <Compile Include="Settings\Mappings\PasswordBoxSettingsMapping.cs" />
     <Compile Include="Settings\Mappings\TreeModelSettingsMapping.cs" />

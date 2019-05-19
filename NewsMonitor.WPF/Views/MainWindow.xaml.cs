@@ -112,7 +112,7 @@ namespace NewsMonitor.WPF
 
                 InitializeProgressBar();
 
-                InitializeMonitor();
+                //InitializeMonitor();
 
                 this.SizeToContent = SizeToContent.Width;
             }
