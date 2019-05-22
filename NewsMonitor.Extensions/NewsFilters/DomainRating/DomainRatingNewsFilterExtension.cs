@@ -29,9 +29,14 @@ namespace NewsMonitor.Extensions.NewsFilters.DomainRating
 
             if (_domainRatings == null) Initialize(storage);
 
+            int minimumMonthlyVisitors = storage.GetInteger(
+                DomainRatingNewsFilterSettingsPage.MinimumMonthlyVisitorsKey);
+
             DomainRating rating = _domainRatings.FirstOrDefault(dr => dr.Domain == domain);
             if (rating == null)
             {
+                if (minimumMonthlyVisitors <= 0) return true;
+
                 rating = QueryDomainRating(domain);
 
                 _domainRatings.Add(rating);
@@ -47,14 +52,15 @@ namespace NewsMonitor.Extensions.NewsFilters.DomainRating
             }
             else if(DateTime.Now - rating.LastChecked > TimeSpan.FromDays(31))
             {
+                if (minimumMonthlyVisitors <= 0) return true;
+
                 DomainRating tempRating = QueryDomainRating(domain);
                 _domainRatings.Remove(rating);
                 _domainRatings.Add(tempRating);
                 SaveDomainRatings(storage);
             }
 
-            bool allow = rating.MonthlyVisitors > storage.GetInteger(
-                DomainRatingNewsFilterSettingsPage.MinimumMonthlyVisitorsKey);
+            bool allow = rating.MonthlyVisitors >= minimumMonthlyVisitors;
             if(!allow)
             { 
                 System.Diagnostics.Debug.WriteLine("Not allowing domain " +

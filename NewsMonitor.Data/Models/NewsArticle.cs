@@ -70,6 +70,19 @@ namespace NewsMonitor.Data.Models
 
         }
 
+
+        public NewsArticle(NewsArticle article)
+        {
+            this.Title = article.Title;
+            this.OrganizationName = article.OrganizationName;
+            this.Url = Url;
+            this.TimePublished = article.TimePublished;
+            this.TimeFound = article.TimeFound;
+            this.Hidden = article.Hidden;
+            this.Rating = article.Rating;
+            this.UserSetRating = article.UserSetRating;
+        }
+
         public NewsArticle(string title, string organization, string url,
             DateTime timePublished)
         {
