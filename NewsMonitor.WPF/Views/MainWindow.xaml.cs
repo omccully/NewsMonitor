@@ -206,15 +206,30 @@ namespace NewsMonitor.WPF
         {
             foreach (NewsArticle article in e.NewsArticles)
             {
-                if (ExistingArticleUrls.Contains(article.Url)) continue;
+                if(AllNewsArticles.Any(a => a.Url.Split('\n').Contains(article.Url)))
+                {
+                    continue;
+                }
 
-                AllNewsArticles.Add(article);
+                NewsArticle existing = AllNewsArticles.FirstOrDefault(a =>
+                    a.Title == article.Title &&
+                    a.OrganizationName == article.OrganizationName);
+                if(existing == null)
+                {
+                    Repredict(article);
+                    AllNewsArticles.Add(article);
 
-                dbContext.NewsArticles.Add(article);
-                dbContext.SaveChangesAsync();
-
+                    dbContext.NewsArticles.Add(article);
+                }
+                else
+                {
+                    existing.Url += "\n" + article.Url;
+                }
+                
                 Console.WriteLine(article);
             }
+
+            dbContext.SaveChanges();
         }
 
         private void NewsArticlesPage_NewsArticleModified(object sender, EventArgs e)
@@ -246,14 +261,10 @@ namespace NewsMonitor.WPF
 
             AllNewsArticles = new ObservableCollection<NewsArticle>(
                 dbContext.NewsArticles.ToList());
-            ExistingArticleUrls = new ObservableCollectionSearcher<NewsArticle, string>(
-                AllNewsArticles, (article) => article.Url);
-            
+
             AllShareJobResults = new ObservableCollection<ShareJobResult>(dbContext.ShareJobResults.ToList());
         }
         #endregion
-
-        ObservableCollectionSearcher<NewsArticle, string> ExistingArticleUrls;
 
         IEnumerable<ExtensionFeature<IPostMonitorExtension>> _postMonitors;
         IEnumerable<ExtensionFeature<IPostMonitorExtension>> PostMonitors
@@ -350,14 +361,19 @@ namespace NewsMonitor.WPF
             {
                 if (article.UserSetRating) continue;
 
-                int newRating = _newsArticleRatingPredictor.Predict(article);
-                bool ratingChanged = newRating != article.Rating;
-                article.Rating = newRating;
-                if(ratingChanged)
+                if (Repredict(article))
                 {
                     dbContext.SaveChanges();
                 }
             }
+        }
+
+        bool Repredict(NewsArticle article)
+        {
+            int newRating = _newsArticleRatingPredictor.Predict(article);
+            bool ratingChanged = newRating != article.Rating;
+            article.Rating = newRating;
+            return ratingChanged;
         }
 
         private void Refilter(IEnumerable<NewsArticle> articles)

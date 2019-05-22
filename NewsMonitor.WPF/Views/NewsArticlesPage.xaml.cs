@@ -111,12 +111,27 @@ namespace NewsMonitor.WPF.Views
             }
         }
 
+        string SelectMultiUrl(string multiUrl)
+        {
+            IEnumerable<string> urls = multiUrl.Split('\n');
+            string urlToShare = urls.ElementAt(0);
+            if (urls.Count() > 1)
+            {
+                UrlSelectorWindow urlSelector = new UrlSelectorWindow(urls);
+                urlSelector.ShowDialog();
+                return urlSelector.SelectedUrl;
+            }
+            return multiUrl;
+        }
+
         void ShareNewsArticle(NewsArticle article, ExtensionFeature<INewsSharerExtension> feature = null)
         {
             if (feature == null) feature = NewsSharerExtensionFeatures.First();
 
+            NewsArticle articleToShare = new NewsArticle(article);
+            articleToShare.Url = SelectMultiUrl(article.Url);
             NewsSharerWindow sharerWindow =
-                feature.Extension.CreateSharerWindow(article, feature.KeyValueStorage);
+                feature.Extension.CreateSharerWindow(articleToShare, feature.KeyValueStorage);
             sharerWindow.JobsCreated += SharerWindow_JobsCreated;
             sharerWindow.ShowDialog();
         }
@@ -144,7 +159,7 @@ namespace NewsMonitor.WPF.Views
 
             try
             {
-                if (article != null) UrlLauncher.Launch(article.Url);
+                if (article != null) UrlLauncher.Launch(SelectMultiUrl(article.Url));
             }
             catch(Exception error)
             {

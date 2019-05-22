@@ -203,6 +203,9 @@
     <Compile Include="Views\ShareJobStatusBar.xaml.cs">
       <DependentUpon>ShareJobStatusBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\UrlSelectorWindow.xaml.cs">
+      <DependentUpon>UrlSelectorWindow.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -271,6 +274,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ShareJobStatusBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UrlSelectorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

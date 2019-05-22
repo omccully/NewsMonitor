@@ -14,7 +14,10 @@ namespace NewsMonitor.WPF.Converters
         {
             try
             {
-                return new Uri((string)value).Host.Replace("www.", "");
+                string multiUrl = (string)value;
+                string[] urls = multiUrl.Split('\n');
+                IEnumerable<string> domains = urls.Select(url => new Uri(url).Host.Replace("www.", ""));
+                return String.Join(", ", domains);
             }
             catch
             {
