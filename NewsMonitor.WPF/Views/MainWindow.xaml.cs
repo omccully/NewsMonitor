@@ -262,6 +262,10 @@ namespace NewsMonitor.WPF
             AllNewsArticles = new ObservableCollection<NewsArticle>(
                 dbContext.NewsArticles.ToList());
 
+            SettingsManager.FilterExtensionManager.AddExtension(
+                new MinimumPredictedRatingNewsFilter(
+                    _newsArticleRatingPredictor));
+
             AllShareJobResults = new ObservableCollection<ShareJobResult>(dbContext.ShareJobResults.ToList());
         }
         #endregion

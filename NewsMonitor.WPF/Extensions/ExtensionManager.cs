@@ -14,28 +14,38 @@ namespace NewsMonitor.WPF.Extensions
         public IEnumerable<ExtensionFeature<T>> Features { get; private set; }
         public ISettingsGroup SettingsGroup { get; private set; }
 
+        List<ExtensionFeature<T>> _featuresList;
+        KeyValueStorage _globalKvs;
+        List<ISettingsGroup> _settingsGroupChildren;
+
         public ExtensionManager(KeyValueStorage globalKvs, IEnumerable<T> extensions, 
             string pluralName)
         {
             this.PluralName = pluralName;
+            _globalKvs = globalKvs;
 
-            var featuresList = new List<ExtensionFeature<T>>();
-            this.Features = featuresList;
-            var children = new List<ISettingsGroup>();
+            _featuresList = new List<ExtensionFeature<T>>();
+            this.Features = _featuresList;
+            _settingsGroupChildren = new List<ISettingsGroup>();
 
             foreach (T ext in extensions)
             {
-                string prefix = $"{pluralName}:" + ext.GetType().FullName + ":";
-                KeyValueStorage kvs = new PrefixedKeyValueStorage(globalKvs, prefix);
-
-                SettingsGroup settingsGroup = new SettingsGroup(ext.Name, ext, kvs);
-
-                featuresList.Add(new ExtensionFeature<T>(ext, settingsGroup));
-                
-                children.Add(settingsGroup);
+                AddExtension(ext);
             }
 
-            this.SettingsGroup = new SettingsGroup(pluralName, children);
+            this.SettingsGroup = new SettingsGroup(pluralName, _settingsGroupChildren);
+        }
+
+        public void AddExtension(T ext)
+        {
+            string prefix = $"{PluralName}:" + ext.GetType().FullName + ":";
+            KeyValueStorage kvs = new PrefixedKeyValueStorage(_globalKvs, prefix);
+
+            SettingsGroup settingsGroup = new SettingsGroup(ext.Name, ext, kvs);
+
+            _featuresList.Add(new ExtensionFeature<T>(ext, settingsGroup));
+
+            _settingsGroupChildren.Add(settingsGroup);
         }
     }
 }

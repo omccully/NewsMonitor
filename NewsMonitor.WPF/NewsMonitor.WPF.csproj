@@ -152,6 +152,7 @@
     <Compile Include="Extensions\ShareJobs\ShareJobQueueStatusEventArgs.cs" />
     <Compile Include="Extensions\ShareJobs\ShareJobQueue.cs" />
     <Compile Include="Extensions\ShareJobs\ShareJobStatusEventArgs.cs" />
+    <Compile Include="MachineLearning\MinimumPredictedRatingNewsFilter.cs" />
     <Compile Include="MachineLearning\NewsArticleRatingPredictor.cs" />
     <Compile Include="Settings\GeneralSettingsPageFactory.cs" />
     <Compile Include="Settings\InvalidConfigurationException.cs" />

@@ -19,12 +19,16 @@ namespace NewsMonitor.WPF.MachineLearning
 
         PredictionEngine<NewsArticle, NewsArticleRatingPrediction> _predictionEngine;
 
+        public int LearningDataCount { get; set; }
+
         public NewsArticleRatingPredictor(IEnumerable<NewsArticle> articles)
         {
             MLContext mlContext = new MLContext(seed: 0);
 
-            IDataView dataView = mlContext.Data.LoadFromEnumerable<NewsArticle>(
-                articles.Where(a => a.UserSetRating && a.Rating > 0));
+            List<NewsArticle> learningData = articles.Where(a => a.UserSetRating && a.Rating > 0).ToList();
+            LearningDataCount = learningData.Count;
+
+            IDataView dataView = mlContext.Data.LoadFromEnumerable<NewsArticle>(learningData);
 
             var pipeline = mlContext.Transforms
                 .CopyColumns(outputColumnName: "Label", inputColumnName: "FloatRating")
@@ -43,7 +47,7 @@ namespace NewsMonitor.WPF.MachineLearning
         {
             var predictinoObj = _predictionEngine.Predict(article);
             float prediction = predictinoObj.PredictedRating;
-            return (int)Math.Round(prediction);
+            return Math.Max(1, Math.Min(5, (int)Math.Round(prediction)));
         }
     }
 }

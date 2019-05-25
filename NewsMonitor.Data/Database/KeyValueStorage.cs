@@ -19,14 +19,12 @@ namespace NewsMonitor.Data.Database
 
         public virtual int GetInteger(string key, int default_val = 0)
         {
-            try
-            {
-                return Int32.Parse(GetString(key));
-            }
-            catch
-            {
-                return default_val;
-            }
+            string str = GetString(key);
+            if (str == null) return default_val;
+
+            int result;
+            Int32.TryParse(str, out result);
+            return result;
         }
 
         public virtual KeyValueStorage SetValue(string key, bool val)
