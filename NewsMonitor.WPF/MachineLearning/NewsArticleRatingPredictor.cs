@@ -1,15 +1,17 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
 using NewsMonitor.Data.Models;
+using NewsMonitor.WPF.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NewsMonitor.WPF.MachineLearning
 {
-    class NewsArticleRatingPredictor
+    class NewsArticleRatingPredictor : RegressionPredictor
     {
         class NewsArticleRatingPrediction
         {
@@ -17,37 +19,147 @@ namespace NewsMonitor.WPF.MachineLearning
             public float PredictedRating=-1;
         }
 
-        PredictionEngine<NewsArticle, NewsArticleRatingPrediction> _predictionEngine;
+        class PredictableNewsArticle
+        {
+            NewsArticle _newsArticle;
+            IDomainRater _domainRater;
+            public PredictableNewsArticle(NewsArticle newsArticle, IDomainRater domainRater)
+            {
+                _newsArticle = newsArticle;
+                _domainRater = domainRater;
+            }
+
+            public string Title => _newsArticle.Title;
+            public string OrganizationName => _newsArticle.OrganizationName;
+
+            bool _monthlyVisitorsInitialized = false;
+            long _monthlyVisitors;
+            object _visitorsLock = new object();
+            public float MonthlyVisitors
+            {
+                get
+                {
+                    lock(_visitorsLock)
+                    {
+                        if (!_monthlyVisitorsInitialized)
+                        {
+                            Uri uri = new Uri(_newsArticle.Url);
+                            string domain = String.Join(".", TakeLast(uri.Host.Split('.'),
+                                IsThreePartDomain(uri.Host) ? 3 : 2));
+                            _monthlyVisitors = _domainRater.GetMonthlyVisitors(domain);
+                            System.Diagnostics.Debug.WriteLine($"Domain {domain} {_monthlyVisitors}");
+                            _monthlyVisitorsInitialized = true;
+                        }
+                        return _monthlyVisitors == 0 ? 150000 : _monthlyVisitors;
+                    }
+                }
+            }
+            public float Rating => _newsArticle.Rating;
+
+            static IEnumerable<T> TakeLast<T>(IEnumerable<T> source, int N)
+            {
+                return source.Skip(Math.Max(0, source.Count() - N));
+            }
+
+            bool IsThreePartDomain(string domain)
+            {
+                Regex regex = new Regex(@"\bcom?.\w+$");
+                return regex.IsMatch(domain);
+            }
+        }
+
+        PredictionEngine<PredictableNewsArticle, NewsArticleRatingPrediction> _predictionEngine;
 
         public int LearningDataCount { get; set; }
 
-        public NewsArticleRatingPredictor(IEnumerable<NewsArticle> articles)
+        protected override IEnumerable<IEstimator<ITransformer>> Pipelines => new List<IEstimator<ITransformer>>()
         {
-            MLContext mlContext = new MLContext(seed: 0);
+            GetPoissonEstimator(),
+            GetSdcaEstimator(),
+            GetOnlineGradientDescentEstimator(),
+            //GetDomainPoissonEstimator(),
+            //GetDomainSdcaEstimator(),
+            //GetDomainOnlineGradientDescentEstimator()
+        };
 
-            List<NewsArticle> learningData = articles.Where(a => a.UserSetRating && a.Rating > 0).ToList();
-            LearningDataCount = learningData.Count;
+        IDataView _allData;
+        protected override IDataView AllData => _allData;
 
-            IDataView dataView = mlContext.Data.LoadFromEnumerable<NewsArticle>(learningData);
+        List<PredictableNewsArticle> _learningData;
+        IDomainRater _domainRater;
 
-            var pipeline = mlContext.Transforms
-                .CopyColumns(outputColumnName: "Label", inputColumnName: "FloatRating")
-                .Append(mlContext.Transforms.Text.FeaturizeText("FeaturizedTitle", "Title"))
-                .Append(mlContext.Transforms.Text.FeaturizeText("FeaturizedOrganizationName", "OrganizationName"))
-                .Append(mlContext.Transforms.Concatenate("Features", "FeaturizedTitle", "FeaturizedOrganizationName"))
-                .Append(mlContext.Regression.Trainers.LbfgsPoissonRegression());
+        public NewsArticleRatingPredictor(IEnumerable<NewsArticle> articles, IDomainRater domainRater)
+        {
+            _domainRater = domainRater;
+            _learningData = articles.Where(a => a.UserSetRating && a.Rating > 0)
+                .Select(a => new PredictableNewsArticle(a, domainRater)).ToList();
+            LearningDataCount = _learningData.Count;
 
-            var model = pipeline.Fit(dataView);
+            _allData = MlContext.Data.LoadFromEnumerable(_learningData);
 
-            _predictionEngine = mlContext.Model
-                .CreatePredictionEngine<NewsArticle, NewsArticleRatingPrediction>(model);
+            _predictionEngine = MlContext.Model
+                .CreatePredictionEngine<PredictableNewsArticle, NewsArticleRatingPrediction>(Model);
         }
 
         public int Predict(NewsArticle article)
         {
-            var predictinoObj = _predictionEngine.Predict(article);
+            var predictinoObj = _predictionEngine.Predict(
+                new PredictableNewsArticle(article, _domainRater));
             float prediction = predictinoObj.PredictedRating;
             return Math.Max(1, Math.Min(5, (int)Math.Round(prediction)));
         }
+
+        private IEstimator<ITransformer> GetDefaultEstimator(IEstimator<ITransformer> trainer)
+        {
+            return MlContext.Transforms
+                .CopyColumns(outputColumnName: "Label", inputColumnName: "Rating")
+                .Append(MlContext.Transforms.Text.FeaturizeText("FeaturizedTitle", "Title"))
+                .Append(MlContext.Transforms.Text.FeaturizeText("FeaturizedOrganizationName", "OrganizationName"))
+                .Append(MlContext.Transforms.Concatenate("Features", "FeaturizedTitle", "FeaturizedOrganizationName"))
+                .Append(trainer);
+        }
+
+        private IEstimator<ITransformer> GetPoissonEstimator()
+        {
+            return GetDefaultEstimator(MlContext.Regression.Trainers.LbfgsPoissonRegression());
+        }
+
+        private IEstimator<ITransformer> GetSdcaEstimator()
+        {
+            return GetDefaultEstimator(MlContext.Regression.Trainers.Sdca());
+        }
+
+        private IEstimator<ITransformer> GetOnlineGradientDescentEstimator()
+        {
+            return GetDefaultEstimator(MlContext.Regression.Trainers.OnlineGradientDescent());
+        }
+
+        private IEstimator<ITransformer> GetDomainEstimator(IEstimator<ITransformer> trainer)
+        {
+            return MlContext.Transforms
+                .CopyColumns(outputColumnName: "Label", inputColumnName: "Rating")
+                .Append(MlContext.Transforms.Text.FeaturizeText("FeaturizedTitle", "Title"))
+                .Append(MlContext.Transforms.Text.FeaturizeText("FeaturizedOrganizationName", "OrganizationName"))
+                .Append(MlContext.Transforms.NormalizeMeanVariance("FeaturizedMonthlyVisitors", "MonthlyVisitors"))
+                .Append(MlContext.Transforms.Concatenate("Features", "FeaturizedTitle", 
+                        "FeaturizedOrganizationName", "FeaturizedMonthlyVisitors"))
+                .Append(trainer);
+        }
+
+        private IEstimator<ITransformer> GetDomainPoissonEstimator()
+        {
+            return GetDomainEstimator(MlContext.Regression.Trainers.LbfgsPoissonRegression());
+        }
+
+        private IEstimator<ITransformer> GetDomainSdcaEstimator()
+        {
+            return GetDomainEstimator(MlContext.Regression.Trainers.Sdca());
+        }
+
+        private IEstimator<ITransformer> GetDomainOnlineGradientDescentEstimator()
+        {
+            return GetDomainEstimator(MlContext.Regression.Trainers.OnlineGradientDescent());
+        }
     }
+
 }

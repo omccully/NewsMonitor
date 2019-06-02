@@ -59,7 +59,20 @@ namespace NewsMonitor.WPF
 
                     NewsArticlesPageFrame.Navigating += NewsArticlesPageFrame_Navigating;
 
-                    _newsArticleRatingPredictor = new NewsArticleRatingPredictor(value);
+                    IEnumerable<IDomainRaterFactory> domainRaterFactories = 
+                        SettingsManager.FilterExtensionManager.Features.OfType<IDomainRaterFactory>().ToList();
+
+                    IDomainRater domainRater = null;
+                    foreach(var filterFeature in SettingsManager.FilterExtensionManager.Features)
+                    {
+                        IDomainRaterFactory factory = filterFeature.Extension as IDomainRaterFactory;
+                        if (factory != null)
+                        {
+                            domainRater = factory.CreateDomainRater(filterFeature.KeyValueStorage);
+                        }
+                    }
+
+                    _newsArticleRatingPredictor = new NewsArticleRatingPredictor(value, domainRater);
                 }
                 
                 _AllNewsArticles = value;

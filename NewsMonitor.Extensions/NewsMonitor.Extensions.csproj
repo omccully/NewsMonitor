@@ -65,6 +65,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NewsFilters\DomainRating\DomainRater.cs" />
     <Compile Include="NewsFilters\DomainRating\DomainRating.cs" />
     <Compile Include="NewsFilters\DomainRating\DomainRatingDecision.cs" />
     <Compile Include="NewsFilters\DomainRating\DomainRatingNewsFilterExtension.cs" />

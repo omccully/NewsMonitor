@@ -137,6 +137,7 @@
     <Compile Include="Converters\UrlToDomainConverter.cs" />
     <Compile Include="Extensions\ExtensionFeature.cs" />
     <Compile Include="Extensions\ExtensionManager.cs" />
+    <Compile Include="Extensions\IDomainRaterFactory.cs" />
     <Compile Include="Extensions\INewsFilterExtension.cs" />
     <Compile Include="Extensions\INewsSearcherExtension.cs" />
     <Compile Include="Extensions\INewsSharerExtension.cs" />
@@ -152,8 +153,10 @@
     <Compile Include="Extensions\ShareJobs\ShareJobQueueStatusEventArgs.cs" />
     <Compile Include="Extensions\ShareJobs\ShareJobQueue.cs" />
     <Compile Include="Extensions\ShareJobs\ShareJobStatusEventArgs.cs" />
+    <Compile Include="Extensions\IDomainRater.cs" />
     <Compile Include="MachineLearning\MinimumPredictedRatingNewsFilter.cs" />
     <Compile Include="MachineLearning\NewsArticleRatingPredictor.cs" />
+    <Compile Include="MachineLearning\RegressionPredictor.cs" />
     <Compile Include="Settings\GeneralSettingsPageFactory.cs" />
     <Compile Include="Settings\InvalidConfigurationException.cs" />
     <Compile Include="Settings\InvalidExtensionTypeException.cs" />
